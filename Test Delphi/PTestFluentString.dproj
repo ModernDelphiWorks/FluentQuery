@@ -92,43 +92,43 @@
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="UTestFluent.StringHelper.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Adapters.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Cast.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Chunk.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Collections.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Concat.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Core.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Distinct.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Exclude.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.GroupBy.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.GroupJoin.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Helpers.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Intersect.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Join.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Json.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Json.Provider.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.OfType.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Order.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.OrderBy.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Select.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.SelectIndexed.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.SelectMany.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.SelectManyCollection.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.SelectManyCollectionIndexed.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.SelectManyIndexed.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Skip.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.SkipWhile.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.SkipWhileIndexed.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Take.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.TakeWhile.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.TakeWhileIndexed.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.ThenBy.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Union.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Where.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Xml.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Xml.Provider.pas"/>
-        <DCCReference Include="..\Source\System.Fluent.Zip.pas"/>
+        <DCCReference Include="..\Source\Fluent.Adapters.pas"/>
+        <DCCReference Include="..\Source\Fluent.Cast.pas"/>
+        <DCCReference Include="..\Source\Fluent.Chunk.pas"/>
+        <DCCReference Include="..\Source\Fluent.Collections.pas"/>
+        <DCCReference Include="..\Source\Fluent.Concat.pas"/>
+        <DCCReference Include="..\Source\Fluent.Core.pas"/>
+        <DCCReference Include="..\Source\Fluent.Distinct.pas"/>
+        <DCCReference Include="..\Source\Fluent.Exclude.pas"/>
+        <DCCReference Include="..\Source\Fluent.GroupBy.pas"/>
+        <DCCReference Include="..\Source\Fluent.GroupJoin.pas"/>
+        <DCCReference Include="..\Source\Fluent.Helpers.pas"/>
+        <DCCReference Include="..\Source\Fluent.Intersect.pas"/>
+        <DCCReference Include="..\Source\Fluent.Join.pas"/>
+        <DCCReference Include="..\Source\Fluent.Json.pas"/>
+        <DCCReference Include="..\Source\Fluent.Json.Provider.pas"/>
+        <DCCReference Include="..\Source\Fluent.OfType.pas"/>
+        <DCCReference Include="..\Source\Fluent.Order.pas"/>
+        <DCCReference Include="..\Source\Fluent.OrderBy.pas"/>
+        <DCCReference Include="..\Source\Fluent.pas"/>
+        <DCCReference Include="..\Source\Fluent.Select.pas"/>
+        <DCCReference Include="..\Source\Fluent.SelectIndexed.pas"/>
+        <DCCReference Include="..\Source\Fluent.SelectMany.pas"/>
+        <DCCReference Include="..\Source\Fluent.SelectManyCollection.pas"/>
+        <DCCReference Include="..\Source\Fluent.SelectManyCollectionIndexed.pas"/>
+        <DCCReference Include="..\Source\Fluent.SelectManyIndexed.pas"/>
+        <DCCReference Include="..\Source\Fluent.Skip.pas"/>
+        <DCCReference Include="..\Source\Fluent.SkipWhile.pas"/>
+        <DCCReference Include="..\Source\Fluent.SkipWhileIndexed.pas"/>
+        <DCCReference Include="..\Source\Fluent.Take.pas"/>
+        <DCCReference Include="..\Source\Fluent.TakeWhile.pas"/>
+        <DCCReference Include="..\Source\Fluent.TakeWhileIndexed.pas"/>
+        <DCCReference Include="..\Source\Fluent.ThenBy.pas"/>
+        <DCCReference Include="..\Source\Fluent.Union.pas"/>
+        <DCCReference Include="..\Source\Fluent.Where.pas"/>
+        <DCCReference Include="..\Source\Fluent.Xml.pas"/>
+        <DCCReference Include="..\Source\Fluent.Xml.Provider.pas"/>
+        <DCCReference Include="..\Source\Fluent.Zip.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -1031,6 +1031,7 @@
                 <ProjectRoot Platform="Win64x" Name="$(PROJECTNAME)"/>
             </Deployment>
             <Platforms>
+                <Platform value="Linux64">False</Platform>
                 <Platform value="Win32">True</Platform>
                 <Platform value="Win64">False</Platform>
             </Platforms>

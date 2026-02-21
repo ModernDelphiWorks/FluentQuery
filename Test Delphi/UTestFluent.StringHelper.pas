@@ -7,8 +7,8 @@ uses
   SysUtils,
   DUnitX.TestFramework,
   Generics.Collections,
-  System.Fluent,
-  System.Fluent.Helpers;
+  Fluent,
+  Fluent.Helpers;
 
 type
   TFluentStringTest = class

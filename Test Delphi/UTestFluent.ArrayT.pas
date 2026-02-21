@@ -8,8 +8,8 @@ uses
   Variants,
   DUnitX.TestFramework,
   Generics.Collections,
-  System.Fluent,
-  System.Fluent.Collections;
+  Fluent,
+  Fluent.Collections;
 
 type
   TProduct = class

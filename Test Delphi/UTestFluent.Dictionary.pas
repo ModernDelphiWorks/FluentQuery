@@ -8,9 +8,9 @@ uses
   SysUtils,
   Generics.Collections,
   Generics.Defaults,
-  System.Fluent,
-  System.Fluent.Adapters,
-  System.Fluent.Collections;
+  Fluent,
+  Fluent.Adapters,
+  Fluent.Collections;
 
 type
   TDictionaryHelperTest = class
