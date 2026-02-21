@@ -51,10 +51,10 @@ uses
   CQuery.Expression,
   CQuery.Register,
   DBEngine.FactoryInterfaces,
-  System.Fluent,
-  System.Fluent.Core,
-  System.Fluent.Queryable,
-  System.Fluent.Expression;
+  Fluent,
+  Fluent.Core,
+  Fluent.Queryable,
+  Fluent.Expression;
 
 type
   TFluentQueryProvider<T> = class(TInterfacedObject, IFluentQueryProvider<T>)
@@ -207,7 +207,7 @@ type
 implementation
 
 uses
-  System.Fluent.Parse;
+  Fluent.Parse;
 
 constructor TFluentQueryProvider<T>.Create(const AInitializer: TConnectionInitializer);
 begin

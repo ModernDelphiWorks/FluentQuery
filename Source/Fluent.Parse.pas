@@ -38,9 +38,9 @@ uses
   SysUtils,
   Generics.Collections,
   DBEngine.FactoryInterfaces,
-  System.Fluent,
-  System.Fluent.Collections,
-  System.Evolution.Tuple;
+  Fluent,
+  Fluent.Collections,
+  Evolution.Tuple;
 
 type
   // Parser for object types (classes)

@@ -148,8 +148,8 @@ implementation
 uses
   DBEngine.FactoryInterfaces,
   System.Generics.Collections,
-  System.Fluent.Collections,
-  System.Fluent.Expression;
+  Fluent.Collections,
+  Fluent.Expression;
 
 function TTestFluentCQLFirebird.GetSQL: string;
 begin

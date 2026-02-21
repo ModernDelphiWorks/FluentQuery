@@ -350,18 +350,18 @@ type
 implementation
 
 uses
-  System.Evolution.Tuple,
-  System.Fluent.Parse,
-  System.Fluent.Query.Provider,
-  System.Fluent.Adapters,
-  System.Fluent.GroupBy,
-  System.Fluent.Select,
-  System.Fluent.Union,
-  System.Fluent.Intersect,
-  System.Fluent.Exclude,
-  System.Fluent.Join,
-  System.Fluent.OfType,
-  System.Fluent.Cast;
+  Evolution.Tuple,
+  Fluent.Parse,
+  Fluent.Query.Provider,
+  Fluent.Adapters,
+  Fluent.GroupBy,
+  Fluent.Select,
+  Fluent.Union,
+  Fluent.Intersect,
+  Fluent.Exclude,
+  Fluent.Join,
+  Fluent.OfType,
+  Fluent.Cast;
 
 {$IFDEF QUERYABLE}
 { IFluentQueryable<T> }
