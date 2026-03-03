@@ -18,7 +18,7 @@
         <Projects Include="PTestFluentQueryString.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="PTestFluentQueryCQL.dproj">
+        <Projects Include="PTestFluentQuerySQL.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -74,23 +74,23 @@
     <Target Name="PTestFluentQueryString:Make">
         <MSBuild Projects="PTestFluentQueryString.dproj" Targets="Make"/>
     </Target>
-    <Target Name="PTestFluentQueryCQL">
-        <MSBuild Projects="PTestFluentQueryCQL.dproj"/>
+    <Target Name="PTestFluentQuerySQL">
+        <MSBuild Projects="PTestFluentQuerySQL.dproj"/>
     </Target>
-    <Target Name="PTestFluentQueryCQL:Clean">
-        <MSBuild Projects="PTestFluentQueryCQL.dproj" Targets="Clean"/>
+    <Target Name="PTestFluentQuerySQL:Clean">
+        <MSBuild Projects="PTestFluentQuerySQL.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="PTestFluentQueryCQL:Make">
-        <MSBuild Projects="PTestFluentQueryCQL.dproj" Targets="Make"/>
+    <Target Name="PTestFluentQuerySQL:Make">
+        <MSBuild Projects="PTestFluentQuerySQL.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="PTestFluentQueryDictionary;PTestFluentQueryList;PTestFluentQueryArrayT;PTestFluentQueryArrayStatic;PTestFluentQueryString;PTestFluentQueryCQL"/>
+        <CallTarget Targets="PTestFluentQueryDictionary;PTestFluentQueryList;PTestFluentQueryArrayT;PTestFluentQueryArrayStatic;PTestFluentQueryString;PTestFluentQuerySQL"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="PTestFluentQueryDictionary:Clean;PTestFluentQueryList:Clean;PTestFluentQueryArrayT:Clean;PTestFluentQueryArrayStatic:Clean;PTestFluentQueryString:Clean;PTestFluentQueryCQL:Clean"/>
+        <CallTarget Targets="PTestFluentQueryDictionary:Clean;PTestFluentQueryList:Clean;PTestFluentQueryArrayT:Clean;PTestFluentQueryArrayStatic:Clean;PTestFluentQueryString:Clean;PTestFluentQuerySQL:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="PTestFluentQueryDictionary:Make;PTestFluentQueryList:Make;PTestFluentQueryArrayT:Make;PTestFluentQueryArrayStatic:Make;PTestFluentQueryString:Make;PTestFluentQueryCQL:Make"/>
+        <CallTarget Targets="PTestFluentQueryDictionary:Make;PTestFluentQueryList:Make;PTestFluentQueryArrayT:Make;PTestFluentQueryArrayStatic:Make;PTestFluentQueryString:Make;PTestFluentQuerySQL:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

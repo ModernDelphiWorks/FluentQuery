@@ -6,10 +6,10 @@
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <ProjectName Condition="'$(ProjectName)'==''">PTestFluentQueryCQL</ProjectName>
+        <ProjectName Condition="'$(ProjectName)'==''">PTestFluentQuerySQL</ProjectName>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Console</AppType>
-        <MainSource>PTestFluentQueryCQL.dpr</MainSource>
+        <MainSource>PTestFluentQuerySQL.dpr</MainSource>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -58,7 +58,7 @@
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <DCC_UnitSearchPath>$(DUnitX);..\..\FluentSQL\Source\Core;..\..\FluentSQL\Source\Drivers;..\..\DataEngine\Source\Core;..\..\DataEngine\Source\Drivers;..\..\FluentQuery\Source;..\..\ModernSyntax\Source;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>1046</VerInfo_Locale>
-        <SanitizedProjectName>PTestFluentQueryCQL</SanitizedProjectName>
+        <SanitizedProjectName>PTestFluentQuerySQL</SanitizedProjectName>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <DCC_Define>FullDebugMode;EnableMemoryLeakReporting;QUERYABLE;$(DCC_Define)</DCC_Define>
         <DCC_MapFile>3</DCC_MapFile>
@@ -161,7 +161,7 @@
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">PTestFluentQueryCQL.dpr</Source>
+                    <Source Name="MainSource">PTestFluentQuerySQL.dpr</Source>
                 </Source>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k290.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
@@ -186,9 +186,9 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="PTestFluentQueryCQL.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="PTestFluentQuerySQL.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>PTestFluentQueryCQL.exe</RemoteName>
+                        <RemoteName>PTestFluentQuerySQL.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
