@@ -1,93 +1,57 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<test-results name="D:\PROJETOS-Brasil\Fluent4D\Test Delphi\PTestFluentDictionary.exe" total="81" errors="0" failures="0" ignored="0" inconclusive="0" not-run="0" skipped="0" invalid="0" date="2025-04-25" time="0.080">
+<test-results name="D:\Ecossistema-Delphi\FluentQuery\Test Delphi\PTestFluentQueryCQL.exe" total="45" errors="0" failures="0" ignored="0" inconclusive="0" not-run="0" skipped="0" invalid="0" date="2026-03-03" time="19.085">
   <culture-info current-culture="en" current-uiculture="en" />
-  <test-suite type="Assembly" name="PTestFluentDictionary.exe" executed="true" result="Success" success="True" time="0.080" asserts="0">
+  <test-suite type="Assembly" name="PTestFluentQueryCQL.exe" executed="true" result="Success" success="True" time="19.085" asserts="0">
     <results>
-        <test-suite type="Namespace" name="UTestFluent" executed="true" result="Success" success="True" time="0.080" asserts="0" >
+        <test-suite type="Namespace" name="UTestFluentQuery" executed="true" result="Success" success="True" time="19.084" asserts="0" >
           <results>
-              <test-suite type="Fixture" name="TDictionaryHelperTest" executed="True" result="Success" success="True" time="0.080" >
+              <test-suite type="Fixture" name="TTestFluentCQLFirebird" executed="True" result="Success" success="True" time="19.084" >
                 <results>
-                  <test-case name="TestMap" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestFilter" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestReduce" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestTake" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestAny" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSkip" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestZip" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestJoin" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestAddRange" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestDistinct" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestAdd" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestAddRangeEnumerable" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestRemove" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestClear" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestTrimExcess" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestAddOrSetValue" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestExtractPair" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestTryGetValue" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestTryAdd" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestContainsKey" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestContainsValue" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestToArray" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCapacity" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCount" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestIsEmpty" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestGrowThreshold" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCollisions" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestKeys" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestValues" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestComparer" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestItemsGet" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestItemsSet" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestOnKeyNotify" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestOnValueNotify" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCreateWithComparer" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCreateWithCapacityAndComparer" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCreateWithEnumerable" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCreateWithEnumerableAndComparer" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCreateWithArray" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCreateWithArrayAndComparer" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCreateWithDictNoOwns" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestFromDict" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestFromArray" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestGetEnumerator" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestElementAt" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestElementAtOrDefault" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestTakeWhile" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSkipWhile" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestFirst" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestFirstOrDefault" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestLast" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestLastOrDefault" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSingle" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSingleOrDefault" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestOfType" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestExclude" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestIntersect" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestUnion" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestConcat" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSequenceEqual" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestOrderByDesc" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestMin" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestMinWithComparer" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestMax" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestMaxWithComparer" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestMinBy" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSelectMany" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestSelectAllFromClientes" executed="True" result="Success" success="True" time="0.001" asserts="0" />
+                  <test-case name="TestSelectWhereNome" executed="True" result="Success" success="True" time="0.011" asserts="0" />
+                  <test-case name="TestMinValue" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                  <test-case name="TestMaxValue" executed="True" result="Success" success="True" time="0.008" asserts="0" />
+                  <test-case name="TestCountValue" executed="True" result="Success" success="True" time="0.005" asserts="0" />
+                  <test-case name="TestFromBeforeSelect" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestSelectBeforeWhere" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestInnerJoin" executed="True" result="Success" success="True" time="0.000" asserts="0" />
                   <test-case name="TestGroupBy" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestGroupJoin" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestReduceNoInitial" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSumInteger" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestSumDouble" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestAverage" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestCountWithPredicate" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestLongCount" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestAll" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestContainsFluent" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestToList" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestOwnsValuesWithObjects" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestOwnsValuesWithStrings" executed="True" result="Success" success="True" time="0.000" asserts="0" />
-                  <test-case name="TestBasicFunctionality" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestOrderBy" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestWhereJoinSelect" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestWhereCompositeConditions" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestSelectSpecificColumns" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestTableAlias" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestMultipleJoins" executed="True" result="Success" success="True" time="0.002" asserts="0" />
+                  <test-case name="TestWhereWithLike" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestWhereWithOrAndParentheses" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestSelectWithAliasColumns" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestJoinWithMultipleConditions" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestEmptyWhereClause" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestOrderByMultipleColumns" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="TestSelectWhereNomeForTuple" executed="True" result="Success" success="True" time="0.007" asserts="0" />
+                  <test-case name="TestSelectSingleFieldInvalidType" executed="True" result="Success" success="True" time="2.099" asserts="0" />
+                  <test-case name="TestSelectSingleFieldString" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                  <test-case name="TestSelectMultipleFieldsInvalidType" executed="True" result="Success" success="True" time="0.937" asserts="0" />
+                  <test-case name="TestJoinSimple" executed="True" result="Success" success="True" time="0.009" asserts="0" />
+                  <test-case name="TestGroupBySimple" executed="True" result="Success" success="True" time="0.007" asserts="0" />
+                  <test-case name="TestCountWithLambdaExpression" executed="True" result="Success" success="True" time="0.007" asserts="0" />
+                  <test-case name="TestAllWithLambdaExpression" executed="True" result="Success" success="True" time="0.010" asserts="0" />
+                  <test-case name="TestFirstWithLambdaExpression" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                  <test-case name="TestFirstOrDefaultWithLambdaExpression" executed="True" result="Success" success="True" time="0.819" asserts="0" />
+                  <test-case name="TestTakeWithLambdaExpression" executed="True" result="Success" success="True" time="0.008" asserts="0" />
+                  <test-case name="TestLastWithLambdaExpression" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                  <test-case name="TestLastOrDefaultWithLambdaExpression" executed="True" result="Success" success="True" time="0.698" asserts="0" />
+                  <test-case name="TestSingleWithLambdaExpression" executed="True" result="Success" success="True" time="1.443" asserts="0" />
+                  <test-case name="TestLongCountWithLambdaExpression" executed="True" result="Success" success="True" time="0.008" asserts="0" />
+                  <test-case name="TestGroupByWithSelect" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                  <test-case name="TestOrderByDescWithTQE" executed="True" result="Success" success="True" time="0.010" asserts="0" />
+                  <test-case name="TestThenByWithTQE" executed="True" result="Success" success="True" time="0.008" asserts="0" />
+                  <test-case name="TestThenByDescendingWithTQE" executed="True" result="Success" success="True" time="0.008" asserts="0" />
+                  <test-case name="TestSelectWithTQE" executed="True" result="Success" success="True" time="0.006" asserts="0" />
+                  <test-case name="TestMinFirebird" executed="True" result="Success" success="True" time="1.743" asserts="0" />
+                  <test-case name="TestMinByFirebird" executed="True" result="Success" success="True" time="2.486" asserts="0" />
+                  <test-case name="TestSumFirebird" executed="True" result="Success" success="True" time="2.048" asserts="0" />
+                  <test-case name="TestAverageFirebird" executed="True" result="Success" success="True" time="2.069" asserts="0" />
                 </results>
               </test-suite>
           </results>

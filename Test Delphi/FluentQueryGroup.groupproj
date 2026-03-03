@@ -1,0 +1,96 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{393FCA44-6265-485B-AA1E-6A4AB51AA3E2}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="PTestFluentQueryDictionary.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestFluentQueryList.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestFluentQueryArrayT.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestFluentQueryArrayStatic.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestFluentQueryString.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestFluentQueryCQL.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="PTestFluentQueryDictionary">
+        <MSBuild Projects="PTestFluentQueryDictionary.dproj"/>
+    </Target>
+    <Target Name="PTestFluentQueryDictionary:Clean">
+        <MSBuild Projects="PTestFluentQueryDictionary.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestFluentQueryDictionary:Make">
+        <MSBuild Projects="PTestFluentQueryDictionary.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestFluentQueryList">
+        <MSBuild Projects="PTestFluentQueryList.dproj"/>
+    </Target>
+    <Target Name="PTestFluentQueryList:Clean">
+        <MSBuild Projects="PTestFluentQueryList.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestFluentQueryList:Make">
+        <MSBuild Projects="PTestFluentQueryList.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestFluentQueryArrayT">
+        <MSBuild Projects="PTestFluentQueryArrayT.dproj"/>
+    </Target>
+    <Target Name="PTestFluentQueryArrayT:Clean">
+        <MSBuild Projects="PTestFluentQueryArrayT.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestFluentQueryArrayT:Make">
+        <MSBuild Projects="PTestFluentQueryArrayT.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestFluentQueryArrayStatic">
+        <MSBuild Projects="PTestFluentQueryArrayStatic.dproj"/>
+    </Target>
+    <Target Name="PTestFluentQueryArrayStatic:Clean">
+        <MSBuild Projects="PTestFluentQueryArrayStatic.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestFluentQueryArrayStatic:Make">
+        <MSBuild Projects="PTestFluentQueryArrayStatic.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestFluentQueryString">
+        <MSBuild Projects="PTestFluentQueryString.dproj"/>
+    </Target>
+    <Target Name="PTestFluentQueryString:Clean">
+        <MSBuild Projects="PTestFluentQueryString.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestFluentQueryString:Make">
+        <MSBuild Projects="PTestFluentQueryString.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestFluentQueryCQL">
+        <MSBuild Projects="PTestFluentQueryCQL.dproj"/>
+    </Target>
+    <Target Name="PTestFluentQueryCQL:Clean">
+        <MSBuild Projects="PTestFluentQueryCQL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestFluentQueryCQL:Make">
+        <MSBuild Projects="PTestFluentQueryCQL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="PTestFluentQueryDictionary;PTestFluentQueryList;PTestFluentQueryArrayT;PTestFluentQueryArrayStatic;PTestFluentQueryString;PTestFluentQueryCQL"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="PTestFluentQueryDictionary:Clean;PTestFluentQueryList:Clean;PTestFluentQueryArrayT:Clean;PTestFluentQueryArrayStatic:Clean;PTestFluentQueryString:Clean;PTestFluentQueryCQL:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="PTestFluentQueryDictionary:Make;PTestFluentQueryList:Make;PTestFluentQueryArrayT:Make;PTestFluentQueryArrayStatic:Make;PTestFluentQueryString:Make;PTestFluentQueryCQL:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
