@@ -1,12 +1,12 @@
 ﻿{
   ------------------------------------------------------------------------------
   FluentQuery
-  LINQ-inspired fluent query API for Delphi.
+  Lazy Data Manipulation and LINQ-like collection querying library for Delphi and Lazarus.
 
-  SPDX-License-Identifier: Apache-2.0
+  SPDX-License-Identifier: MIT
   Copyright (c) 2025-2026 Isaque Pinheiro
 
-  Licensed under the Apache License, Version 2.0.
+  Licensed under the MIT License.
   See the LICENSE file in the project root for full license information.
   ------------------------------------------------------------------------------
 }
