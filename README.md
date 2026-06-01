@@ -1,4 +1,4 @@
-# FluentQuery / Fluent4D: Lazy Data Manipulation Library for Delphi
+# FluentQuery Framework for Delphi & Lazarus
 
 [![Delphi XE+](https://img.shields.io/badge/Delphi-XE%20or%20superior-blue.svg)]()
 [![Lazarus Compatible](https://img.shields.io/badge/Lazarus-Compatible-orange.svg)]()
@@ -11,42 +11,46 @@
 
 ## 🇬🇧 English
 
-**FluentQuery** (internally declared as **Fluent4D**) is a state-of-the-art, high-performance functional programming and fluent collection manipulation library for Delphi, inspired by **C# LINQ** and modern functional streams from **Java/Kotlin/Rust**. 
-
-It enables developers to query, filter, transform, and aggregate data structures fluidly using **Lazy Evaluation** (deferred execution), ensuring maximum speed and minimized memory overhead.
-
-### 🏛 Supported Platforms
-*   **Delphi XE or superior** (VCL, FMX, Console, ARC & Non-ARC)
-*   **Lazarus / FreePascal** (Compatible Core)
-
-### ⚙️ Installation
-To install using [`boss`]:
-```sh
-boss install "https://github.com/ModernDelphiWorks/FluentQuery"
-```
-
----
+**FluentQuery** is a high-performance functional programming and collection manipulation library for Delphi and Lazarus, heavily inspired by **C# LINQ** and stream processing APIs found in Java, Kotlin, and Rust. It introduces powerful record-based structures (`IFluentEnumerable<T>` and `IFluentQueryable<T>`) designed to query, filter, map, order, and aggregate in-memory collections and datasets. By employing **Lazy Evaluation** (deferred execution), FluentQuery avoids intermediate object allocations, ensuring exceptional CPU speed and minimal memory footprint.
 
 ### 🚀 Key Features
 
-*   **Fluent API:** Elegant, chainable method syntax for complex query construction (e.g., `Filter().Take().Select().ToArray()`).
-*   **Lazy Evaluation:** Operations are deferred and only executed when a terminal method (like `ToArray`, `ToList`, or `First`) is invoked. It completely avoids allocating intermediate arrays, optimizing memory.
-*   **Zero-Allocation Record Core:** Core structures are based on lightweight records (`IFluentEnumerable<T>` and `IFluentQueryable<T>`), completely avoiding typical object allocation overhead.
-*   **Comprehensive LINQ Operators:**
-    *   **Filtering:** `Where`, `OfType`, `Cast`, `Distinct`, `Exclude`
-    *   **Projections:** `Select`, `SelectIndexed`, `SelectMany`
-    *   **Partitioning:** `Take`, `TakeWhile`, `Skip`, `SkipWhile`, `Chunk`
-    *   **Ordering:** `OrderBy`, `ThenBy` (Ascending and Descending)
-    *   **Set Operations:** `Union`, `Intersect`, `Concat`
-    *   **Joining & Zipping:** `Join`, `GroupJoin`, `Zip`
-    *   **Aggregation:** `First`, `FirstOrDefault`, `Last`, `Any`, `All`, `Count`
-*   **Format Providers:** Extensible architecture supporting native Delphi collections (`TList<T>`, `TArray<T>`), JSON elements, and XML documents.
+*   **Fluent & Chainable API:** Write highly expressive, readable queries using method chaining (e.g., `Filter().Take().Select().ToArray()`).
+*   **Lazy Evaluation:** Data pipelines are executed only when a terminal operator (like `ToArray`, `ToList`, or `First`) is triggered, avoiding unnecessary intermediate array allocations.
+*   **Zero-Allocation Core:** Leverages lightweight Delphi record interfaces, avoiding the typical object allocation overhead.
+*   **Comprehensive LINQ-Like Operators:**
+    *   *Filtering:* `Where`, `OfType`, `Cast`, `Distinct`, `Exclude`
+    *   *Projections:* `Select`, `SelectIndexed`, `SelectMany`
+    *   *Partitioning:* `Take`, `TakeWhile`, `Skip`, `SkipWhile`, `Chunk`
+    *   *Ordering:* `OrderBy`, `ThenBy` (Ascending and Descending)
+    *   *Set Operations:* `Union`, `Intersect`, `Concat`
+    *   *Joins & Zipping:* `Join`, `GroupJoin`, `Zip`
+    *   *Aggregations:* `First`, `FirstOrDefault`, `Last`, `Any`, `All`, `Count`, `Sum`, `Average`
+*   **Extensible Format Providers:** Native integration with standard Delphi collections (`TList<T>`, `TArray<T>`), JSON datasets, and XML documents.
+
+### 🏛 Compatibility Matrix
+
+| Environment / IDE | Platform / Compiler | Lazy Evaluation | Zero-Allocation Record Core |
+| :--- | :--- | :---: | :---: |
+| **Delphi XE or superior** | VCL, FMX, Console (ARC & Non-ARC) | ✅ Yes | ✅ Yes |
+| **Lazarus / FreePascal** | LCL, Console (Cross-platform) | ✅ Yes | ✅ Yes |
+
+### ⚙️ Installation
+
+To install using the package manager [**Boss**](https://github.com/HashLoad/boss):
+
+```sh
+boss install Fluent4D
+```
+
+> [!NOTE]
+> For historical registry reasons on Boss, the package name is declared as **Fluent4D** in its manifest, but the official framework name is **FluentQuery**.
 
 ---
 
 ### ⚡️ Quick Start
 
-#### Basic Filtering and Projection (Lazy LINQ style)
+#### 1. Basic Filtering and Projection (LINQ Style)
 ```delphi
 uses
   System.SysUtils,
@@ -77,7 +81,7 @@ begin
 end;
 ```
 
-#### Complex Ordering and Skipping
+#### 2. Advanced Ordering and Pagination (Skip/Take)
 ```delphi
 var
   LResult: TArray<string>;
@@ -101,62 +105,48 @@ end;
 
 ---
 
-### ⛏️ Contributing
-We love contributions! Feel free to open issues or submit pull requests.
-
-1.  Fork the project.
-2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
-5.  Open a Pull Request.
-
-### 📬 Contact & Support
-*   **Telegram**: [HashLoad Channel](https://t.me/hashload)
-*   **Website**: [isaquepinheiro.com.br](https://www.isaquepinheiro.com.br)
-
-### 💲 Donation
-[![Doação](https://img.shields.io/badge/PagSeguro-contribua-green)](https://pag.ae/bglQrWD)
-
----
-
 ## 🇧🇷 Português
 
-**FluentQuery** (declarado internamente como **Fluent4D**) é uma biblioteca moderna e de alta performance de programação funcional e manipulação fluida de coleções para Delphi, fortemente inspirada no **C# LINQ** e em streams funcionais de linguagens como **Java/Kotlin/Rust**.
-
-Ela permite consultar, filtrar, transformar e agrupar estruturas de dados de forma intuitiva utilizando **Lazy Evaluation** (avaliação adiada/lazy), garantindo máxima velocidade e baixíssimo consumo de memória.
-
-### 🏛 Plataformas Suportadas
-*   **Delphi XE ou superior** (VCL, FMX, Console, ARC & Non-ARC)
-*   **Lazarus / FreePascal** (Core Compatível)
-
-### ⚙️ Instalação
-Para instalar usando o [`boss`]:
-```sh
-boss install "https://github.com/ModernDelphiWorks/FluentQuery"
-```
-
----
+**FluentQuery** é uma biblioteca de alta performance para programação funcional e manipulação de coleções em Delphi e Lazarus, fortemente inspirada no **LINQ do C#** e nas APIs de processamento de streams do Java, Kotlin e Rust. Ela introduz estruturas otimizadas baseadas em records (`IFluentEnumerable<T>` e `IFluentQueryable<T>`) projetadas para consultar, filtrar, mapear, ordenar e agregar coleções na memória e datasets. Ao adotar **Avaliação Preguiçosa** (lazy evaluation), o FluentQuery posterga o processamento até o último instante, eliminando alocações desnecessárias e maximizando a performance de CPU e memória.
 
 ### 🚀 Recursos Principais
 
-*   **API Fluente:** Sintaxe de encadeamento de métodos elegante para a construção de queries complexas (ex.: `Filter().Take().Select().ToArray()`).
-*   **Lazy Evaluation:** As operações são adiadas e executadas *apenas* quando um método terminal (como `ToArray`, `ToList` ou `First`) é invocado. Isso evita alocações desnecessárias de arrays intermediários em memória.
-*   **Core em Records de Alocação Zero:** A arquitetura do framework é baseada em registros leves (`IFluentEnumerable<T>` e `IFluentQueryable<T>`), evitando overhead de alocação de objetos.
-*   **Conjunto Completo de Operadores LINQ:**
-    *   **Filtros:** `Where`, `OfType`, `Cast`, `Distinct`, `Exclude`
-    *   **Projeções:** `Select`, `SelectIndexed`, `SelectMany`
-    *   **Particionamento:** `Take`, `TakeWhile`, `Skip`, `SkipWhile`, `Chunk`
-    *   **Ordenações:** `OrderBy`, `ThenBy` (Crescente e Decrescente)
-    *   **Operações de Conjunto:** `Union`, `Intersect`, `Concat`
-    *   **Cruzamentos & Associações:** `Join`, `GroupJoin`, `Zip`
-    *   **Agregadores:** `First`, `FirstOrDefault`, `Last`, `Any`, `All`, `Count`
-*   **Provedores de Formato:** Arquitetura extensível com suporte a coleções nativas do Delphi (`TList<T>`, `TArray<T>`), além de elementos JSON e XML.
+*   **API Fluente e Encadeável:** Escreva consultas expressivas e legíveis através de chamadas consecutivas de métodos (ex: `Filter().Take().Select().ToArray()`).
+*   **Avaliação Preguiçosa (Lazy Evaluation):** Os pipelines de dados só são executados ao acionar um operador terminal (como `ToArray`, `ToList` ou `First`), poupando ciclos de CPU.
+*   **Core Livre de Alocação de Objetos:** Utiliza records leves em Object Pascal, evitando o overhead de alocação de objetos em heap.
+*   **Operadores Completos Estilo LINQ:**
+    *   *Filtragem:* `Where`, `OfType`, `Cast`, `Distinct`, `Exclude`
+    *   *Projeção:* `Select`, `SelectIndexed`, `SelectMany`
+    *   *Particionamento:* `Take`, `TakeWhile`, `Skip`, `SkipWhile`, `Chunk`
+    *   *Ordenação:* `OrderBy`, `ThenBy` (Ascendente e Decrescente)
+    *   *Operações de Conjunto:* `Union`, `Intersect`, `Concat`
+    *   *Junções e Zipping:* `Join`, `GroupJoin`, `Zip`
+    *   *Agregações:* `First`, `FirstOrDefault`, `Last`, `Any`, `All`, `Count`, `Sum`, `Average`
+*   **Provedores de Formato Estensíveis:** Integração nativa com coleções padrão do Delphi (`TList<T>`, `TArray<T>`), datasets JSON e documentos XML.
+
+### 🏛 Matriz de Compatibilidade
+
+| Ambiente / IDE | Plataforma / Compilador | Avaliação Preguiçosa | Zero Alocação de Objetos |
+| :--- | :--- | :---: | :---: |
+| **Delphi XE ou superior** | VCL, FMX, Console (ARC e Não-ARC) | ✅ Sim | ✅ Sim |
+| **Lazarus / FreePascal** | LCL, Console (Multiplataforma) | ✅ Sim | ✅ Sim |
+
+### ⚙️ Instalação
+
+Para instalar usando o gerenciador de pacotes [**Boss**](https://github.com/HashLoad/boss):
+
+```sh
+boss install Fluent4D
+```
+
+> [!NOTE]
+> Por motivos históricos de registro no Boss, o pacote é declarado como **Fluent4D** no manifesto, embora o nome oficial do projeto seja **FluentQuery**.
 
 ---
 
 ### ⚡️ Início Rápido
 
-#### Filtro e Projeção Básica (Estilo LINQ Lazy)
+#### 1. Filtragem Básica e Projeção (Estilo LINQ)
 ```delphi
 uses
   System.SysUtils,
@@ -168,14 +158,14 @@ var
 begin
   LNumbers := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  // Cadeia fluida - nenhum array intermediário é gerado em memória durante a execução!
+  // Pipeline fluido - nenhum array intermediário é alocado durante a execução!
   LResult := TFluentEnumerable<Integer>.Create(LNumbers)
     .Where(
       function(const X: Integer): Boolean
       begin
-        Result := (X mod 2 = 0); // Mantém números pares
+        Result := (X mod 2 = 0); // Filtra números pares
       end)
-    .Take(3) // Limita aos 3 primeiros correspondentes
+    .Take(3) // Limita aos primeiros 3 correspondentes
     .Select<string>(
       function(const X: Integer): string
       begin
@@ -187,7 +177,7 @@ begin
 end;
 ```
 
-#### Paginação e Ordenação Complexa
+#### 2. Ordenação Avançada e Paginação (Skip/Take)
 ```delphi
 var
   LResult: TArray<string>;
@@ -198,8 +188,8 @@ begin
       begin
         Result := CompareText(A.Name, B.Name);
       end)
-    .Skip(10) // Pula os primeiros 10 itens (paginação)
-    .Take(5)  // Pega os 5 itens seguintes
+    .Skip(10) // Pula os 10 primeiros (paginação)
+    .Take(5)  // Pega os 5 próximos
     .Select<string>(
       function(const U: TUser): string
       begin
@@ -210,22 +200,4 @@ end;
 ```
 
 ---
-
-### ⛏️ Contribuição
-Adoramos contribuições! Sinta-se à vontade para abrir issues ou enviar pull requests.
-
-1.  Faça um Fork do projeto.
-2.  Crie sua branch de recurso (`git checkout -b feature/MinhaNovaFeature`).
-3.  Faça o commit de suas alterações (`git commit -m 'Adiciona MinhaNovaFeature'`).
-4.  Faça o push para a branch (`git push origin feature/MinhaNovaFeature`).
-5.  Abra um Pull Request.
-
-### 📬 Contato & Suporte
-*   **Telegram**: [Canal HashLoad](https://t.me/hashload)
-*   **Website**: [isaquepinheiro.com.br](https://www.isaquepinheiro.com.br)
-
-### 💲 Doação
-[![Doação](https://img.shields.io/badge/PagSeguro-contribua-green)](https://pag.ae/bglQrWD)
-
----
-*Copyright © 2025-2026 Isaque Pinheiro. Licensed under Apache-2.0.*
+*Copyright © 2025-2026 Isaque Pinheiro. Licensed under LGPL-3.0 License.*
