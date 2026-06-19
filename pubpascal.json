@@ -1,0 +1,13 @@
+{
+  "$schema": "https://www.pubdelphi.dev/schema/pubdelphi.schema.json",
+  "name": "Fluent4D",
+  "version": "^0",
+  "kind": "runtime",
+  "sources": ["Source/"],
+  "platforms": ["Win32", "Win64"],
+  "dependencies": {
+    "moderndelphiworks/cquery4d": "^0",
+    "ModernDelphiWorks/DataEngine": "^0",
+    "moderndelphiworks/evolution4d": "^0"
+  }
+}
