@@ -169,12 +169,12 @@ begin
   FFDConnection.Params.Add('Protocol=TCPIP');
   FFDConnection.Open;
 
-  FConnection := TFactoryFireDAC.Create(FFDConnection, TDBEngineDriver.dnFirebird);
+  FConnection := TFactoryFireDAC.Create(FFDConnection, TDriverName.dnFirebird);
 
   FQueryable := IFluentQueryable<String>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := FConnection;
     end);
 end;
@@ -200,9 +200,9 @@ var
   LClient: TCliente;
 begin
   LQueryable := IFluentQueryable<TCliente>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := FConnection;
     end);
 
@@ -247,9 +247,9 @@ var
   LResult: String;
 begin
   LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := TFactoryFireDAC.Create(FFDConnection, ADatabase);
     end);
   LQueryable.From('CLIENTES').Select('ID').Min;
@@ -263,9 +263,9 @@ var
   ProviderInt: IFluentQueryable<Integer>;
 begin
   ProviderInt := IFluentQueryable<Integer>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := TFactoryFireDAC.Create(FFDConnection, ADatabase);
     end);
   ProviderInt.Select('IDADE').From('CLIENTES').Max;
@@ -278,9 +278,9 @@ var
   LQueryable: IFluentQueryable<Integer>;
 begin
   LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := TFactoryFireDAC.Create(FFDConnection, ADatabase);
     end);
   LQueryable.Select('ID').From('CLIENTES').Count;
@@ -411,9 +411,9 @@ var
   LResults: IFluentList<TTuple<string>>;
 begin
   LProvider := IFluentQueryable<TTuple<string>>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := FConnection;
     end);
 
@@ -453,9 +453,9 @@ var
   LResults: IFluentList<Integer>;
 begin
   LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := FConnection;
     end);
 
@@ -479,9 +479,9 @@ var
   LItem: string;
 begin
   LQueryable := IFluentQueryable<string>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := FConnection;
     end);
 
@@ -512,9 +512,9 @@ var
   LResults: IFluentList<Integer>;
 begin
   LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
-    procedure(var ADatabase: TDBEngineDriver; var AConnection: IDBConnection)
+    procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
-      ADatabase := TDBEngineDriver.dnFirebird;
+      ADatabase := TDriverName.dnFirebird;
       AConnection := FConnection;
     end);
 

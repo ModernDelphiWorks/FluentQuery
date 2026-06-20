@@ -48,7 +48,7 @@ type
   private
     FCQL: IFluentSQLAST;
     FConnection: IDBConnection;
-    FDatabase: TDBEngineDriver;
+    FDatabase: TDriverName;
     FOperator: IFluentSQLOperators;
     FFunction: IFluentSQLFunctions;
     FActiveExpr: IFluentSQLCriteriaExpression;
@@ -59,20 +59,20 @@ type
     function _CreateJoin(AJoinType: TJoinType; const ATableName: String): IFluentQueryProvider<T>;
     function _GetDriverDatabase: TFluentSQLDriver;
     procedure _InitializeConnection(const AInitializer: TConnectionInitializer); overload;
-    procedure _InitializeConnection(const ADriver: TDBEngineDriver; const AConnection: IDBConnection); overload;
+    procedure _InitializeConnection(const ADriver: TDriverName; const AConnection: IDBConnection); overload;
     function _GetFluentSQL: IFluentSQLAST;
     procedure _SetFluentSQL(const Value: IFluentSQLAST);
   strict private
     constructor Create; overload;
     constructor Create(const AInitializer: TConnectionInitializer); overload;
-    constructor Create(const ADriver: TDBEngineDriver; const AConnection: IDBConnection; const ACQL: IFluentSQLAST = nil); overload;
+    constructor Create(const ADriver: TDriverName; const AConnection: IDBConnection; const ACQL: IFluentSQLAST = nil); overload;
     destructor Destroy; override;
   public
     type
       TStrictPrivateCreate<T> = class
       public
         class function CreateProvider(const AInitializer: TConnectionInitializer): TFluentQueryProvider<T>; overload; static;
-        class function CreateProvider(const ADriver: TDBEngineDriver; const AConnection: IDBConnection; const ACQL: IFluentSQLAST = nil): TFluentQueryProvider<T>; overload; static;
+        class function CreateProvider(const ADriver: TDriverName; const AConnection: IDBConnection; const ACQL: IFluentSQLAST = nil): TFluentQueryProvider<T>; overload; static;
       end;
   public
     function AndOpe(const AExpression: array of const): IFluentQueryProvider<T>; overload;
@@ -187,7 +187,7 @@ type
     function ToArray: IFluentArray<T>;
     function ToList: IFluentList<T>;
     function AsString: string;
-    function Database: TDBEngineDriver;
+    function Database: TDriverName;
     function Connection: IDBConnection;
   end;
 
@@ -209,7 +209,7 @@ begin
   FSavedColumns := TFluentSQLNames.Create;
 end;
 
-constructor TFluentQueryProvider<T>.Create(const ADriver: TDBEngineDriver;
+constructor TFluentQueryProvider<T>.Create(const ADriver: TDriverName;
   const AConnection: IDBConnection; const ACQL: IFluentSQLAST);
 begin
   inherited Create;
@@ -495,12 +495,12 @@ begin
   end;
 end;
 
-procedure TFluentQueryProvider<T>._InitializeConnection(const ADriver: TDBEngineDriver;
+procedure TFluentQueryProvider<T>._InitializeConnection(const ADriver: TDriverName;
   const AConnection: IDBConnection);
 begin
   if AConnection = nil then
     raise EArgumentNilException.Create('Connection cannot be nil');
-  if TStrDBEngineDriver[ADriver] = '' then
+  if TStrDriverName[ADriver] = '' then
     raise EArgumentNilException.Create('Database type must be specified');
 
   FDatabase := ADriver;
@@ -521,7 +521,7 @@ begin
 
   if FConnection = nil then
     raise EInvalidOperation.Create('Connection cannot be nil');
-  if TStrDBEngineDriver[FDatabase] = '' then
+  if TStrDriverName[FDatabase] = '' then
     raise EInvalidOperation.Create('Database type must be specified');
 end;
 
@@ -1084,7 +1084,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Database: TDBEngineDriver;
+function TFluentQueryProvider<T>.Database: TDriverName;
 begin
   Result := FDatabase;
 end;
@@ -1240,7 +1240,7 @@ begin
 end;
 
 class function TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(
-  const ADriver: TDBEngineDriver; const AConnection: IDBConnection; const ACQL: IFluentSQLAST): TFluentQueryProvider<T>;
+  const ADriver: TDriverName; const AConnection: IDBConnection; const ACQL: IFluentSQLAST): TFluentQueryProvider<T>;
 begin
   Result := TFluentQueryProvider<T>.Create(ADriver, AConnection, ACQL);
 end;

@@ -53,14 +53,14 @@ const
   dbnNexusDB    = FluentSQL.Interfaces.dbnNexusDB;
 
 type
-  TDBEngineDriver = DataEngine.FactoryInterfaces.TDBEngineDriver;
+  TDriverName = DataEngine.FactoryInterfaces.TDriverName;
   TFluentSQLDriver = FluentSQL.Interfaces.TFluentSQLDriver;
   IDBConnection = DataEngine.FactoryInterfaces.IDBConnection;
   IDBTransaction = DataEngine.FactoryInterfaces.IDBTransaction;
   IDBDataSet = DataEngine.FactoryInterfaces.IDBDataSet;
   IDBQuery = DataEngine.FactoryInterfaces.IDBQuery;
 
-  TConnectionInitializer = reference to procedure(var ADatabase: TDBEngineDriver;
+  TConnectionInitializer = reference to procedure(var ADatabase: TDriverName;
                                                   var AConnection: IDBConnection);
 
   IFluentQueryProvider<T> = interface;
@@ -182,7 +182,7 @@ type
     function ToArray: IFluentArray<T>;
     function ToList: IFluentList<T>;
     function AsString: string;
-    function Database: TDBEngineDriver;
+    function Database: TDriverName;
     function Connection: IDBConnection;
     property FluentSQL: IFluentSQLAST read _GetFluentSQL write _SetFluentSQL;
   end;
@@ -219,11 +219,11 @@ type
     function _ExecuteScalar<TResult>(const ASql: string): TResult;
     function _ExecuteList(const ASql: string): IFluentList<T>;
     function _InitializeICQL: IFluentQueryProvider<T>;
-    function _GetDriverDatabase(const ADatabase: TDBEngineDriver): TFluentSQLDriver;
+    function _GetDriverDatabase(const ADatabase: TDriverName): TFluentSQLDriver;
   public
     constructor Create(const AQueryable: IFluentQueryableBase<T>); overload;
     constructor CreateForDatabase(const AInitializer: TConnectionInitializer); overload;
-    constructor CreateForDatabase(const ADatabase: TDBEngineDriver; const AConnection: IDBConnection;
+    constructor CreateForDatabase(const ADatabase: TDriverName; const AConnection: IDBConnection;
       const ACQL: IFluentSQLAST = nil); overload;
     function IsNotAssigned: Boolean;
     function QE: IFluentQueryExpression;
@@ -371,12 +371,12 @@ begin
   _InitializeICQL;
 end;
 
-constructor IFluentQueryable<T>.CreateForDatabase(const ADatabase: TDBEngineDriver;
+constructor IFluentQueryable<T>.CreateForDatabase(const ADatabase: TDriverName;
   const AConnection: IDBConnection; const ACQL: IFluentSQLAST);
 begin
   if AConnection = nil then
     raise EArgumentNilException.Create('Connection cannot be nil');
-  if TStrDBEngineDriver[ADatabase] = '' then
+  if TStrDriverName[ADatabase] = '' then
     raise EArgumentNilException.Create('Database type must be specified');
   FProvider := TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(ADatabase, AConnection, ACQL);
   FQueryable := TFluentQueryable<T>.Create(FProvider);
@@ -1247,7 +1247,7 @@ begin
   Result := not TEqualityComparer<IFluentQueryable<T>>.Default.Equals(Self, Default(IFluentQueryable<T>));
 end;
 
-function IFluentQueryable<T>._GetDriverDatabase(const ADatabase: TDBEngineDriver): TFluentSQLDriver;
+function IFluentQueryable<T>._GetDriverDatabase(const ADatabase: TDriverName): TFluentSQLDriver;
 begin
   case ADatabase of
     dnMSSQL: Result := dbnMSSQL;
