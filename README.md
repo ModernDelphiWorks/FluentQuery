@@ -48,11 +48,11 @@ The `TFluentString` case operations (`ToLower`/`ToUpper` and their invariants) h
 To install using the package manager [**Boss**](https://github.com/HashLoad/boss):
 
 ```sh
-boss install Fluent4D
+boss install FluentQuery
 ```
 
 > [!NOTE]
-> For historical registry reasons on Boss, the package name is declared as **Fluent4D** in its manifest, but the official framework name is **FluentQuery**.
+> For historical registry reasons on Boss, the package name is declared as **FluentQuery** in its manifest, but the official framework name is **FluentQuery**.
 
 ---
 
@@ -152,11 +152,11 @@ As operações de caixa do `TFluentString` (`ToLower`/`ToUpper` e invariantes) t
 Para instalar usando o gerenciador de pacotes [**Boss**](https://github.com/HashLoad/boss):
 
 ```sh
-boss install Fluent4D
+boss install FluentQuery
 ```
 
 > [!NOTE]
-> Por motivos históricos de registro no Boss, o pacote é declarado como **Fluent4D** no manifesto, embora o nome oficial do projeto seja **FluentQuery**.
+> Por motivos históricos de registro no Boss, o pacote é declarado como **FluentQuery** no manifesto, embora o nome oficial do projeto seja **FluentQuery**.
 
 ---
 

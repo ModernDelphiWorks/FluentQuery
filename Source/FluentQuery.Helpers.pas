@@ -197,7 +197,7 @@ type
     function TrimStart(const TrimChars: array of Char): string; deprecated 'Use TrimLeft';
     property Chars[Index: Integer]: Char read GetChars;
     property Length: Integer read GetLength;
-    // Fluent4D
+    // FluentQuery
     procedure Partition(const APredicate: TFunc<Char, Boolean>; out ALeft, ARight: String);
     function Where(const APredicate: TFunc<Char, Boolean>): IFluentEnumerable<Char>;
     function Collect: IFluentEnumerable<String>;

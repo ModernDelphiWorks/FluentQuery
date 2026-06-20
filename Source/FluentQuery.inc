@@ -1,5 +1,5 @@
 {
-           Fluent4D - Fluent Data Processing Library for Delphi
+           FluentQuery - Fluent Data Processing Library for Delphi
 
                           Apache License
                       Version 2.0, January 2004
@@ -19,7 +19,7 @@
 }
 
 {
-  @abstract(Fluent4D Library - Fluent Data Processing for Delphi)
+  @abstract(FluentQuery Library - Fluent Data Processing for Delphi)
   @created(03 Abr 2025)
   @author(Isaque Pinheiro <isaquepsp@gmail.com>)
   @Discord(https://discord.gg/T2zJC8zX)
