@@ -1,7 +1,7 @@
 {
   "$schema": "https://www.pubdelphi.dev/schema/pubdelphi.schema.json",
   "name": "FluentQuery",
-  "version": "^0",
+  "version": "0.1.0",
   "kind": "runtime",
   "sources": ["Source/"],
   "platforms": ["Win32", "Win64"],
