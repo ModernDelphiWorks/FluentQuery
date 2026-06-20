@@ -3,6 +3,9 @@
 [![Delphi XE+](https://img.shields.io/badge/Delphi-XE%20or%20superior-blue.svg)]()
 [![Lazarus Compatible](https://img.shields.io/badge/Lazarus-Compatible-orange.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![CRA-ready](https://img.shields.io/badge/CRA--ready-SBOM%20%2B%20Security%20policy-success)](https://www.pubpascal.dev/packages/fluentquery)
+
+> 🔒 **Supply-chain transparency (CRA-ready):** a machine-readable **SBOM** (CycloneDX) is published on the package portal — [pubpascal.dev/packages/fluentquery](https://www.pubpascal.dev/packages/fluentquery) · security disclosure policy in **[SECURITY.md](SECURITY.md)**.
 
 *   [🇬🇧 English](#-english)
 *   [🇧🇷 Português](#-português)
