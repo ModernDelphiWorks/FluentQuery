@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="12" fill="#2e8555"/>
+  <!-- F letter -->
+  <text x="10" y="46" font-family="monospace" font-size="42" font-weight="bold" fill="white">F</text>
+  <!-- Q letter, offset -->
+  <text x="28" y="46" font-family="monospace" font-size="42" font-weight="bold" fill="#a8dfbf">Q</text>
+</svg>
