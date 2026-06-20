@@ -88,3 +88,7 @@ modules/
 docs-src/node_modules/
 docs-src/build/
 docs-src/.docusaurus/
+
+# Delphi IDE session state + generated test logs (local, not versioned)
+*.dsv
+*_MemoryManager_EventLog.txt
