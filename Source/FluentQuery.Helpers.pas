@@ -1455,7 +1455,7 @@ begin
     else Result := Self;
   end
   else
-    Result := UCS4StringToUnicodeString(UCS4LowerCase(UnicodeStringToUCS4String(Self), LocaleID));
+    Result := System.SysUtils.LowerCase(Self);
 end;
 {$ELSE !LINUX}
 var
@@ -1508,7 +1508,9 @@ begin
 end;
 {$ELSEIF defined(LINUX)}
 begin
-  Result := UCS4StringToUnicodeString(UCS4LowerCase(UnicodeStringToUCS4String(Self), LocaleID));
+  // Epic 25: UCS4LowerCase is undeclared on Linux; locale-aware lowering uses the
+  // USE_LIBICU path above. Fall back to the RTL invariant lowercase otherwise.
+  Result := System.SysUtils.LowerCase(Self);
 end;
 {$ELSE !MSWINDOWS !MACOS}
 begin
@@ -1540,7 +1542,7 @@ begin
   if IsICUAvailable then
     Result := Self.ToLower('en_US_POSIX')
   else
-    Result := UCS4StringToUnicodeString(UCS4LowerCase(UnicodeStringToUCS4String(Self)));
+    Result := System.SysUtils.LowerCase(Self);
 end;
 {$ELSE !LINUX}
 begin
@@ -1574,7 +1576,7 @@ begin
 end;
 {$ELSEIF defined(LINUX)}
 begin
-  Result := UCS4StringToUnicodeString(UCS4LowerCase(UnicodeStringToUCS4String(Self)));
+  Result := System.SysUtils.LowerCase(Self);
 end;
 {$ELSE !MSWINDOWS !USE_LIBICU !MACOS}
 begin
@@ -1626,7 +1628,7 @@ begin
     else Result := Self;
   end
   else
-    Result := UCS4StringToUnicodeString(UCS4UpperCase(UnicodeStringToUCS4String(Self), LocaleID));
+    Result := System.SysUtils.UpperCase(Self);
 end;
 {$ELSE !LINUX}
 var
@@ -1681,7 +1683,7 @@ begin
 end;
 {$ELSEIF defined(LINUX)}
 begin
-  Result := UCS4StringToUnicodeString(UCS4UpperCase(UnicodeStringToUCS4String(Self), LocaleID));
+  Result := System.SysUtils.UpperCase(Self);
 end;
 {$ELSE !MSWINDOWS !USE_LIBICU !MACOS}
 begin
@@ -1713,7 +1715,7 @@ begin
   if IsICUAvailable then
     Result := Self.ToUpper('en_US_POSIX')
   else
-    Result := UCS4StringToUnicodeString(UCS4UpperCase(UnicodeStringToUCS4String(Self)));
+    Result := System.SysUtils.UpperCase(Self);
 end;
 {$ELSE !LINUX}
 begin
@@ -1747,7 +1749,7 @@ begin
 end;
 {$ELSEIF defined(LINUX)}
 begin
-  Result := UCS4StringToUnicodeString(UCS4UpperCase(UnicodeStringToUCS4String(Self)));
+  Result := System.SysUtils.UpperCase(Self);
 end;
 {$ELSE !MSWINDOWS !USE_LIBICU !MACOS}
 begin
