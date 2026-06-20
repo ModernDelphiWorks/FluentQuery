@@ -56,8 +56,6 @@ To install using the package manager [**Boss**](https://github.com/HashLoad/boss
 boss install FluentQuery
 ```
 
-> [!NOTE]
-> For historical registry reasons on Boss, the package name is declared as **FluentQuery** in its manifest, but the official framework name is **FluentQuery**.
 
 ---
 
