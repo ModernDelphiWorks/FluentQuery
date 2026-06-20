@@ -163,9 +163,6 @@ boss install FluentQuery
 
 Ou registre o pacote via [**pubpascal.dev**](https://www.pubpascal.dev/packages/fluentquery) e siga as instruções na tela.
 
-> [!NOTE]
-> Por motivos históricos de registro no Boss, o pacote é declarado como **FluentQuery** no manifesto, embora o nome oficial do projeto seja **FluentQuery**.
-
 ---
 
 ### ⚡️ Início Rápido
