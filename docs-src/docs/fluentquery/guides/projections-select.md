@@ -56,13 +56,38 @@ var LResult := TFluentArray<TOrder>.From(LOrders)
 
 ### SelectMany with collection selector and result selector
 
+The two-selector overload first expands each source element into a sub-array (`ACollectionSelector`) and then combines each source element with each sub-element (`AResultSelector`):
+
 ```delphi
 // function SelectMany<TCollection, TResult>(
 //   const ACollectionSelector: TFunc<T, TArray<TCollection>>;
 //   const AResultSelector: TFunc<T, TCollection, TResult>): IFluentEnumerable<TResult>;
 ```
 
-<!-- TODO: confirm — add concrete example for SelectMany with result selector -->
+```delphi
+type
+  TOrder = record Id: Integer; Lines: TArray<string>; end;
+  TLineDetail = record OrderId: Integer; Line: string; end;
+
+var LOrders: TArray<TOrder>;
+// Assume LOrders is populated...
+
+var LResult := TFluentArray<TOrder>.From(LOrders)
+  .SelectMany<string, TLineDetail>(
+    // expand: one order → its lines
+    function(const O: TOrder): TArray<string>
+    begin
+      Result := O.Lines;
+    end,
+    // combine: (order, line) → TLineDetail
+    function(const O: TOrder; const Line: string): TLineDetail
+    begin
+      Result.OrderId := O.Id;
+      Result.Line    := Line;
+    end)
+  .ToArray;
+// Flat array of TLineDetail, one per order line
+```
 
 ## Append / Prepend
 

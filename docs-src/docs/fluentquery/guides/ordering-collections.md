@@ -85,13 +85,32 @@ var LResult := TFluentArray<TEmployee>.From(LEmployees)
 
 ## MinBy / MaxBy
 
-Return the element with the minimum or maximum key:
+Return the element with the minimum or maximum key. Both take a key selector and a raw comparator function (`TFunc<TKey, TKey, Integer>`):
 
 ```delphi
 // function MinBy<TKey>(
 //   const AKeySelector: TFunc<T, TKey>;
 //   const AComparer: TFunc<TKey, TKey, Integer>): T;
-// function MaxBy<TKey>(...)
+// function MaxBy<TKey>(
+//   const AKeySelector: TFunc<T, TKey>;
+//   const AComparer: TFunc<TKey, TKey, Integer>): T;
 ```
 
-<!-- TODO: confirm — add MinBy/MaxBy example when a concrete use-case is documented -->
+```delphi
+type TProduct = record Name: string; Price: Double; end;
+
+var LProducts: TArray<TProduct>;
+// Assume LProducts is populated...
+
+// Cheapest product
+var LCheapest := TFluentArray<TProduct>.From(LProducts)
+  .MinBy<Double>(
+    function(const P: TProduct): Double begin Result := P.Price end,
+    function(const A, B: Double): Integer begin Result := Sign(A - B) end);
+
+// Most expensive product
+var LMostExpensive := TFluentArray<TProduct>.From(LProducts)
+  .MaxBy<Double>(
+    function(const P: TProduct): Double begin Result := P.Price end,
+    function(const A, B: Double): Integer begin Result := Sign(A - B) end);
+```

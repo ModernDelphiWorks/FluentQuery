@@ -48,7 +48,7 @@ end;
 
 ## GroupJoin (left outer join / one-to-many)
 
-`GroupJoin` correlates an outer element with a group of matching inner elements:
+`GroupJoin` correlates an outer element with a group of matching inner elements. Every outer element appears in the result even when there are no matching inner elements (left-outer semantics). The `AResultSelector` receives the outer element and an `IFluentEnumerableAdapter<TInner>` containing the matched inner elements (call `.AsEnumerable` to iterate them):
 
 ```delphi
 // function GroupJoin<TInner, TKey, TResult>(
@@ -59,7 +59,39 @@ end;
 //     : IFluentEnumerable<TResult>;
 ```
 
-<!-- TODO: confirm — add GroupJoin example once a concrete use-case is documented -->
+```delphi
+type
+  TDepartment = record Id: Integer; Name: string; end;
+  TEmployee   = record DeptId: Integer; FullName: string; end;
+  TDeptSummary = record DeptName: string; EmployeeCount: Integer; end;
+
+var
+  LDepts: TArray<TDepartment>;
+  LEmps:  TArray<TEmployee>;
+  LResult: IFluentArray<TDeptSummary>;
+begin
+  // Assume LDepts and LEmps are populated...
+
+  LResult := TFluentArray<TDepartment>.From(LDepts)
+    .GroupJoin<TEmployee, Integer, TDeptSummary>(
+      TFluentArray<TEmployee>.From(LEmps),
+      function(const D: TDepartment): Integer begin Result := D.Id end,
+      function(const E: TEmployee):   Integer begin Result := E.DeptId end,
+      function(const D: TDepartment; const Group: IFluentEnumerableAdapter<TEmployee>): TDeptSummary
+      var
+        LCount: Integer;
+        LEmp: TEmployee;
+      begin
+        LCount := 0;
+        for LEmp in Group.AsEnumerable do
+          Inc(LCount);
+        Result.DeptName      := D.Name;
+        Result.EmployeeCount := LCount;
+      end)
+    .ToArray;
+  // Every department appears once; EmployeeCount is 0 when there are no matches
+end;
+```
 
 ## Zip
 

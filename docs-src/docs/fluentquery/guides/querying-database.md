@@ -140,4 +140,35 @@ Writeln(LSQL);
 
 `MSSQL`, `MySQL`, `Firebird`, `SQLite`, `Interbase`, `DB2`, `Oracle`, `Informix`, `PostgreSQL`, `ADS`, `ASA`, `AbsoluteDB`, `MongoDB`, `ElevateDB`, `NexusDB`.
 
-<!-- TODO: confirm — document DataEngine.FactoryInterfaces connection contract -->
+## DataEngine connection contract
+
+`IFluentQueryable<T>` requires an `IDBConnection` from `DataEngine.FactoryInterfaces`. The key members used internally are:
+
+| Member | Purpose |
+|---|---|
+| `CreateDataSet(ASQL)` | Opens a read-only result set for the given SQL string. |
+| `ExecuteDirect(ASQL)` | Runs a non-query statement (INSERT / UPDATE / DELETE). |
+| `StartTransaction` / `Commit` / `Rollback` | Transaction control (inherited from `IDBTransaction`). |
+| `IsConnected` | Guards against executing queries on a closed connection. |
+| `GetDriver: TDBEngineDriver` | Returns the engine enum used to select the correct FluentSQL dialect. |
+
+`TDBEngineDriver` is declared in `DataEngine.FactoryInterfaces`:
+
+```delphi
+TDBEngineDriver = (
+  dnMSSQL, dnMySQL, dnFirebird, dnSQLite, dnInterbase, dnDB2,
+  dnOracle, dnInformix, dnPostgreSQL, dnADS, dnASA,
+  dnFirebase, dnFirebird3, dnAbsoluteDB, dnMongoDB,
+  dnElevateDB, dnNexusDB, dnMariaDB, dnMemory
+);
+```
+
+`TConnectionInitializer` (used by `CreateForDatabase` with a procedure argument) is a procedure reference declared in `FluentQuery.Queryable`:
+
+```delphi
+TConnectionInitializer = reference to procedure(
+  var ADatabase:   TDBEngineDriver;
+  var AConnection: IDBConnection);
+```
+
+Pass your own `IDBConnection` implementation (e.g. from DataEngine's FireDAC or SQLite adapters) to either `CreateForDatabase` overload. `IFluentQueryable<T>` does not own the connection — lifetime management is the caller's responsibility.

@@ -54,7 +54,7 @@ Projects each element before grouping:
 
 ## GroupBy with result selector
 
-Projects each group to a result value:
+Projects each group directly to a result value. The `AResultSelector` receives the group key and an `IFluentEnumerableAdapter<T>` wrapping the group's elements (call `.AsEnumerable` to iterate them):
 
 ```delphi
 // function GroupBy<TKey, TResult>(
@@ -63,7 +63,34 @@ Projects each group to a result value:
 //     : IFluentEnumerable<TResult>;
 ```
 
-<!-- TODO: confirm — add concrete GroupBy with result selector example -->
+```delphi
+type
+  TProduct  = record Category: string; Price: Double; end;
+  TSummary  = record Category: string; TotalPrice: Double; end;
+
+var LProducts: TArray<TProduct>;
+// Assume LProducts is populated...
+
+var LResult := TFluentArray<TProduct>.From(LProducts)
+  .GroupBy<string, TSummary>(
+    function(const P: TProduct): string
+    begin
+      Result := P.Category;
+    end,
+    function(const Key: string; const Group: IFluentEnumerableAdapter<TProduct>): TSummary
+    var
+      LSum: Double;
+      LItem: TProduct;
+    begin
+      LSum := 0;
+      for LItem in Group.AsEnumerable do
+        LSum := LSum + LItem.Price;
+      Result.Category   := Key;
+      Result.TotalPrice := LSum;
+    end)
+  .ToArray;
+// Each TSummary holds the category name and the sum of prices in that group
+```
 
 ## Converting GroupBy output
 

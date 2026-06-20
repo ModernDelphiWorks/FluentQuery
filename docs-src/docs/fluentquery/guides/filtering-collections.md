@@ -90,7 +90,23 @@ Exclude elements whose key matches any key in a second sequence:
 //   const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
 ```
 
-<!-- TODO: confirm — add ExcludeBy example when a concrete use-case is available -->
+```delphi
+type TProduct = record Id: Integer; Name: string; end;
+
+var LBlocked := TFluentArray<Integer>.From([2, 5]);
+var LProducts: TArray<TProduct>;
+// Assume LProducts is populated...
+
+var LResult := TFluentArray<TProduct>.From(LProducts)
+  .ExcludeBy<Integer>(
+    LBlocked,
+    function(const P: TProduct): Integer
+    begin
+      Result := P.Id;
+    end)
+  .ToArray;
+// Yields every product whose Id is NOT in LBlocked
+```
 
 ## Contains
 
