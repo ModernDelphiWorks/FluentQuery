@@ -40,6 +40,10 @@ type
     [Test]
     procedure TestListToArray;
     [Test]
+    procedure TestListToArrayNonDestructive;
+    [Test]
+    procedure TestListFromDoesNotLeak;
+    [Test]
     procedure TestListToList;
     [Test]
     procedure TestListCount;
@@ -1307,6 +1311,37 @@ begin
   Assert.AreEqual(2, LArr.Length, 'Intersect with duplicate second: {2,3}');
   Assert.AreEqual(2, LArr[0], 'First is 2');
   Assert.AreEqual(3, LArr[1], 'Second is 3');
+end;
+
+// ToArray must be non-destructive (LINQ semantics): the source list stays intact.
+procedure TListTest.TestListToArrayNonDestructive;
+var
+  LList: IFluentList<Integer>;
+  LArr1, LArr2: IFluentArray<Integer>;
+begin
+  LList := TFluentList<Integer>.Create;
+  LList.AddRange([1, 2, 3]);
+  LArr1 := LList.ToArray;
+  LArr2 := LList.ToArray;
+  Assert.AreEqual(3, LArr1.Length, 'First ToArray must have 3 elements');
+  Assert.AreEqual(3, LArr2.Length, 'Second ToArray must still have 3 (non-destructive)');
+  Assert.AreEqual(3, LList.Count, 'Source list must be intact after ToArray');
+end;
+
+// TFluentList.From must not leak the wrapper (FastMM FullDebugMode fails on leak).
+procedure TListTest.TestListFromDoesNotLeak;
+var
+  LSrc: TList<Integer>;
+  LArr: IFluentArray<Integer>;
+begin
+  LSrc := TList<Integer>.Create;
+  try
+    LSrc.AddRange([1, 2, 3]);
+    LArr := TFluentList<Integer>.From(LSrc).ToArray;
+    Assert.AreEqual(3, LArr.Length, 'From must enumerate all elements');
+  finally
+    LSrc.Free;
+  end;
 end;
 
 initialization
