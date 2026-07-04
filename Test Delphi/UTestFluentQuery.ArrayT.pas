@@ -34,6 +34,8 @@ type
     [Test]
     procedure TestArrayToArray;
     [Test]
+    procedure TestArrayFromDoesNotLeak;
+    [Test]
     procedure TestArrayToList;
     [Test]
     procedure TestArrayCount;
@@ -1134,6 +1136,15 @@ begin
   finally
     LDict.Free;
   end;
+end;
+
+// TFluentArray.From must not leak the wrapper (FastMM FullDebugMode fails on leak).
+procedure TArrayTest.TestArrayFromDoesNotLeak;
+var
+  LArr: IFluentArray<Integer>;
+begin
+  LArr := TFluentArray<Integer>.From(TArray<Integer>.Create(1, 2, 3)).ToArray;
+  Assert.AreEqual(3, LArr.Length, 'From must enumerate all elements');
 end;
 
 initialization
