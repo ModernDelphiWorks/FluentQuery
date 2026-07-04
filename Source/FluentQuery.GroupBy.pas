@@ -245,7 +245,6 @@ begin
       FGroups.Add(FKeySelector(LItem), TList<T>.Create);
       FGroups[FKeySelector(LItem)].Add(LItem);
     end;
-    WriteLn('Adicionado item ao grupo com Key: ' + TValue.From<TKey>(FKeySelector(LItem)).ToString);
   end;
   FEnumerator := FGroups.GetEnumerator;
 end;
@@ -273,7 +272,6 @@ begin
   if FEnumerator.MoveNext then
   begin
     LPair := FEnumerator.Current;
-    WriteLn('Grupo Key: ' + TValue.From<TKey>(LPair.Key).ToString + ', Item Count: ' + LPair.Value.Count.ToString);
     FCurrent := TFluentGrouping<TKey, T>.Create(
       LPair.Key,
       IFluentEnumerable<T>.Create(

@@ -62,6 +62,8 @@ type
     [Test]
     procedure TestArrayOrderBy;
     [Test]
+    procedure TestArrayOrderByKeepsDefaultValues;
+    [Test]
     procedure TestArrayLongCount;
     [Test]
     procedure TestArrayMap;
@@ -369,6 +371,28 @@ begin
   Assert.AreEqual(5, LArray.Length, 'Ordered array should have 5 elements');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
   Assert.AreEqual(5, LArray[4], 'Last element should be 5');
+end;
+
+// Regression: OrderBy must NOT drop elements equal to Default(T) (e.g. 0).
+// Before the fix, ordering [3,0,1,0,2] returned [1,2,3] (both zeros lost).
+procedure TArrayTest.TestArrayOrderByKeepsDefaultValues;
+var
+  LOrdered: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  FArray.SetItems([3, 0, 1, 0, 2]);
+  LOrdered := FArray.AsEnumerable.OrderBy(
+    function(A, B: Integer): Integer
+    begin
+      Result := A - B;
+    end);
+  LArray := LOrdered.ToArray;
+  Assert.AreEqual(5, LArray.Length, 'OrderBy must preserve all elements, including zeros');
+  Assert.AreEqual(0, LArray[0], 'First element should be 0');
+  Assert.AreEqual(0, LArray[1], 'Second element should be 0 (both zeros preserved)');
+  Assert.AreEqual(1, LArray[2], 'Third element should be 1');
+  Assert.AreEqual(2, LArray[3], 'Fourth element should be 2');
+  Assert.AreEqual(3, LArray[4], 'Fifth element should be 3');
 end;
 
 procedure TArrayTest.TestArrayLongCount;
