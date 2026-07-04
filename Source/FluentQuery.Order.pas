@@ -49,12 +49,16 @@ begin
 end;
 
 function TFluentOrderEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+var
+  LComparers: TArray<TFunc<T, T, Integer>>;
 begin
-  Result := TFluentOrderByEnumerator<T>.Create(FSource.GetEnumerator,
+  SetLength(LComparers, 1);
+  LComparers[0] :=
     function(A, B: T): Integer
     begin
       Result := FComparer.Compare(A, B);
-    end);
+    end;
+  Result := TFluentOrderByEnumerator<T>.Create(FSource.GetEnumerator, LComparers);
 end;
 
 end.

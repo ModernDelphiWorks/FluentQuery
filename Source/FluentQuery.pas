@@ -54,12 +54,27 @@ type
     function GetEnumerator: IFluentEnumerator<T>; virtual; abstract;
   end;
 
+  // Ordered enumerable produced by OrderBy/OrderByDescending/Order/OrderDescending.
+  // Carries the ordered chain of comparison criteria so that ThenBy/ThenByDescending
+  // can append a subordinate criterion (primary key stays dominant), mirroring
+  // C#'s IOrderedEnumerable<T>. Kept as an ARC interface so the criteria chain lives
+  // in a managed object, never in a record temporary.
+  IFluentOrderedEnumerable<T> = interface(IFluentEnumerableBase<T>)
+    ['{7E2C1A44-9B3D-4F6E-8A21-3C5D9E0F1B22}']
+    function ThenByAppend(const AComparer: TFunc<T, T, Integer>): IFluentOrderedEnumerable<T>;
+  end;
+
   IFluentEnumerable<T> = record
   private
     FEnumerator: IFluentEnumerableBase<T>;
     FFluentType: TFluentType;
     FComparer: IEqualityComparer<T>;
     FIsValid: Boolean;
+    // Non-nil only when this record was produced by an ordering operator
+    // (OrderBy/OrderByDescending/Order/OrderDescending). ThenBy/ThenByDescending
+    // read it to append a subordinate criterion. Managed (ARC) field, so it
+    // survives record copies/temporaries. See IFluentOrderedEnumerable<T>.
+    FOrdered: IFluentOrderedEnumerable<T>;
     type
       TFluentCompare = class
       public
@@ -442,6 +457,7 @@ begin
   if FComparer = nil then
     FComparer := TEqualityComparer<T>.Default;
   FIsValid := True;
+  FOrdered := nil;
 end;
 
 function IFluentEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
@@ -477,60 +493,65 @@ begin
 end;
 
 function IFluentEnumerable<T>.OrderBy(const AComparer: TFunc<T, T, Integer>): IFluentEnumerable<T>;
+var
+  LOrdered: IFluentOrderedEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentOrderByEnumerable<T>.Create(FEnumerator, AComparer),
-    FFluentType,
-    FComparer
-  );
+  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, AComparer);
+  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result.FOrdered := LOrdered;
 end;
 
 function IFluentEnumerable<T>.OrderBy<TKey>(const AKeySelector: TFunc<T, TKey>;
   const AComparer: IComparer<TKey>): IFluentEnumerable<T>;
+var
+  LOrdered: IFluentOrderedEnumerable<T>;
+  LFunc: TFunc<T, T, Integer>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   if not Assigned(AComparer) then
     raise EArgumentNilException.Create('Comparer cannot be nil');
-  Result := IFluentEnumerable<T>.Create(
-    TFluentOrderByEnumerable<T>.Create(FEnumerator,
-      function(A, B: T): Integer
-      begin
-        Result := AComparer.Compare(AKeySelector(A), AKeySelector(B));
-      end),
-    FFluentType,
-    FComparer
-  );
+  LFunc :=
+    function(A, B: T): Integer
+    begin
+      Result := AComparer.Compare(AKeySelector(A), AKeySelector(B));
+    end;
+  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result.FOrdered := LOrdered;
 end;
 
 function IFluentEnumerable<T>.OrderByDesc(const AComparer: TFunc<T, T, Integer>): IFluentEnumerable<T>;
+var
+  LOrdered: IFluentOrderedEnumerable<T>;
+  LFunc: TFunc<T, T, Integer>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentOrderByEnumerable<T>.Create(FEnumerator,
-      function(A, B: T): Integer
-      begin
-        Result := -AComparer(A, B);
-      end),
-    FFluentType,
-    FComparer
-  );
+  LFunc :=
+    function(A, B: T): Integer
+    begin
+      Result := -AComparer(A, B);
+    end;
+  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result.FOrdered := LOrdered;
 end;
 
 function IFluentEnumerable<T>.OrderDescending(const AComparer: IComparer<T>): IFluentEnumerable<T>;
+var
+  LOrdered: IFluentOrderedEnumerable<T>;
+  LFunc: TFunc<T, T, Integer>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentOrderEnumerable<T>.Create(FEnumerator,
-      TComparer<T>.Construct(
-        function(const Left, Right: T): Integer
-        begin
-          if AComparer = nil then
-            Result := -TComparer<T>.Default.Compare(Left, Right)
-          else
-            Result := -AComparer.Compare(Left, Right);
-        end)),
-    FFluentType,
-    FComparer
-  );
+  LFunc :=
+    function(A, B: T): Integer
+    begin
+      if AComparer = nil then
+        Result := -TComparer<T>.Default.Compare(A, B)
+      else
+        Result := -AComparer.Compare(A, B);
+    end;
+  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result.FOrdered := LOrdered;
 end;
 
 function IFluentEnumerable<T>.OrderDescending: IFluentEnumerable<T>;
@@ -2166,25 +2187,41 @@ begin
 end;
 
 function IFluentEnumerable<T>.ThenBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+var
+  LOrdered: IFluentOrderedEnumerable<T>;
+  LFunc: TFunc<T, T, Integer>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  Result := IFluentEnumerable<T>.Create(
-    TFluentThenByEnumerable<TKey, T>.Create(FEnumerator, AKeySelector, False, nil),
-    FFluentType,
-    FComparer
-  );
+  if FOrdered = nil then
+    raise EInvalidOperation.Create('ThenBy must be called directly after OrderBy, OrderByDescending, Order or OrderDescending');
+  LFunc :=
+    function(A, B: T): Integer
+    begin
+      Result := TComparer<TKey>.Default.Compare(AKeySelector(A), AKeySelector(B));
+    end;
+  LOrdered := FOrdered.ThenByAppend(LFunc);
+  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result.FOrdered := LOrdered;
 end;
 
 function IFluentEnumerable<T>.ThenByDescending<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+var
+  LOrdered: IFluentOrderedEnumerable<T>;
+  LFunc: TFunc<T, T, Integer>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  Result := IFluentEnumerable<T>.Create(
-    TFluentThenByEnumerable<TKey, T>.Create(FEnumerator, AKeySelector, True, nil),
-    FFluentType,
-    FComparer
-  );
+  if FOrdered = nil then
+    raise EInvalidOperation.Create('ThenByDescending must be called directly after OrderBy, OrderByDescending, Order or OrderDescending');
+  LFunc :=
+    function(A, B: T): Integer
+    begin
+      Result := -TComparer<TKey>.Default.Compare(AKeySelector(A), AKeySelector(B));
+    end;
+  LOrdered := FOrdered.ThenByAppend(LFunc);
+  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result.FOrdered := LOrdered;
 end;
 
 function IFluentEnumerable<T>.UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
@@ -2924,12 +2961,21 @@ begin
 end;
 
 function IFluentEnumerable<T>.Order(const AComparer: IComparer<T>): IFluentEnumerable<T>;
+var
+  LOrdered: IFluentOrderedEnumerable<T>;
+  LFunc: TFunc<T, T, Integer>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentOrderEnumerable<T>.Create(FEnumerator, AComparer),
-    FFluentType,
-    FComparer
-  );
+  LFunc :=
+    function(A, B: T): Integer
+    begin
+      if AComparer = nil then
+        Result := TComparer<T>.Default.Compare(A, B)
+      else
+        Result := AComparer.Compare(A, B);
+    end;
+  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result.FOrdered := LOrdered;
 end;
 
 function IFluentEnumerable<T>.Order: IFluentEnumerable<T>;

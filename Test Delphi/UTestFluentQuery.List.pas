@@ -23,6 +23,12 @@ type
     function Descount: Double;
   end;
 
+  TOrderRec = record
+    K1: Integer;
+    K2: Integer;
+    Seq: Integer;
+  end;
+
   TListTest = class
   private
     FList: IFluentList<Integer>;
@@ -61,6 +67,12 @@ type
     procedure TestListSkip;
     [Test]
     procedure TestListOrderBy;
+    [Test]
+    procedure TestListOrderByThenBy;
+    [Test]
+    procedure TestListOrderByThenByDescending;
+    [Test]
+    procedure TestListThenByWithoutOrderByRaises;
     [Test]
     procedure TestListLongCount;
     [Test]
@@ -1162,6 +1174,99 @@ begin
   finally
     LDict.Free;
   end;
+end;
+
+function MakeOrderRec(AK1, AK2, ASeq: Integer): TOrderRec;
+begin
+  Result.K1 := AK1;
+  Result.K2 := AK2;
+  Result.Seq := ASeq;
+end;
+
+// C2 regression: OrderBy(K1).ThenBy(K2) must sort by (K1,K2) with K1 dominant,
+// K2 only breaking ties, and be STABLE (equal (K1,K2) keep input order via Seq).
+// Buggy code re-sorted by K2 alone, destroying the primary order.
+procedure TListTest.TestListOrderByThenBy;
+var
+  LList: IFluentList<TOrderRec>;
+  LArr: IFluentArray<TOrderRec>;
+begin
+  LList := TFluentList<TOrderRec>.Create;
+  LList.Add(MakeOrderRec(2, 1, 0));
+  LList.Add(MakeOrderRec(1, 2, 1));
+  LList.Add(MakeOrderRec(1, 1, 2));
+  LList.Add(MakeOrderRec(2, 1, 3));
+  LList.Add(MakeOrderRec(1, 2, 4));
+  LArr := LList.AsEnumerable
+    .OrderBy(
+      function(A, B: TOrderRec): Integer
+      begin
+        Result := A.K1 - B.K1;
+      end)
+    .ThenBy<Integer>(
+      function(X: TOrderRec): Integer
+      begin
+        Result := X.K2;
+      end)
+    .ToArray;
+  Assert.AreEqual(5, LArr.Length, 'All 5 elements must be preserved');
+  // Expected (K1,K2) order with stable Seq tie-break: 2,1,4,0,3
+  Assert.AreEqual(2, LArr[0].Seq, 'pos0 K1=1 K2=1 seq 2');
+  Assert.AreEqual(1, LArr[1].Seq, 'pos1 K1=1 K2=2 seq 1 stable before 4');
+  Assert.AreEqual(4, LArr[2].Seq, 'pos2 K1=1 K2=2 seq 4');
+  Assert.AreEqual(0, LArr[3].Seq, 'pos3 K1=2 K2=1 seq 0 stable before 3');
+  Assert.AreEqual(3, LArr[4].Seq, 'pos4 K1=2 K2=1 seq 3');
+end;
+
+procedure TListTest.TestListOrderByThenByDescending;
+var
+  LList: IFluentList<TOrderRec>;
+  LArr: IFluentArray<TOrderRec>;
+begin
+  LList := TFluentList<TOrderRec>.Create;
+  LList.Add(MakeOrderRec(2, 1, 0));
+  LList.Add(MakeOrderRec(1, 2, 1));
+  LList.Add(MakeOrderRec(1, 1, 2));
+  LList.Add(MakeOrderRec(2, 1, 3));
+  LList.Add(MakeOrderRec(1, 2, 4));
+  LArr := LList.AsEnumerable
+    .OrderBy(
+      function(A, B: TOrderRec): Integer
+      begin
+        Result := A.K1 - B.K1;
+      end)
+    .ThenByDescending<Integer>(
+      function(X: TOrderRec): Integer
+      begin
+        Result := X.K2;
+      end)
+    .ToArray;
+  Assert.AreEqual(5, LArr.Length, 'All 5 elements must be preserved');
+  // K1 asc, K2 desc within group, stable on ties: 1,4,2,0,3
+  Assert.AreEqual(1, LArr[0].Seq, 'pos0 K1=1 K2=2 seq 1');
+  Assert.AreEqual(4, LArr[1].Seq, 'pos1 K1=1 K2=2 seq 4');
+  Assert.AreEqual(2, LArr[2].Seq, 'pos2 K1=1 K2=1 seq 2');
+  Assert.AreEqual(0, LArr[3].Seq, 'pos3 K1=2 K2=1 seq 0');
+  Assert.AreEqual(3, LArr[4].Seq, 'pos4 K1=2 K2=1 seq 3');
+end;
+
+// ThenBy is only valid directly after an ordering operator (IOrderedEnumerable).
+procedure TListTest.TestListThenByWithoutOrderByRaises;
+var
+  LList: IFluentList<TOrderRec>;
+begin
+  LList := TFluentList<TOrderRec>.Create;
+  LList.Add(MakeOrderRec(1, 1, 0));
+  Assert.WillRaise(
+    procedure
+    begin
+      LList.AsEnumerable.ThenBy<Integer>(
+        function(X: TOrderRec): Integer
+        begin
+          Result := X.K2;
+        end).ToArray;
+    end,
+    EInvalidOperation);
 end;
 
 initialization
