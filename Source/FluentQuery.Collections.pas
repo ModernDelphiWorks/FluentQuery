@@ -262,18 +262,27 @@ begin
 end;
 
 class function TFluentArray<T>.From(const AArray: TArray<T>): IFluentEnumerable<T>;
+var
+  LWrapper: IFluentArray<T>;
 begin
-  Result := TFluentArray<T>.Create(AArray).GetEnumerable;
+  // Hold the wrapper in an interface variable so ARC frees it. Without this the
+  // TFluentArray instance is never assigned to an interface (refcount 0) and
+  // leaks. GetEnumerable's adapter keeps its own copy of the data, so the
+  // returned enumerable stays valid after the wrapper is released.
+  LWrapper := TFluentArray<T>.Create(AArray);
+  Result := LWrapper.AsEnumerable;
 end;
 
 class function TFluentArray<T>.From(const AList: TList<T>): IFluentEnumerable<T>;
 var
   LArray: TArray<T>;
+  LWrapper: IFluentArray<T>;
 begin
   if AList = nil then
     raise EArgumentNilException.Create('AList cannot be nil');
   LArray := AList.ToArray;
-  Result := TFluentArray<T>.Create(LArray, True).GetEnumerable;
+  LWrapper := TFluentArray<T>.Create(LArray, True);
+  Result := LWrapper.AsEnumerable;
 end;
 
 class function TFluentArray.From<T>(const AArray: array of T): IFluentEnumerable<T>;
@@ -725,9 +734,10 @@ function TFluentList<T>.ToArray: IFluentArray<T>;
 var
   LArray: TArray<T>;
 begin
+  // Non-destructive, like LINQ's ToArray: copy the elements, leave the source
+  // list intact so the same list can be queried again.
   LArray := Copy(FList.List, 0, FList.Count);
   Result := TFluentArray<T>.Create(LArray, True);
-  FList.Clear;
 end;
 
 function TFluentList<T>.AsEnumerable: IFluentEnumerable<T>;
@@ -750,8 +760,15 @@ begin
 end;
 
 class function TFluentList<T>.From(const AList: TList<T>): IFluentEnumerable<T>;
+var
+  LWrapper: IFluentList<T>;
 begin
-  Result := TFluentList<T>.Create(AList).GetEnumerable;
+  // Hold the wrapper in an interface variable so ARC frees it (otherwise the
+  // TFluentList instance leaks with refcount 0). It does not own AList
+  // (AOwnsList=False), so releasing the wrapper leaves the caller's list — and
+  // therefore the adapter that references it — valid.
+  LWrapper := TFluentList<T>.Create(AList);
+  Result := LWrapper.AsEnumerable;
 end;
 
 class function TFluentList<T>.From(const AArray: TArray<T>): IFluentEnumerable<T>;
