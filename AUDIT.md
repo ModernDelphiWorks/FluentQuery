@@ -164,7 +164,7 @@ IFluentEnumerable<R>  { FEnumerator = nó Select → nó Where → adapter → T
 1. **Correções críticas** — C1 (OrderBy), C2 (ThenBy), C3 (WriteLn) + testes que os provam. *Baixo risco, altíssimo valor.*
 2. **Memória** — leak dos `From`, `ToArray/ToList` não-destrutivo, `Intersect.Reset` (A1), mutação do dict no GroupBy (A2).
 3. **Performance** — set-ops O(n²)→O(n), `Join` com lookup por chave, `Sum` Int64.
-4. **Paridade semântica** — nullable Sum/Average, Except distinct, estabilidade de ordenação, overloads de `IEqualityComparer`/`IComparer`, execução diferida, `OfType`/`Cast` idiomáticos. *(guiado pela referência de semântica LINQ do C#.)*
+4. **Paridade semântica** — nullable Sum/Average, Except distinct, estabilidade de ordenação, overloads de `IEqualityComparer`/`IComparer`, execução diferida, `OfType`/`Cast` idiomáticos. *(guiado por [`LINQ-PARITY.md`](./LINQ-PARITY.md) — referência de semântica LINQ do C# ancorada em fontes oficiais da Microsoft.)*
 5. **Infra de testes** — workflow CI (Windows/DUnitX), desacoplar CQL do Firebird (SQL-string vs execução; caminho relativo; credenciais por env), edge cases de coleção vazia, testes de laziness reais.
 6. **Operadores faltantes** — `Chunk`, geradores `Range`/`Repeat`/`Empty`.
 7. **Higiene** — licença única, remover código morto, decisão sobre JSON/XML, deps opcionais no manifesto, popular `boss-lock`, ampliar plataformas.
