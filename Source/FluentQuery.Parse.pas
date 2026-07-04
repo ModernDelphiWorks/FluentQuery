@@ -266,7 +266,6 @@ begin
               raise EInvalidOperation.Create('Field at index ' + IntToStr(LFor) + ' is nil');
 
             LKeys[LFor] := Trim(LField.FieldName);
-            WriteLn('Campo: ', LField.FieldName, ' -> Normalizado: ', LKeys[LFor]);
 
             case LField.DataType of
               ftString, ftWideString:
@@ -282,7 +281,6 @@ begin
             else
               raise EInvalidCast.Create('Unsupported field type: ' + GetEnumName(TypeInfo(TFieldType), Ord(LField.DataType)));
             end;
-            WriteLn('Valor do campo ', LKeys[LFor], ': ', LValues[LFor].ToString);
           end;
           LTuple := TTuple<string>.New(LKeys, LValues);
           LValue := TValue.From(LTuple);

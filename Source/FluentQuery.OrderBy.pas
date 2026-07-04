@@ -91,10 +91,7 @@ var
 begin
   LList := TFluentList<T>.Create;
   while ASource.MoveNext do
-  begin
-    if not TEqualityComparer<T>.Default.Equals(ASource.Current, Default(T)) then
-      LList.Add(ASource.Current);
-  end;
+    LList.Add(ASource.Current);
   FItems := LList.ToArray.ArrayData;
   TArray.Sort<T>(FItems, TComparer<T>.Construct(
     function(const Left, Right: T): Integer
