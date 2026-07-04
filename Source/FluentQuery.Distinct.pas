@@ -40,7 +40,7 @@ type
   TFluentDistinctEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
   private
     FSource: IFluentEnumerator<T>;
-    FSet: TList<T>;
+    FSet: TDictionary<T, Byte>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     function Contains(const AValue: T): Boolean;
@@ -69,7 +69,7 @@ type
   TFluentDistinctQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
   private
     FSource: IFluentEnumerator<T>;
-    FSet: TList<T>;
+    FSet: TDictionary<T, Byte>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     function Contains(const AValue: T): Boolean;
@@ -112,7 +112,7 @@ constructor TFluentDistinctEnumerator<T>.Create(
 begin
   FSource := ASource;
   FComparer := AComparer;
-  FSet := TList<T>.Create;
+  FSet := TDictionary<T, Byte>.Create(FComparer);
 end;
 
 destructor TFluentDistinctEnumerator<T>.Destroy;
@@ -122,13 +122,9 @@ begin
 end;
 
 function TFluentDistinctEnumerator<T>.Contains(const AValue: T): Boolean;
-var
-  LItem: T;
 begin
-  for LItem in FSet do
-    if FComparer.Equals(LItem, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup instead of an O(n) linear scan.
+  Result := FSet.ContainsKey(AValue);
 end;
 
 function TFluentDistinctEnumerator<T>.GetCurrent: T;
@@ -143,7 +139,7 @@ begin
     FCurrent := FSource.Current;
     if not Contains(FCurrent) then
     begin
-      FSet.Add(FCurrent);
+      FSet.Add(FCurrent, 0);
       Result := True;
       Exit;
     end;
@@ -189,7 +185,7 @@ constructor TFluentDistinctQueryableEnumerator<T>.Create(
 begin
   FSource := ASource;
   FComparer := AComparer;
-  FSet := TList<T>.Create;
+  FSet := TDictionary<T, Byte>.Create(FComparer);
 end;
 
 destructor TFluentDistinctQueryableEnumerator<T>.Destroy;
@@ -199,13 +195,9 @@ begin
 end;
 
 function TFluentDistinctQueryableEnumerator<T>.Contains(const AValue: T): Boolean;
-var
-  LItem: T;
 begin
-  for LItem in FSet do
-    if FComparer.Equals(LItem, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup instead of an O(n) linear scan.
+  Result := FSet.ContainsKey(AValue);
 end;
 
 function TFluentDistinctQueryableEnumerator<T>.GetCurrent: T;
@@ -220,7 +212,7 @@ begin
     FCurrent := FSource.Current;
     if not Contains(FCurrent) then
     begin
-      FSet.Add(FCurrent);
+      FSet.Add(FCurrent, 0);
       Result := True;
       Exit;
     end;

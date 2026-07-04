@@ -113,7 +113,9 @@ begin
   FComparer := AComparer;
   FSecond := TDictionary<T, Boolean>.Create(FComparer);
   while ASecond.MoveNext do
-    FSecond.Add(ASecond.Current, True);
+    // AddOrSetValue (not Add) so a second sequence containing duplicates does
+    // not raise EListError — the dictionary is a set, duplicates are a no-op.
+    FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
 destructor TFluentExcludeEnumerator<T>.Destroy;
@@ -128,13 +130,9 @@ begin
 end;
 
 function TFluentExcludeEnumerator<T>.ContainsValue(const AValue: T): Boolean;
-var
-  LKey: T;
 begin
-  for LKey in FSecond.Keys do
-    if FComparer.Equals(LKey, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup — the dictionary was already built with FComparer.
+  Result := FSecond.ContainsKey(AValue);
 end;
 
 function TFluentExcludeEnumerator<T>.MoveNext: Boolean;
@@ -188,7 +186,9 @@ begin
   FComparer := AComparer;
   FSecond := TDictionary<T, Boolean>.Create(FComparer);
   while ASecond.MoveNext do
-    FSecond.Add(ASecond.Current, True);
+    // AddOrSetValue (not Add) so a second sequence containing duplicates does
+    // not raise EListError — the dictionary is a set, duplicates are a no-op.
+    FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
 destructor TFluentExcludeQueryableEnumerator<T>.Destroy;
@@ -203,13 +203,9 @@ begin
 end;
 
 function TFluentExcludeQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
-var
-  LKey: T;
 begin
-  for LKey in FSecond.Keys do
-    if FComparer.Equals(LKey, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup — the dictionary was already built with FComparer.
+  Result := FSecond.ContainsKey(AValue);
 end;
 
 function TFluentExcludeQueryableEnumerator<T>.MoveNext: Boolean;

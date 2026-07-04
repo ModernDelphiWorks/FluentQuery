@@ -122,6 +122,10 @@ type
     [Test]
     procedure TestListIntersect;
     [Test]
+    procedure TestListIntersectDistinct;
+    [Test]
+    procedure TestListIntersectSecondWithDuplicates;
+    [Test]
     procedure TestListUnion;
     [Test]
     procedure TestListConcat;
@@ -1267,6 +1271,42 @@ begin
         end).ToArray;
     end,
     EInvalidOperation);
+end;
+
+// Intersect returns DISTINCT elements present in both sequences. The enumerator
+// now tracks emitted items (FEmitted) instead of draining FSecond, so duplicates
+// in the source collapse to a single result and the second set stays intact.
+procedure TListTest.TestListIntersectDistinct;
+var
+  L1, L2: IFluentList<Integer>;
+  LArr: IFluentArray<Integer>;
+begin
+  L1 := TFluentList<Integer>.Create;
+  L1.AddRange([1, 1, 2, 3, 2]);
+  L2 := TFluentList<Integer>.Create;
+  L2.AddRange([1, 2]);
+  LArr := L1.AsEnumerable.Intersect(L2.AsEnumerable).ToArray;
+  Assert.AreEqual(2, LArr.Length, 'Intersect must be distinct: {1,2}');
+  Assert.AreEqual(1, LArr[0], 'First distinct element is 1');
+  Assert.AreEqual(2, LArr[1], 'Second distinct element is 2');
+end;
+
+// Regression: a second sequence with duplicates must not crash the Intersect
+// enumerator. Building FSecond now uses AddOrSetValue instead of Add (which
+// raised EListError on a duplicate key).
+procedure TListTest.TestListIntersectSecondWithDuplicates;
+var
+  L1, L2: IFluentList<Integer>;
+  LArr: IFluentArray<Integer>;
+begin
+  L1 := TFluentList<Integer>.Create;
+  L1.AddRange([1, 2, 3]);
+  L2 := TFluentList<Integer>.Create;
+  L2.AddRange([2, 2, 3, 3]);
+  LArr := L1.AsEnumerable.Intersect(L2.AsEnumerable).ToArray;
+  Assert.AreEqual(2, LArr.Length, 'Intersect with duplicate second: {2,3}');
+  Assert.AreEqual(2, LArr[0], 'First is 2');
+  Assert.AreEqual(3, LArr[1], 'Second is 3');
 end;
 
 initialization

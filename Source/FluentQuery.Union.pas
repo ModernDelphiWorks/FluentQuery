@@ -132,13 +132,9 @@ begin
 end;
 
 function TFluentUnionEnumerator<T>.ContainsValue(const AValue: T): Boolean;
-var
-  LKey: T;
 begin
-  for LKey in FSet.Keys do
-    if FComparer.Equals(LKey, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup — the dictionary was already built with FComparer.
+  Result := FSet.ContainsKey(AValue);
 end;
 
 function TFluentUnionEnumerator<T>.MoveNext: Boolean;
@@ -230,13 +226,9 @@ begin
 end;
 
 function TFluentUnionQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
-var
-  LKey: T;
 begin
-  for LKey in FSet.Keys do
-    if FComparer.Equals(LKey, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup — the dictionary was already built with FComparer.
+  Result := FSet.ContainsKey(AValue);
 end;
 
 function TFluentUnionQueryableEnumerator<T>.MoveNext: Boolean;
