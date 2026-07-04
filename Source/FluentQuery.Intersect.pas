@@ -43,6 +43,7 @@ type
   private
     FSource: IFluentEnumerator<T>;
     FSecond: TDictionary<T, Boolean>;
+    FEmitted: TDictionary<T, Boolean>;
     FCurrent: T;
     FComparer: IEqualityComparer<T>;
     function ContainsValue(const AValue: T): Boolean;
@@ -73,6 +74,7 @@ type
   private
     FSource: IFluentEnumerator<T>;
     FSecond: TDictionary<T, Boolean>;
+    FEmitted: TDictionary<T, Boolean>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     function _ContainsValue(const AValue: T): Boolean;
@@ -112,13 +114,19 @@ begin
   FSource := ASource;
   FComparer := AComparer;
   FSecond := TDictionary<T, Boolean>.Create(FComparer);
+  // Track already-emitted items so results stay distinct WITHOUT draining
+  // FSecond (the old code removed matched keys from FSecond, which broke Reset).
+  FEmitted := TDictionary<T, Boolean>.Create(FComparer);
   while ASecond.MoveNext do
-    FSecond.Add(ASecond.Current, True);
+    // AddOrSetValue (not Add) so a second sequence containing duplicates does
+    // not raise EListError — the dictionary is a set, duplicates are a no-op.
+    FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
 destructor TFluentIntersectEnumerator<T>.Destroy;
 begin
   FSecond.Free;
+  FEmitted.Free;
   inherited;
 end;
 
@@ -128,13 +136,9 @@ begin
 end;
 
 function TFluentIntersectEnumerator<T>.ContainsValue(const AValue: T): Boolean;
-var
-  LKey: T;
 begin
-  for LKey in FSecond.Keys do
-    if FComparer.Equals(LKey, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup — the dictionary was already built with FComparer.
+  Result := FSecond.ContainsKey(AValue);
 end;
 
 function TFluentIntersectEnumerator<T>.MoveNext: Boolean;
@@ -142,9 +146,9 @@ begin
   while FSource.MoveNext do
   begin
     FCurrent := FSource.Current;
-    if ContainsValue(FCurrent) then
+    if ContainsValue(FCurrent) and not FEmitted.ContainsKey(FCurrent) then
     begin
-      FSecond.Remove(FCurrent);
+      FEmitted.Add(FCurrent, True);
       Result := True;
       Exit;
     end;
@@ -155,6 +159,7 @@ end;
 procedure TFluentIntersectEnumerator<T>.Reset;
 begin
   FSource.Reset;
+  FEmitted.Clear;
 end;
 
 {$IFDEF QUERYABLE}
@@ -188,13 +193,19 @@ begin
   FSource := ASource;
   FComparer := AComparer;
   FSecond := TDictionary<T, Boolean>.Create(FComparer);
+  // Track already-emitted items so results stay distinct WITHOUT draining
+  // FSecond (the old code removed matched keys from FSecond, which broke Reset).
+  FEmitted := TDictionary<T, Boolean>.Create(FComparer);
   while ASecond.MoveNext do
-    FSecond.Add(ASecond.Current, True);
+    // AddOrSetValue (not Add) so a second sequence containing duplicates does
+    // not raise EListError — the dictionary is a set, duplicates are a no-op.
+    FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
 destructor TFluentIntersectQueryableEnumerator<T>.Destroy;
 begin
   FSecond.Free;
+  FEmitted.Free;
   inherited;
 end;
 
@@ -204,13 +215,9 @@ begin
 end;
 
 function TFluentIntersectQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
-var
-  LKey: T;
 begin
-  for LKey in FSecond.Keys do
-    if FComparer.Equals(LKey, AValue) then
-      Exit(True);
-  Result := False;
+  // O(1) hash lookup — the dictionary was already built with FComparer.
+  Result := FSecond.ContainsKey(AValue);
 end;
 
 function TFluentIntersectQueryableEnumerator<T>.MoveNext: Boolean;
@@ -218,9 +225,9 @@ begin
   while FSource.MoveNext do
   begin
     FCurrent := FSource.Current;
-    if _ContainsValue(FCurrent) then
+    if _ContainsValue(FCurrent) and not FEmitted.ContainsKey(FCurrent) then
     begin
-      FSecond.Remove(FCurrent);
+      FEmitted.Add(FCurrent, True);
       Result := True;
       Exit;
     end;
@@ -231,6 +238,7 @@ end;
 procedure TFluentIntersectQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
+  FEmitted.Clear;
 end;
 {$ENDIF}
 
