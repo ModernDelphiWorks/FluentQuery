@@ -28,24 +28,24 @@ type
   // LINQ DefaultIfEmpty: deferred/streaming — yields the source unchanged, or a
   // single default value if the source is empty. Nothing runs until enumeration
   // (no materialization at construction).
-  TFluentDefaultIfEmptyEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoDefaultIfEmptyEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FDefault: T;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ADefault: T);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ADefault: T);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentDefaultIfEmptyEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoDefaultIfEmptyEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FDefault: T;
     FCurrent: T;
     FYieldedAny: Boolean;
     FDefaultYielded: Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ADefault: T);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ADefault: T);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -54,22 +54,22 @@ type
 
 implementation
 
-{ TFluentDefaultIfEmptyEnumerable<T> }
+{ TLQColligoDefaultIfEmptyEnumerable<T> }
 
-constructor TFluentDefaultIfEmptyEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const ADefault: T);
+constructor TLQColligoDefaultIfEmptyEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const ADefault: T);
 begin
   FSource := ASource;
   FDefault := ADefault;
 end;
 
-function TFluentDefaultIfEmptyEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoDefaultIfEmptyEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentDefaultIfEmptyEnumerator<T>.Create(FSource.GetEnumerator, FDefault);
+  Result := TLQColligoDefaultIfEmptyEnumerator<T>.Create(FSource.GetEnumerator, FDefault);
 end;
 
-{ TFluentDefaultIfEmptyEnumerator<T> }
+{ TLQColligoDefaultIfEmptyEnumerator<T> }
 
-constructor TFluentDefaultIfEmptyEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const ADefault: T);
+constructor TLQColligoDefaultIfEmptyEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const ADefault: T);
 begin
   FSource := ASource;
   FDefault := ADefault;
@@ -77,12 +77,12 @@ begin
   FDefaultYielded := False;
 end;
 
-function TFluentDefaultIfEmptyEnumerator<T>.GetCurrent: T;
+function TLQColligoDefaultIfEmptyEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentDefaultIfEmptyEnumerator<T>.MoveNext: Boolean;
+function TLQColligoDefaultIfEmptyEnumerator<T>.MoveNext: Boolean;
 begin
   if FSource.MoveNext then
   begin
@@ -103,7 +103,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentDefaultIfEmptyEnumerator<T>.Reset;
+procedure TLQColligoDefaultIfEmptyEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FYieldedAny := False;

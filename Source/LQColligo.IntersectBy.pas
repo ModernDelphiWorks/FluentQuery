@@ -32,29 +32,29 @@ type
   // The second (keys) is buffered when enumeration starts (in the enumerator
   // constructor, i.e. at GetEnumerator); the source is streamed. Key equality
   // uses AComparer (nil => default).
-  TFluentIntersectByEnumerable<T, TKey> = class(TFluentEnumerableBase<T>)
+  TLQColligoIntersectByEnumerable<T, TKey> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSecondKeys: IFluentEnumerableBase<TKey>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSecondKeys: ILQColligoEnumerableBase<TKey>;
     FKeySelector: TFunc<T, TKey>;
     FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
+      const ASecondKeys: ILQColligoEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey> = nil);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentIntersectByEnumerator<T, TKey> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoIntersectByEnumerator<T, TKey> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FKeySelector: TFunc<T, TKey>;
     FKeys: TDictionary<TKey, Byte>;
     FEmitted: TDictionary<TKey, Byte>;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
-      const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
+      const ASecondKeys: ILQColligoEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -65,10 +65,10 @@ type
 
 implementation
 
-{ TFluentIntersectByEnumerable<T, TKey> }
+{ TLQColligoIntersectByEnumerable<T, TKey> }
 
-constructor TFluentIntersectByEnumerable<T, TKey>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
+constructor TLQColligoIntersectByEnumerable<T, TKey>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const ASecondKeys: ILQColligoEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
@@ -77,16 +77,16 @@ begin
   FComparer := AComparer;
 end;
 
-function TFluentIntersectByEnumerable<T, TKey>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoIntersectByEnumerable<T, TKey>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentIntersectByEnumerator<T, TKey>.Create(
+  Result := TLQColligoIntersectByEnumerator<T, TKey>.Create(
     FSource.GetEnumerator, FSecondKeys.GetEnumerator, FKeySelector, FComparer);
 end;
 
-{ TFluentIntersectByEnumerator<T, TKey> }
+{ TLQColligoIntersectByEnumerator<T, TKey> }
 
-constructor TFluentIntersectByEnumerator<T, TKey>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
+constructor TLQColligoIntersectByEnumerator<T, TKey>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecondKeys: ILQColligoEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
@@ -97,19 +97,19 @@ begin
     FKeys.AddOrSetValue(ASecondKeys.Current, 0);
 end;
 
-destructor TFluentIntersectByEnumerator<T, TKey>.Destroy;
+destructor TLQColligoIntersectByEnumerator<T, TKey>.Destroy;
 begin
   FKeys.Free;
   FEmitted.Free;
   inherited;
 end;
 
-function TFluentIntersectByEnumerator<T, TKey>.GetCurrent: T;
+function TLQColligoIntersectByEnumerator<T, TKey>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentIntersectByEnumerator<T, TKey>.MoveNext: Boolean;
+function TLQColligoIntersectByEnumerator<T, TKey>.MoveNext: Boolean;
 var
   LItem: T;
   LKey: TKey;
@@ -131,7 +131,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentIntersectByEnumerator<T, TKey>.Reset;
+procedure TLQColligoIntersectByEnumerator<T, TKey>.Reset;
 begin
   FSource.Reset;
   FEmitted.Clear; // FKeys persists (the second keys were already buffered)

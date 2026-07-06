@@ -28,94 +28,94 @@ uses
   LQColligo.Adapters;
 
 type
-  TFluentChunkEnumerable<T> = class(TFluentEnumerableBase<TArray<T>>)
+  TLQColligoChunkEnumerable<T> = class(TLQColligoEnumerableBase<TArray<T>>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FSize: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ASize: Integer);
-    function GetEnumerator: IFluentEnumerator<TArray<T>>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ASize: Integer);
+    function GetEnumerator: ILQColligoEnumerator<TArray<T>>; override;
   end;
 
-  TFluentChunkEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<TArray<T>>)
+  TLQColligoChunkEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<TArray<T>>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSize: Integer;
     FCurrent: TArray<T>;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASize: Integer);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASize: Integer);
     function GetCurrent: TArray<T>;
     function MoveNext: Boolean;
     procedure Reset;
     property Current: TArray<T> read GetCurrent;
   end;
 
-//  TFluentChunkResult<T> = class(TInterfacedObject, IFluentChunkResult<T>)
+//  TLQColligoChunkResult<T> = class(TInterfacedObject, ILQColligoChunkResult<T>)
 //  private
-//    FEnumerable: TFluentChunkEnumerable<T>;
+//    FEnumerable: TLQColligoChunkEnumerable<T>;
 //  public
-//    constructor Create(const ASource: IFluentEnumerableBase<T>; ASize: Integer);
+//    constructor Create(const ASource: ILQColligoEnumerableBase<T>; ASize: Integer);
 //    destructor Destroy; override;
-//    function GetEnumerator: IFluentEnumerator<TArray<T>>;
-//    function AsEnumerable: IFluentEnumerable<TArray<T>>;
+//    function GetEnumerator: ILQColligoEnumerator<TArray<T>>;
+//    function AsEnumerable: ILQColligoEnumerable<TArray<T>>;
 //  end;
 
 implementation
 
-{ TFluentChunkResult<T> }
+{ TLQColligoChunkResult<T> }
 
-//constructor TFluentChunkResult<T>.Create(const ASource: IFluentEnumerableBase<T>; ASize: Integer);
+//constructor TLQColligoChunkResult<T>.Create(const ASource: ILQColligoEnumerableBase<T>; ASize: Integer);
 //begin
-//  FEnumerable := TFluentChunkEnumerable<T>.Create(ASource, ASize);
+//  FEnumerable := TLQColligoChunkEnumerable<T>.Create(ASource, ASize);
 //end;
 
-//destructor TFluentChunkResult<T>.Destroy;
+//destructor TLQColligoChunkResult<T>.Destroy;
 //begin
 //  FEnumerable.Free;
 //  inherited;
 //end;
 
-//function TFluentChunkResult<T>.GetEnumerator: IFluentEnumerator<TArray<T>>;
+//function TLQColligoChunkResult<T>.GetEnumerator: ILQColligoEnumerator<TArray<T>>;
 //begin
 //  Result := FEnumerable.GetEnumerator;
 //end;
 
-//function TFluentChunkResult<T>.AsEnumerable: IFluentEnumerable<TArray<T>>;
+//function TLQColligoChunkResult<T>.AsEnumerable: ILQColligoEnumerable<TArray<T>>;
 //begin
-//  Result := IFluentEnumerable<TArray<T>>.Create(
+//  Result := ILQColligoEnumerable<TArray<T>>.Create(
 //    FEnumerable,
 //    ftNone,
 //    TEqualityComparer<TArray<T>>.Default
 //  );
 //end;
 
-{ TFluentChunkEnumerable<T> }
+{ TLQColligoChunkEnumerable<T> }
 
-constructor TFluentChunkEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const ASize: Integer);
+constructor TLQColligoChunkEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const ASize: Integer);
 begin
   FSource := ASource;
   FSize := ASize;
 end;
 
-function TFluentChunkEnumerable<T>.GetEnumerator: IFluentEnumerator<TArray<T>>;
+function TLQColligoChunkEnumerable<T>.GetEnumerator: ILQColligoEnumerator<TArray<T>>;
 begin
-  Result := TFluentChunkEnumerator<T>.Create(FSource.GetEnumerator, FSize);
+  Result := TLQColligoChunkEnumerator<T>.Create(FSource.GetEnumerator, FSize);
 end;
 
-{ TFluentChunkEnumerator<T> }
+{ TLQColligoChunkEnumerator<T> }
 
-constructor TFluentChunkEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const ASize: Integer);
+constructor TLQColligoChunkEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const ASize: Integer);
 begin
   FSource := ASource;
   FSize := Max(1, ASize);
 end;
 
-function TFluentChunkEnumerator<T>.GetCurrent: TArray<T>;
+function TLQColligoChunkEnumerator<T>.GetCurrent: TArray<T>;
 begin
   Result := FCurrent;
 end;
 
-function TFluentChunkEnumerator<T>.MoveNext: Boolean;
+function TLQColligoChunkEnumerator<T>.MoveNext: Boolean;
 var
   LList: TList<T>;
   LFor: Integer;
@@ -140,7 +140,7 @@ begin
   end;
 end;
 
-procedure TFluentChunkEnumerator<T>.Reset;
+procedure TLQColligoChunkEnumerator<T>.Reset;
 begin
   FSource.Reset;
 end;

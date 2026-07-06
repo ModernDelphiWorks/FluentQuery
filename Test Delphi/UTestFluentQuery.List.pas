@@ -33,7 +33,7 @@ type
 
   TListTest = class
   private
-    FList: IFluentList<Integer>;
+    FList: ILQColligoList<Integer>;
   public
     [Setup]
     procedure Setup;
@@ -300,7 +300,7 @@ end;
 
 procedure TListTest.Setup;
 begin
-  FList := TFluentList<Integer>.Create;
+  FList := TLQColligoList<Integer>.Create;
 end;
 
 procedure TListTest.TearDown;
@@ -310,7 +310,7 @@ end;
 
 procedure TListTest.TestListToArray;
 var
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LArray := FList.ToArray;
@@ -321,7 +321,7 @@ end;
 
 procedure TListTest.TestListToList;
 var
-  LResult: IFluentList<Integer>;
+  LResult: ILQColligoList<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LResult := FList.AsEnumerable.ToList;
@@ -428,8 +428,8 @@ end;
 
 procedure TListTest.TestListDistinct;
 var
-  LDistinct: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDistinct: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 2, 3, 3, 4, 5, 5]);
   LDistinct := FList.AsEnumerable.Distinct;
@@ -441,8 +441,8 @@ end;
 
 procedure TListTest.TestListFilter;
 var
-  LFiltered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LFiltered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LFiltered := FList.AsEnumerable.Where(
@@ -458,8 +458,8 @@ end;
 
 procedure TListTest.TestListTake;
 var
-  LTaken: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LTaken: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LTaken := FList.AsEnumerable.Take(3);
@@ -471,8 +471,8 @@ end;
 
 procedure TListTest.TestListSkip;
 var
-  LSkipped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSkipped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LSkipped := FList.AsEnumerable.Skip(2);
@@ -484,8 +484,8 @@ end;
 
 procedure TListTest.TestListOrderBy;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([5, 2, 4, 1, 3]);
   LOrdered := FList.AsEnumerable.OrderBy(
@@ -514,8 +514,8 @@ end;
 
 procedure TListTest.TestListMap;
 var
-  LMapped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LMapped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LMapped := FList.AsEnumerable.Select<Integer>(
@@ -532,9 +532,9 @@ end;
 procedure TListTest.TestListGroupBy;
 var
   LGroups: IGroupByEnumerable<Integer, Integer>;
-  LEnum: IFluentEnumerator<IGrouping<Integer, Integer>>;
+  LEnum: ILQColligoEnumerator<IGrouping<Integer, Integer>>;
   LGroup: IGrouping<Integer, Integer>;
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
   LCount: Integer;
 begin
   FList.AddRange([1, 2, 3, 4, 5, 6]);
@@ -570,7 +570,7 @@ end;
 procedure TListTest.TestListGroupByFirstAppearanceOrder;
 var
   LGroups: IGroupByEnumerable<Integer, Integer>;
-  LEnum: IFluentEnumerator<IGrouping<Integer, Integer>>;
+  LEnum: ILQColligoEnumerator<IGrouping<Integer, Integer>>;
   LKeys: TList<Integer>;
 begin
   // Odd key (1) appears before even key (0); group order must follow
@@ -596,13 +596,13 @@ end;
 
 procedure TListTest.TestListGroupByComparer;
 var
-  LWords: IFluentList<string>;
+  LWords: ILQColligoList<string>;
   LGroups: IGroupByEnumerable<string, string>;
-  LEnum: IFluentEnumerator<IGrouping<string, string>>;
+  LEnum: ILQColligoEnumerator<IGrouping<string, string>>;
   LCount: Integer;
 begin
   // Case-insensitive comparer: 'a'/'A'/'a' collapse into one group.
-  LWords := TFluentList<string>.Create;
+  LWords := TLQColligoList<string>.Create;
   LWords.AddRange(['a', 'A', 'b', 'a']);
   LGroups := LWords.AsEnumerable.GroupBy<string>(
     function(Value: string): string
@@ -625,7 +625,7 @@ end;
 procedure TListTest.TestListGroupByReEnumerable;
 var
   LGroups: IGroupByEnumerable<Integer, Integer>;
-  LEnum: IFluentEnumerator<IGrouping<Integer, Integer>>;
+  LEnum: ILQColligoEnumerator<IGrouping<Integer, Integer>>;
   LFirst, LSecond: Integer;
 begin
   // Re-enumerating (via Reset) must reproduce the same groups; the old
@@ -652,7 +652,7 @@ end;
 
 procedure TListTest.TestListGroupByMaterializedSurvives;
 var
-  LGroups: IFluentList<IGrouping<Integer, Integer>>;
+  LGroups: ILQColligoList<IGrouping<Integer, Integer>>;
   LGroup: IGrouping<Integer, Integer>;
   LTotal: Integer;
 begin
@@ -675,12 +675,12 @@ end;
 
 procedure TListTest.TestListGroupJoin;
 var
-  LInner: IFluentList<string>;
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LInner: ILQColligoList<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FList.AddRange([1, 2, 3]);
-  LInner := TFluentList<string>.Create;
+  LInner := TLQColligoList<string>.Create;
   LInner.AddRange(['A1', 'B1', 'C2']);
   LJoined := FList.AsEnumerable.GroupJoin<string, Integer, string>(
     LInner.AsEnumerable,
@@ -692,7 +692,7 @@ begin
     begin
       Result := StrToInt(Str[2]);
     end,
-    function(Num: Integer; Matches: IFluentEnumerableAdapter<string>): string
+    function(Num: Integer; Matches: ILQColligoEnumerableAdapter<string>): string
     begin
       Result := Num.ToString + ': ' + string.Join(', ', Matches.AsEnumerable.ToArray.ArrayData);
     end);
@@ -705,12 +705,12 @@ end;
 
 procedure TListTest.TestListZip;
 var
-  LList2: IFluentList<string>;
-  LZipped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LList2: ILQColligoList<string>;
+  LZipped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FList.AddRange([1, 2, 3]);
-  LList2 := TFluentList<string>.Create;
+  LList2 := TLQColligoList<string>.Create;
   LList2.AddRange(['A', 'B', 'C']);
   LZipped := FList.AsEnumerable.Zip<string, string>(
     LList2.AsEnumerable,
@@ -727,12 +727,12 @@ end;
 
 procedure TListTest.TestListJoin;
 var
-  LInner: IFluentList<string>;
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LInner: ILQColligoList<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FList.AddRange([1, 2, 3]);
-  LInner := TFluentList<string>.Create;
+  LInner := TLQColligoList<string>.Create;
   LInner.AddRange(['A1', 'B2', 'C3']);
   LJoined := FList.AsEnumerable.Join<string, Integer, string>(
     LInner.AsEnumerable,
@@ -757,14 +757,14 @@ end;
 
 procedure TListTest.TestListJoinMultipleMatches;
 var
-  LInner: IFluentList<string>;
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LInner: ILQColligoList<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Outer key 1 matches two inner rows; the hash join must emit BOTH, in inner
   // order, and preserve outer order (1 before 2).
   FList.AddRange([1, 2]);
-  LInner := TFluentList<string>.Create;
+  LInner := TLQColligoList<string>.Create;
   LInner.AddRange(['A1', 'B1', 'C2']);
   LJoined := FList.AsEnumerable.Join<string, Integer, string>(
     LInner.AsEnumerable,
@@ -820,8 +820,8 @@ end;
 
 procedure TListTest.TestListMapLazy;
 var
-  LMapped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LMapped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FList.AddRange([1, 2, 3]);
   LMapped := FList.AsEnumerable.Select<string>(
@@ -840,8 +840,8 @@ end;
 
 procedure TListTest.TestListOrderByLazy;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([3, 1, 4, 1, 5]);
   LOrdered := FList.AsEnumerable.Where(
@@ -865,8 +865,8 @@ end;
 
 procedure TListTest.TestListDistinctLazy;
 var
-  LDistinct: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDistinct: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([3, 1, 4, 1, 5, 3]);
   LDistinct := FList.AsEnumerable.Where(
@@ -885,12 +885,12 @@ end;
 
 procedure TListTest.TestListZipLazy;
 var
-  LList2: IFluentList<string>;
-  LZipped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LList2: ILQColligoList<string>;
+  LZipped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FList.AddRange([1, 2, 3]);
-  LList2 := TFluentList<string>.Create;
+  LList2 := TLQColligoList<string>.Create;
   LList2.AddRange(['A', 'B', 'C']);
   LZipped := FList.AsEnumerable.Zip<string, string>(
     LList2.AsEnumerable,
@@ -909,12 +909,12 @@ end;
 
 procedure TListTest.TestListJoinLazy;
 var
-  LInner: IFluentList<string>;
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LInner: ILQColligoList<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FList.AddRange([1, 2, 3]);
-  LInner := TFluentList<string>.Create;
+  LInner := TLQColligoList<string>.Create;
   LInner.AddRange(['A1', 'B2', 'C3']);
   LJoined := FList.AsEnumerable.Join<string, Integer, string>(
     LInner.AsEnumerable,
@@ -941,11 +941,11 @@ end;
 
 procedure TListTest.TestListOfType;
 var
-  LList: IFluentList<Variant>;
-  LFiltered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LList: ILQColligoList<Variant>;
+  LFiltered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LList := TFluentList<Variant>.Create;
+  LList := TLQColligoList<Variant>.Create;
   LList.AddRange([1, 'two', 3, 'four', 5]);
   // OfType<Integer>() with no arguments: filters by runtime type, keeping the
   // integer variants and silently dropping the strings.
@@ -959,11 +959,11 @@ end;
 
 procedure TListTest.TestListCastSuccess;
 var
-  LList: IFluentList<Variant>;
-  LArray: IFluentArray<Integer>;
+  LList: ILQColligoList<Variant>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Every element is convertible: Cast<Integer> converts them all.
-  LList := TFluentList<Variant>.Create;
+  LList := TLQColligoList<Variant>.Create;
   LList.AddRange([10, 20, 30]);
   LArray := LList.AsEnumerable.Cast<Integer>.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Cast should convert every element');
@@ -973,11 +973,11 @@ end;
 
 procedure TListTest.TestListCastDeferredRaises;
 var
-  LList: IFluentList<Variant>;
-  LCast: IFluentEnumerable<Integer>;
+  LList: ILQColligoList<Variant>;
+  LCast: ILQColligoEnumerable<Integer>;
   LRaised: Boolean;
 begin
-  LList := TFluentList<Variant>.Create;
+  LList := TLQColligoList<Variant>.Create;
   LList.AddRange([1, 'two', 3]);
   // Deferred: building the Cast pipeline must NOT raise here (an eager
   // implementation would throw on this line and fail the test before the try).
@@ -995,13 +995,13 @@ end;
 
 procedure TListTest.TestListCastStreamsBeforeRaise;
 var
-  LList: IFluentList<Variant>;
-  LEnum: IFluentEnumerator<Integer>;
+  LList: ILQColligoList<Variant>;
+  LEnum: ILQColligoEnumerator<Integer>;
   LRaised: Boolean;
 begin
   // Streaming, not all-or-nothing: the first valid element is yielded before
   // the incompatible one is reached and raises.
-  LList := TFluentList<Variant>.Create;
+  LList := TLQColligoList<Variant>.Create;
   LList.AddRange([1, 'two', 3]);
   LEnum := LList.AsEnumerable.Cast<Integer>.GetEnumerator;
   Assert.IsTrue(LEnum.MoveNext, 'first element should be available');
@@ -1065,10 +1065,10 @@ end;
 
 procedure TListTest.TestListSumDouble;
 var
-  LList: IFluentList<Double>;
+  LList: ILQColligoList<Double>;
   LSum: Double;
 begin
-  LList := TFluentList<Double>.Create;
+  LList := TLQColligoList<Double>.Create;
   LList.AddRange([1.5, 2.5, 3.5]);
   LSum := LList.AsEnumerable.Sum(
     function(Value: Double): Double
@@ -1106,8 +1106,8 @@ end;
 
 procedure TListTest.TestListTakeWhile;
 var
-  LTaken: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LTaken: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 0, 4]);
   LTaken := FList.AsEnumerable.TakeWhile(
@@ -1123,8 +1123,8 @@ end;
 
 procedure TListTest.TestListSkipWhile;
 var
-  LSkipped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSkipped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 0, 4]);
   LSkipped := FList.AsEnumerable.SkipWhile(
@@ -1280,12 +1280,12 @@ end;
 
 procedure TListTest.TestListExclude;
 var
-  LSecond: IFluentList<Integer>;
-  LExclude: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoList<Integer>;
+  LExclude: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   LSecond.AddRange([2, 4]);
   LExclude := FList.AsEnumerable.Exclude(LSecond.AsEnumerable);
   LArray := LExclude.ToArray;
@@ -1296,13 +1296,13 @@ end;
 
 procedure TListTest.TestListExcludeDistinct;
 var
-  LSecond: IFluentList<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoList<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // LINQ Except returns DISTINCT elements: duplicates in the source that are not
   // excluded must appear at most once, in first-appearance order.
   FList.AddRange([1, 1, 2, 3, 3, 4]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   LSecond.AddRange([4]);
   LArray := FList.AsEnumerable.Exclude(LSecond.AsEnumerable).ToArray;
   Assert.AreEqual(3, LArray.Length, 'Except must dedupe the output');
@@ -1313,15 +1313,15 @@ end;
 
 procedure TListTest.TestListExcludeReEnumerable;
 var
-  LSecond: IFluentList<Integer>;
-  LExcluded: IFluentEnumerable<Integer>;
-  LFirst, LSecondPass: IFluentArray<Integer>;
+  LSecond: ILQColligoList<Integer>;
+  LExcluded: ILQColligoEnumerable<Integer>;
+  LFirst, LSecondPass: ILQColligoArray<Integer>;
 begin
   // Each enumeration builds a fresh emitted-set, so re-enumerating the same
   // query (a new GetEnumerator per ToArray) reproduces the identical distinct
   // result rather than leaking dedupe state across enumerations.
   FList.AddRange([1, 1, 2, 3]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   LSecond.AddRange([2]);
   LExcluded := FList.AsEnumerable.Exclude(LSecond.AsEnumerable);
 
@@ -1336,12 +1336,12 @@ end;
 
 procedure TListTest.TestListExcludeAllExcludedIsEmpty;
 var
-  LSecond: IFluentList<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoList<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Every (distinct) source value is in the second set -> empty result.
   FList.AddRange([1, 1, 2, 2]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   LSecond.AddRange([1, 2]);
   LArray := FList.AsEnumerable.Exclude(LSecond.AsEnumerable).ToArray;
   Assert.AreEqual(0, LArray.Length, 'All values excluded -> empty sequence');
@@ -1349,14 +1349,14 @@ end;
 
 procedure TListTest.TestListExcludeWithComparer;
 var
-  LFirst, LSecond: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LFirst, LSecond: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive comparer: 'A' and 'C' are excluded by 'a'/'c'.
   // With the default (case-sensitive) comparer nothing would match -> 3 elements.
-  LFirst := TFluentList<string>.Create;
+  LFirst := TLQColligoList<string>.Create;
   LFirst.AddRange(['A', 'b', 'C']);
-  LSecond := TFluentList<string>.Create;
+  LSecond := TLQColligoList<string>.Create;
   LSecond.AddRange(['a', 'c']);
   LArray := LFirst.AsEnumerable.Exclude(LSecond.AsEnumerable, TIStringComparer.Ordinal).ToArray;
   Assert.AreEqual(1, LArray.Length, 'case-insensitive Exclude keeps only "b"');
@@ -1365,13 +1365,13 @@ end;
 
 procedure TListTest.TestListIntersectWithComparer;
 var
-  LFirst, LSecond: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LFirst, LSecond: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive: 'A' intersects 'a'. Default comparer -> empty.
-  LFirst := TFluentList<string>.Create;
+  LFirst := TLQColligoList<string>.Create;
   LFirst.AddRange(['A', 'b', 'C']);
-  LSecond := TFluentList<string>.Create;
+  LSecond := TLQColligoList<string>.Create;
   LSecond.AddRange(['a', 'x']);
   LArray := LFirst.AsEnumerable.Intersect(LSecond.AsEnumerable, TIStringComparer.Ordinal).ToArray;
   Assert.AreEqual(1, LArray.Length, 'case-insensitive Intersect finds "A"~"a"');
@@ -1380,14 +1380,14 @@ end;
 
 procedure TListTest.TestListUnionWithComparer;
 var
-  LFirst, LSecond: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LFirst, LSecond: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive: 'a' in the second sequence is a duplicate of 'A' -> deduped.
   // Default comparer would keep both -> 4 elements.
-  LFirst := TFluentList<string>.Create;
+  LFirst := TLQColligoList<string>.Create;
   LFirst.AddRange(['A', 'b']);
-  LSecond := TFluentList<string>.Create;
+  LSecond := TLQColligoList<string>.Create;
   LSecond.AddRange(['a', 'C']);
   LArray := LFirst.AsEnumerable.Union(LSecond.AsEnumerable, TIStringComparer.Ordinal).ToArray;
   Assert.AreEqual(3, LArray.Length, 'case-insensitive Union dedupes "a" against "A"');
@@ -1398,14 +1398,14 @@ end;
 
 procedure TListTest.TestListJoinWithComparer;
 var
-  LOuter, LInner: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LOuter, LInner: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive key comparer: outer 'A' matches inner 'a'.
   // With the default comparer there would be no match -> 0 results.
-  LOuter := TFluentList<string>.Create;
+  LOuter := TLQColligoList<string>.Create;
   LOuter.AddRange(['A']);
-  LInner := TFluentList<string>.Create;
+  LInner := TLQColligoList<string>.Create;
   LInner.AddRange(['a']);
   LArray := LOuter.AsEnumerable.Join<string, string, string>(
     LInner.AsEnumerable,
@@ -1429,8 +1429,8 @@ end;
 procedure TListTest.TestListAppendDeferred;
 var
   LCount: Integer;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Append must be deferred: building the pipeline must NOT enumerate the
   // source (an eager Append would run the Select side-effect immediately).
@@ -1454,8 +1454,8 @@ end;
 procedure TListTest.TestListPrependDeferred;
 var
   LCount: Integer;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3]);
   LCount := 0;
@@ -1476,8 +1476,8 @@ end;
 procedure TListTest.TestListDefaultIfEmptyDeferred;
 var
   LCount: Integer;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3]);
   LCount := 0;
@@ -1496,7 +1496,7 @@ end;
 
 procedure TListTest.TestListDefaultIfEmptyEmptyYieldsDefault;
 var
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Empty source -> a single default value.
   LArray := FList.AsEnumerable.DefaultIfEmpty(42).ToArray;
@@ -1506,7 +1506,7 @@ end;
 
 procedure TListTest.TestListAppendPrependEmptySource;
 var
-  LAppended, LPrepended: IFluentArray<Integer>;
+  LAppended, LPrepended: ILQColligoArray<Integer>;
 begin
   // Over an empty source, Append/Prepend yield just the single element.
   LAppended := FList.AsEnumerable.Append(7).ToArray;
@@ -1520,7 +1520,7 @@ end;
 
 procedure TListTest.TestListDefaultIfEmptyNoArgEmpty;
 var
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // No-arg DefaultIfEmpty over an empty source yields Default(T) (0 for Integer).
   LArray := FList.AsEnumerable.DefaultIfEmpty.ToArray;
@@ -1530,8 +1530,8 @@ end;
 
 procedure TListTest.TestListAppendReEnumerable;
 var
-  LDeferred: IFluentEnumerable<Integer>;
-  LFirst, LSecond: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LFirst, LSecond: ILQColligoArray<Integer>;
 begin
   // Each GetEnumerator reprocesses the source: two ToArray calls on the same
   // deferred result reproduce the identical output.
@@ -1547,8 +1547,8 @@ end;
 procedure TListTest.TestListDistinctByDeferred;
 var
   LCount: Integer;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Deferred + distinct-by-key (first occurrence, source order).
   FList.AddRange([1, 1, 2, 3, 3]);
@@ -1575,13 +1575,13 @@ end;
 procedure TListTest.TestListUnionByDeferred;
 var
   LCount: Integer;
-  LSecond: IFluentList<Integer>;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoList<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Deferred + union-by-key across both sequences (first occurrence).
   FList.AddRange([1, 2]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   LSecond.AddRange([2, 3]);
   LCount := 0;
   LDeferred := FList.AsEnumerable.Select<Integer>(
@@ -1605,14 +1605,14 @@ end;
 procedure TListTest.TestListExcludeByDistinctDeferred;
 var
   LCount: Integer;
-  LSecondKeys: IFluentList<Integer>;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecondKeys: ILQColligoList<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // ExcludeBy: deferred over the source, and the output is DISTINCT (a source
   // with duplicate keys must not repeat).
   FList.AddRange([1, 1, 2, 3, 3, 4]);
-  LSecondKeys := TFluentList<Integer>.Create;
+  LSecondKeys := TLQColligoList<Integer>.Create;
   LSecondKeys.AddRange([4]);
   LCount := 0;
   LDeferred := FList.AsEnumerable.Select<Integer>(
@@ -1637,13 +1637,13 @@ end;
 procedure TListTest.TestListIntersectByDistinctDeferred;
 var
   LCount: Integer;
-  LSecondKeys: IFluentList<Integer>;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecondKeys: ILQColligoList<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // IntersectBy: deferred over the source, output DISTINCT.
   FList.AddRange([1, 1, 2, 3]);
-  LSecondKeys := TFluentList<Integer>.Create;
+  LSecondKeys := TLQColligoList<Integer>.Create;
   LSecondKeys.AddRange([1, 3]);
   LCount := 0;
   LDeferred := FList.AsEnumerable.Select<Integer>(
@@ -1666,14 +1666,14 @@ end;
 
 procedure TListTest.TestListExcludeByReEnumerable;
 var
-  LSecondKeys: IFluentList<Integer>;
-  LDeferred: IFluentEnumerable<Integer>;
-  LFirst, LSecond: IFluentArray<Integer>;
+  LSecondKeys: ILQColligoList<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LFirst, LSecond: ILQColligoArray<Integer>;
 begin
   // Each GetEnumerator rebuilds the excluded/emitted sets, so re-enumerating the
   // same query reproduces the identical distinct result.
   FList.AddRange([1, 1, 2, 3, 4]);
-  LSecondKeys := TFluentList<Integer>.Create;
+  LSecondKeys := TLQColligoList<Integer>.Create;
   LSecondKeys.AddRange([4]);
   LDeferred := FList.AsEnumerable.ExcludeBy<Integer>(LSecondKeys.AsEnumerable,
     function(Value: Integer): Integer
@@ -1691,8 +1691,8 @@ end;
 procedure TListTest.TestListReverseDeferred;
 var
   LCount: Integer;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Reverse buffers only on the first MoveNext, not at construction.
   FList.AddRange([1, 2, 3]);
@@ -1714,8 +1714,8 @@ end;
 procedure TListTest.TestListTakeLastDeferred;
 var
   LCount: Integer;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LCount := 0;
@@ -1736,8 +1736,8 @@ end;
 procedure TListTest.TestListSkipLastDeferred;
 var
   LCount: Integer;
-  LDeferred: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDeferred: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
   LCount := 0;
@@ -1768,8 +1768,8 @@ end;
 
 procedure TListTest.TestListReverseEmptyAndReEnumerable;
 var
-  LReversed: IFluentEnumerable<Integer>;
-  LFirst, LSecond: IFluentArray<Integer>;
+  LReversed: ILQColligoEnumerable<Integer>;
+  LFirst, LSecond: ILQColligoArray<Integer>;
 begin
   // Empty source -> empty result (buffer step-down must not under/overflow).
   Assert.AreEqual(0, FList.AsEnumerable.Reverse.ToArray.Length, 'Reverse of empty is empty');
@@ -1787,11 +1787,11 @@ end;
 
 procedure TListTest.TestListDistinctByWithComparer;
 var
-  LWords: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LWords: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive key: 'a' and 'A' collapse -> ['a','b']. Default -> 3.
-  LWords := TFluentList<string>.Create;
+  LWords := TLQColligoList<string>.Create;
   LWords.AddRange(['a', 'A', 'b']);
   LArray := LWords.AsEnumerable.DistinctBy<string>(
     function(V: string): string
@@ -1805,13 +1805,13 @@ end;
 
 procedure TListTest.TestListUnionByWithComparer;
 var
-  LFirst, LSecond: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LFirst, LSecond: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive: 'A' in second is a duplicate of 'a' -> ['a','b']. Default -> 3.
-  LFirst := TFluentList<string>.Create;
+  LFirst := TLQColligoList<string>.Create;
   LFirst.AddRange(['a']);
-  LSecond := TFluentList<string>.Create;
+  LSecond := TLQColligoList<string>.Create;
   LSecond.AddRange(['A', 'b']);
   LArray := LFirst.AsEnumerable.UnionBy<string>(LSecond.AsEnumerable,
     function(V: string): string
@@ -1825,13 +1825,13 @@ end;
 
 procedure TListTest.TestListExcludeByWithComparer;
 var
-  LSource, LKeys: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LSource, LKeys: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive: key 'A' excludes 'a' -> ['B']. Default -> ['a','B'].
-  LSource := TFluentList<string>.Create;
+  LSource := TLQColligoList<string>.Create;
   LSource.AddRange(['a', 'B']);
-  LKeys := TFluentList<string>.Create;
+  LKeys := TLQColligoList<string>.Create;
   LKeys.AddRange(['A']);
   LArray := LSource.AsEnumerable.ExcludeBy<string>(LKeys.AsEnumerable,
     function(V: string): string
@@ -1844,13 +1844,13 @@ end;
 
 procedure TListTest.TestListIntersectByWithComparer;
 var
-  LSource, LKeys: IFluentList<string>;
-  LArray: IFluentArray<string>;
+  LSource, LKeys: ILQColligoList<string>;
+  LArray: ILQColligoArray<string>;
 begin
   // Case-insensitive: key 'A' matches 'a' -> ['a']. Default -> empty.
-  LSource := TFluentList<string>.Create;
+  LSource := TLQColligoList<string>.Create;
   LSource.AddRange(['a', 'B']);
-  LKeys := TFluentList<string>.Create;
+  LKeys := TLQColligoList<string>.Create;
   LKeys.AddRange(['A']);
   LArray := LSource.AsEnumerable.IntersectBy<string>(LKeys.AsEnumerable,
     function(V: string): string
@@ -1863,41 +1863,41 @@ end;
 
 procedure TListTest.TestFluentQueryRange;
 var
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   // Range(1,5) = 1,2,3,4,5 (the 2nd arg is a COUNT, not an end value).
-  LArray := TFluentQuery.Range(1, 5).ToArray;
+  LArray := TLQColligo.Range(1, 5).ToArray;
   Assert.AreEqual(5, LArray.Length, 'Range(1,5) has 5 elements');
   Assert.AreEqual(1, LArray[0], 'first');
   Assert.AreEqual(5, LArray[4], 'last');
   // Zero count -> empty.
-  Assert.AreEqual(0, TFluentQuery.Range(10, 0).ToArray.Length, 'Range(_,0) is empty');
+  Assert.AreEqual(0, TLQColligo.Range(10, 0).ToArray.Length, 'Range(_,0) is empty');
   // Negative start supported.
-  LArray := TFluentQuery.Range(-2, 3).ToArray;
+  LArray := TLQColligo.Range(-2, 3).ToArray;
   Assert.AreEqual(3, LArray.Length, 'Range(-2,3) has 3 elements');
   Assert.AreEqual(-2, LArray[0], 'first is start');
   Assert.AreEqual(0, LArray[2], 'last is start+count-1');
   // Exact upper boundary succeeds: start+count-1 = High(Integer).
-  LArray := TFluentQuery.Range(High(Integer), 1).ToArray;
+  LArray := TLQColligo.Range(High(Integer), 1).ToArray;
   Assert.AreEqual(1, LArray.Length, 'Range(MaxInt,1) yields one element');
   Assert.AreEqual(High(Integer), LArray[0], 'the single element is MaxInt');
 end;
 
 procedure TListTest.TestFluentQueryRepeat;
 var
-  LArray: IFluentArray<string>;
+  LArray: ILQColligoArray<string>;
 begin
-  LArray := TFluentQuery.&Repeat<string>('x', 3).ToArray;
+  LArray := TLQColligo.&Repeat<string>('x', 3).ToArray;
   Assert.AreEqual(3, LArray.Length, 'Repeat yields the element count times');
   Assert.AreEqual('x', LArray[0], 'first');
   Assert.AreEqual('x', LArray[2], 'last');
-  Assert.AreEqual(0, TFluentQuery.&Repeat<string>('x', 0).ToArray.Length, 'Repeat(_,0) is empty');
+  Assert.AreEqual(0, TLQColligo.&Repeat<string>('x', 0).ToArray.Length, 'Repeat(_,0) is empty');
 end;
 
 procedure TListTest.TestFluentQueryEmpty;
 begin
-  Assert.AreEqual(0, TFluentQuery.Empty<Integer>.ToArray.Length, 'Empty<Integer> is empty');
-  Assert.IsFalse(TFluentQuery.Empty<string>.Any, 'Empty has no elements');
+  Assert.AreEqual(0, TLQColligo.Empty<Integer>.ToArray.Length, 'Empty<Integer> is empty');
+  Assert.IsFalse(TLQColligo.Empty<string>.Any, 'Empty has no elements');
 end;
 
 procedure TListTest.TestFluentQueryGeneratorValidation;
@@ -1906,23 +1906,23 @@ begin
   Assert.WillRaise(
     procedure
     begin
-      TFluentQuery.Range(1, -1);
+      TLQColligo.Range(1, -1);
     end, EArgumentOutOfRangeException, 'Range with negative count raises');
   Assert.WillRaise(
     procedure
     begin
-      TFluentQuery.Range(High(Integer), 2);
+      TLQColligo.Range(High(Integer), 2);
     end, EArgumentOutOfRangeException, 'Range that overflows Integer raises');
   Assert.WillRaise(
     procedure
     begin
-      TFluentQuery.&Repeat<Integer>(7, -1);
+      TLQColligo.&Repeat<Integer>(7, -1);
     end, EArgumentOutOfRangeException, 'Repeat with negative count raises');
 end;
 
 procedure TListTest.TestListGetListNonDestructive;
 var
-  LArr: IFluentArray<Integer>;
+  LArr: ILQColligoArray<Integer>;
 begin
   // The List property (GetList) must be a non-destructive snapshot of exactly
   // Count elements. Previously reading it returned the raw internal array and
@@ -1939,8 +1939,8 @@ end;
 procedure TListTest.TestListChunk;
 var
   LCount: Integer;
-  LChunkSource: IFluentEnumerableBase<TArray<Integer>>;
-  LEnum: IFluentEnumerator<TArray<Integer>>;
+  LChunkSource: ILQColligoEnumerableBase<TArray<Integer>>;
+  LEnum: ILQColligoEnumerator<TArray<Integer>>;
   LChunks: TList<TArray<Integer>>;
 begin
   FList.AddRange([1, 2, 3, 4, 5]);
@@ -1974,7 +1974,7 @@ end;
 
 procedure TListTest.TestListChunkEdges;
 var
-  LEnum: IFluentEnumerator<TArray<Integer>>;
+  LEnum: ILQColligoEnumerator<TArray<Integer>>;
   LCount: Integer;
 begin
   // Size >= count -> a single chunk with all elements.
@@ -2014,12 +2014,12 @@ end;
 
 procedure TListTest.TestListIntersect;
 var
-  LSecond: TFluentList<Integer>;
-  LIntersect: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: TLQColligoList<Integer>;
+  LIntersect: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3, 4]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   try
     LSecond.AddRange([2, 4, 5]);
     LIntersect := FList.AsEnumerable.Intersect(LSecond.AsEnumerable);
@@ -2034,12 +2034,12 @@ end;
 
 procedure TListTest.TestListUnion;
 var
-  LSecond: TFluentList<Integer>;
-  LUnion: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: TLQColligoList<Integer>;
+  LUnion: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   try
     LSecond.AddRange([2, 3, 4]);
     LUnion := FList.AsEnumerable.Union(LSecond.AsEnumerable);
@@ -2054,12 +2054,12 @@ end;
 
 procedure TListTest.TestListConcat;
 var
-  LSecond: TFluentList<Integer>;
-  LConcat: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: TLQColligoList<Integer>;
+  LConcat: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([1, 2, 3]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   try
     LSecond.AddRange([2, 3, 4]);
     LConcat := FList.AsEnumerable.Concat(LSecond.AsEnumerable);
@@ -2108,20 +2108,20 @@ end;
 
 procedure TListTest.TestListSelectMany;
 var
-  LList: IFluentList<TArray<Integer>>;
-  LSelected: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LList: ILQColligoList<TArray<Integer>>;
+  LSelected: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LList := TFluentList<TArray<Integer>>.Create;
+  LList := TLQColligoList<TArray<Integer>>.Create;
   LList.Add([1, 2]);
   LList.Add([3]);
   LList.Add([4, 5]);
   LSelected := LList.AsEnumerable.SelectMany<Integer>(
     function(Value: TArray<Integer>): TArray<Integer>
     var
-      LInnerList: TFluentList<Integer>;
+      LInnerList: TLQColligoList<Integer>;
     begin
-      LInnerList := TFluentList<Integer>.Create(Value);
+      LInnerList := TLQColligoList<Integer>.Create(Value);
       try
         Result := LInnerList.ToArray.ArrayData;
       finally
@@ -2136,11 +2136,11 @@ end;
 
 procedure TListTest.TestListSequenceEqual;
 var
-  LSecond: TFluentList<Integer>;
+  LSecond: TLQColligoList<Integer>;
   LResult: Boolean;
 begin
   FList.AddRange([1, 2, 3]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   try
     LSecond.AddRange([1, 2, 3]);
     LResult := FList.AsEnumerable.SequenceEqual(LSecond.AsEnumerable);
@@ -2157,11 +2157,11 @@ end;
 
 procedure TListTest.TestListSequenceEqualNegative;
 var
-  LSecond: TFluentList<Integer>;
+  LSecond: TLQColligoList<Integer>;
   LResult: Boolean;
 begin
   FList.AddRange([1, 2, 3]);
-  LSecond := TFluentList<Integer>.Create;
+  LSecond := TLQColligoList<Integer>.Create;
   try
     LSecond.AddRange([1, 2, 4]);
     LResult := FList.AsEnumerable.SequenceEqual(LSecond.AsEnumerable);
@@ -2267,8 +2267,8 @@ end;
 
 procedure TListTest.TestListOrderByDescending;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FList.AddRange([3, 1, 4, 1, 5]);
   LOrdered := FList.AsEnumerable.OrderByDesc(
@@ -2284,16 +2284,16 @@ end;
 
 procedure TListTest.TestList_SelectMany;
 var
-  LList: IFluentList<string>;
-  LFiltered: IFluentEnumerable<Char>;
-  LResult: IFluentArray<Char>;
+  LList: ILQColligoList<string>;
+  LFiltered: ILQColligoEnumerable<Char>;
+  LResult: ILQColligoArray<Char>;
 begin
-  LList := TFluentList<string>.Create;
+  LList := TLQColligoList<string>.Create;
   LList.AddRange(['abc', 'def']);
   LFiltered := LList.AsEnumerable.SelectMany<Char>(
-    function(x: string; i: integer): IFluentArray<Char>
+    function(x: string; i: integer): ILQColligoArray<Char>
     begin
-      Result := TFluentArray<Char>.Create([x[1], x[1]]);
+      Result := TLQColligoArray<Char>.Create([x[1], x[1]]);
     end);
   LResult := LFiltered.ToArray;
   Assert.AreEqual(4, LResult.Length, 'FlatMap deve retornar 4 caracteres');
@@ -2303,17 +2303,17 @@ end;
 
 procedure TListTest.TestList_SelectManyAutoManaged;
 var
-  LList: IFluentList<string>;
-  LEnum: IFluentEnumerable<string>;
-  LFiltered: IFluentEnumerable<Char>;
-  LResult: IFluentArray<Char>;
+  LList: ILQColligoList<string>;
+  LEnum: ILQColligoEnumerable<string>;
+  LFiltered: ILQColligoEnumerable<Char>;
+  LResult: ILQColligoArray<Char>;
 begin
-  LList := TFluentList<string>.Create(['abc', 'def']);
+  LList := TLQColligoList<string>.Create(['abc', 'def']);
   LEnum := LList.AsEnumerable;
   LFiltered := LEnum.SelectMany<Char>(
-    function(x: string; i: integer): IFluentArray<Char>
+    function(x: string; i: integer): ILQColligoArray<Char>
     begin
-      Result := TFluentArray<Char>.Create([x[1], x[1]]);
+      Result := TLQColligoArray<Char>.Create([x[1], x[1]]);
     end);
   LResult := LFiltered.ToArray;
   Assert.AreEqual(4, LResult.Length, 'FlatMap deve retornar 4 caracteres');
@@ -2371,10 +2371,10 @@ end;
 // Buggy code re-sorted by K2 alone, destroying the primary order.
 procedure TListTest.TestListOrderByThenBy;
 var
-  LList: IFluentList<TOrderRec>;
-  LArr: IFluentArray<TOrderRec>;
+  LList: ILQColligoList<TOrderRec>;
+  LArr: ILQColligoArray<TOrderRec>;
 begin
-  LList := TFluentList<TOrderRec>.Create;
+  LList := TLQColligoList<TOrderRec>.Create;
   LList.Add(MakeOrderRec(2, 1, 0));
   LList.Add(MakeOrderRec(1, 2, 1));
   LList.Add(MakeOrderRec(1, 1, 2));
@@ -2403,10 +2403,10 @@ end;
 
 procedure TListTest.TestListOrderByThenByDescending;
 var
-  LList: IFluentList<TOrderRec>;
-  LArr: IFluentArray<TOrderRec>;
+  LList: ILQColligoList<TOrderRec>;
+  LArr: ILQColligoArray<TOrderRec>;
 begin
-  LList := TFluentList<TOrderRec>.Create;
+  LList := TLQColligoList<TOrderRec>.Create;
   LList.Add(MakeOrderRec(2, 1, 0));
   LList.Add(MakeOrderRec(1, 2, 1));
   LList.Add(MakeOrderRec(1, 1, 2));
@@ -2436,9 +2436,9 @@ end;
 // ThenBy is only valid directly after an ordering operator (IOrderedEnumerable).
 procedure TListTest.TestListThenByWithoutOrderByRaises;
 var
-  LList: IFluentList<TOrderRec>;
+  LList: ILQColligoList<TOrderRec>;
 begin
-  LList := TFluentList<TOrderRec>.Create;
+  LList := TLQColligoList<TOrderRec>.Create;
   LList.Add(MakeOrderRec(1, 1, 0));
   Assert.WillRaise(
     procedure
@@ -2457,12 +2457,12 @@ end;
 // in the source collapse to a single result and the second set stays intact.
 procedure TListTest.TestListIntersectDistinct;
 var
-  L1, L2: IFluentList<Integer>;
-  LArr: IFluentArray<Integer>;
+  L1, L2: ILQColligoList<Integer>;
+  LArr: ILQColligoArray<Integer>;
 begin
-  L1 := TFluentList<Integer>.Create;
+  L1 := TLQColligoList<Integer>.Create;
   L1.AddRange([1, 1, 2, 3, 2]);
-  L2 := TFluentList<Integer>.Create;
+  L2 := TLQColligoList<Integer>.Create;
   L2.AddRange([1, 2]);
   LArr := L1.AsEnumerable.Intersect(L2.AsEnumerable).ToArray;
   Assert.AreEqual(2, LArr.Length, 'Intersect must be distinct: {1,2}');
@@ -2475,12 +2475,12 @@ end;
 // raised EListError on a duplicate key).
 procedure TListTest.TestListIntersectSecondWithDuplicates;
 var
-  L1, L2: IFluentList<Integer>;
-  LArr: IFluentArray<Integer>;
+  L1, L2: ILQColligoList<Integer>;
+  LArr: ILQColligoArray<Integer>;
 begin
-  L1 := TFluentList<Integer>.Create;
+  L1 := TLQColligoList<Integer>.Create;
   L1.AddRange([1, 2, 3]);
-  L2 := TFluentList<Integer>.Create;
+  L2 := TLQColligoList<Integer>.Create;
   L2.AddRange([2, 2, 3, 3]);
   LArr := L1.AsEnumerable.Intersect(L2.AsEnumerable).ToArray;
   Assert.AreEqual(2, LArr.Length, 'Intersect with duplicate second: {2,3}');
@@ -2491,10 +2491,10 @@ end;
 // ToArray must be non-destructive (LINQ semantics): the source list stays intact.
 procedure TListTest.TestListToArrayNonDestructive;
 var
-  LList: IFluentList<Integer>;
-  LArr1, LArr2: IFluentArray<Integer>;
+  LList: ILQColligoList<Integer>;
+  LArr1, LArr2: ILQColligoArray<Integer>;
 begin
-  LList := TFluentList<Integer>.Create;
+  LList := TLQColligoList<Integer>.Create;
   LList.AddRange([1, 2, 3]);
   LArr1 := LList.ToArray;
   LArr2 := LList.ToArray;
@@ -2503,16 +2503,16 @@ begin
   Assert.AreEqual(3, LList.Count, 'Source list must be intact after ToArray');
 end;
 
-// TFluentList.From must not leak the wrapper (FastMM FullDebugMode fails on leak).
+// TLQColligoList.From must not leak the wrapper (FastMM FullDebugMode fails on leak).
 procedure TListTest.TestListFromDoesNotLeak;
 var
   LSrc: TList<Integer>;
-  LArr: IFluentArray<Integer>;
+  LArr: ILQColligoArray<Integer>;
 begin
   LSrc := TList<Integer>.Create;
   try
     LSrc.AddRange([1, 2, 3]);
-    LArr := TFluentList<Integer>.From(LSrc).ToArray;
+    LArr := TLQColligoList<Integer>.From(LSrc).ToArray;
     Assert.AreEqual(3, LArr.Length, 'From must enumerate all elements');
   finally
     LSrc.Free;

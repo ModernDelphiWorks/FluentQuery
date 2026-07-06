@@ -22,21 +22,21 @@ uses
   LQColligo;
 
 type
-TFluentSelectManyCollectionIndexedEnumerable<T, TCollection, TResult> = class(TFluentEnumerableBase<TResult>)
+TLQColligoSelectManyCollectionIndexedEnumerable<T, TCollection, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FCollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
     FResultSelector: TFunc<T, TCollection, TResult>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
       const ACollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
       const AResultSelector: TFunc<T, TCollection, TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentSelectManyCollectionIndexedEnumerator<T, TCollection, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoSelectManyCollectionIndexedEnumerator<T, TCollection, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
     FResultSelector: TFunc<T, TCollection, TResult>;
     FCurrentArray: TArray<TCollection>;
@@ -44,7 +44,7 @@ TFluentSelectManyCollectionIndexedEnumerable<T, TCollection, TResult> = class(TF
     FSourceIndex: Integer;
     FCurrent: TResult;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
       const ACollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
       const AResultSelector: TFunc<T, TCollection, TResult>);
     function GetCurrent: TResult;
@@ -55,10 +55,10 @@ TFluentSelectManyCollectionIndexedEnumerable<T, TCollection, TResult> = class(TF
 
 implementation
 
-{ TFluentSelectManyCollectionIndexedEnumerable<T, TCollection, TResult> }
+{ TLQColligoSelectManyCollectionIndexedEnumerable<T, TCollection, TResult> }
 
-constructor TFluentSelectManyCollectionIndexedEnumerable<T, TCollection, TResult>.Create(
-  const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoSelectManyCollectionIndexedEnumerable<T, TCollection, TResult>.Create(
+  const ASource: ILQColligoEnumerableBase<T>;
   const ACollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
   const AResultSelector: TFunc<T, TCollection, TResult>);
 begin
@@ -67,16 +67,16 @@ begin
   FResultSelector := AResultSelector;
 end;
 
-function TFluentSelectManyCollectionIndexedEnumerable<T, TCollection, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoSelectManyCollectionIndexedEnumerable<T, TCollection, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.Create(
+  Result := TLQColligoSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.Create(
     FSource.GetEnumerator, FCollectionSelector, FResultSelector);
 end;
 
-{ TFluentSelectManyCollectionIndexedEnumerator<T, TCollection, TResult> }
+{ TLQColligoSelectManyCollectionIndexedEnumerator<T, TCollection, TResult> }
 
-constructor TFluentSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.Create(
-  const ASource: IFluentEnumerator<T>;
+constructor TLQColligoSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.Create(
+  const ASource: ILQColligoEnumerator<T>;
   const ACollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
   const AResultSelector: TFunc<T, TCollection, TResult>);
 begin
@@ -87,12 +87,12 @@ begin
   FSourceIndex := -1;
 end;
 
-function TFluentSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.GetCurrent: TResult;
+function TLQColligoSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.MoveNext: Boolean;
+function TLQColligoSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.MoveNext: Boolean;
 var
   LSourceItem: T;
 begin
@@ -124,7 +124,7 @@ begin
   end;
 end;
 
-procedure TFluentSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.Reset;
+procedure TLQColligoSelectManyCollectionIndexedEnumerator<T, TCollection, TResult>.Reset;
 begin
   FSource.Reset;
   FIndex := -1;

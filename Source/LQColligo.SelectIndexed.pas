@@ -22,23 +22,23 @@ uses
   LQColligo;
 
 type
-  TFluentSelectIndexedEnumerable<T, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoSelectIndexedEnumerable<T, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FSelector: TFunc<T, Integer, TResult>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ASelector: TFunc<T, Integer, TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ASelector: TFunc<T, Integer, TResult>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentSelectIndexedEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoSelectIndexedEnumerator<T, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSelector: TFunc<T, Integer, TResult>;
     FIndex: Integer;
     FCurrent: TResult;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASelector: TFunc<T, Integer, TResult>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASelector: TFunc<T, Integer, TResult>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
     procedure Reset;
@@ -47,36 +47,36 @@ type
 
 implementation
 
-{ TFluentSelectIndexedEnumerable<T, TResult> }
+{ TLQColligoSelectIndexedEnumerable<T, TResult> }
 
-constructor TFluentSelectIndexedEnumerable<T, TResult>.Create(
-  const ASource: IFluentEnumerableBase<T>; const ASelector: TFunc<T, Integer, TResult>);
+constructor TLQColligoSelectIndexedEnumerable<T, TResult>.Create(
+  const ASource: ILQColligoEnumerableBase<T>; const ASelector: TFunc<T, Integer, TResult>);
 begin
   FSource := ASource;
   FSelector := ASelector;
 end;
 
-function TFluentSelectIndexedEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoSelectIndexedEnumerable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentSelectIndexedEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
+  Result := TLQColligoSelectIndexedEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
 end;
 
-{ TFluentSelectIndexedEnumerator<T, TResult> }
+{ TLQColligoSelectIndexedEnumerator<T, TResult> }
 
-constructor TFluentSelectIndexedEnumerator<T, TResult>.Create(
-  const ASource: IFluentEnumerator<T>; const ASelector: TFunc<T, Integer, TResult>);
+constructor TLQColligoSelectIndexedEnumerator<T, TResult>.Create(
+  const ASource: ILQColligoEnumerator<T>; const ASelector: TFunc<T, Integer, TResult>);
 begin
   FSource := ASource;
   FSelector := ASelector;
   FIndex := -1;
 end;
 
-function TFluentSelectIndexedEnumerator<T, TResult>.GetCurrent: TResult;
+function TLQColligoSelectIndexedEnumerator<T, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSelectIndexedEnumerator<T, TResult>.MoveNext: Boolean;
+function TLQColligoSelectIndexedEnumerator<T, TResult>.MoveNext: Boolean;
 begin
   if FSource.MoveNext then
   begin
@@ -88,7 +88,7 @@ begin
     Result := False;
 end;
 
-procedure TFluentSelectIndexedEnumerator<T, TResult>.Reset;
+procedure TLQColligoSelectIndexedEnumerator<T, TResult>.Reset;
 begin
   FSource.Reset;
   FIndex := -1;

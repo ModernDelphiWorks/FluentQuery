@@ -25,23 +25,23 @@ uses
   LQColligo;
 
 type
-  TFluentTakeEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoTakeEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FCount: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ACount: Integer);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ACount: Integer);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentTakeEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoTakeEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCount: Integer;
     FCurrentIndex: Integer;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -49,26 +49,26 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentTakeQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoTakeQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FSource: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
     FCount: Integer;
-    FProvider: IFluentQueryProvider<T>;
+    FProvider: ILQColligoQueryProvider<T>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const ACount: Integer;
-      const AProvider: IFluentQueryProvider<T> = nil);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const ACount: Integer;
+      const AProvider: ILQColligoQueryProvider<T> = nil);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   end;
 
-  TFluentTakeQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoTakeQueryableEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCount: Integer;
     FCurrentIndex: Integer;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -78,34 +78,34 @@ type
 
 implementation
 
-{ TFluentTakeEnumerable<T> }
+{ TLQColligoTakeEnumerable<T> }
 
-constructor TFluentTakeEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const ACount: Integer);
+constructor TLQColligoTakeEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
 end;
 
-function TFluentTakeEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoTakeEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentTakeEnumerator<T>.Create(FSource.GetEnumerator, FCount);
+  Result := TLQColligoTakeEnumerator<T>.Create(FSource.GetEnumerator, FCount);
 end;
 
-{ TFluentTakeEnumerator<T> }
+{ TLQColligoTakeEnumerator<T> }
 
-constructor TFluentTakeEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+constructor TLQColligoTakeEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
   FCurrentIndex := 0;
 end;
 
-function TFluentTakeEnumerator<T>.GetCurrent: T;
+function TLQColligoTakeEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentTakeEnumerator<T>.MoveNext: Boolean;
+function TLQColligoTakeEnumerator<T>.MoveNext: Boolean;
 begin
   if FCurrentIndex < FCount then
   begin
@@ -122,29 +122,29 @@ begin
     Result := False;
 end;
 
-procedure TFluentTakeEnumerator<T>.Reset;
+procedure TLQColligoTakeEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FCurrentIndex := 0;
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentTakeQueryable<T> }
+{ TLQColligoTakeQueryable<T> }
 
-constructor TFluentTakeQueryable<T>.Create(const ASource: IFluentQueryableBase<T>;
-  const ACount: Integer; const AProvider: IFluentQueryProvider<T>);
+constructor TLQColligoTakeQueryable<T>.Create(const ASource: ILQColligoQueryableBase<T>;
+  const ACount: Integer; const AProvider: ILQColligoQueryProvider<T>);
 begin
   FSource := ASource;
   FCount := ACount;
   FProvider := AProvider;
 end;
 
-function TFluentTakeQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoTakeQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentTakeQueryableEnumerator<T>.Create(FSource.GetEnumerator, FCount);
+  Result := TLQColligoTakeQueryableEnumerator<T>.Create(FSource.GetEnumerator, FCount);
 end;
 
-function TFluentTakeQueryable<T>.BuildQuery: string;
+function TLQColligoTakeQueryable<T>.BuildQuery: string;
 begin
   // Placeholder: traduzir Take pra SQL (ex.: LIMIT ou TOP)
   Result := FSource.BuildQuery + ' LIMIT ' + IntToStr(FCount);
@@ -152,9 +152,9 @@ begin
   // Nota: Dependendo do banco (ex.: SQL Server usa TOP), tu pode precisar ajustar via FProvider
 end;
 
-{ TFluentTakeQueryableEnumerator<T> }
+{ TLQColligoTakeQueryableEnumerator<T> }
 
-constructor TFluentTakeQueryableEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
+constructor TLQColligoTakeQueryableEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
   const ACount: Integer);
 begin
   FSource := ASource;
@@ -162,12 +162,12 @@ begin
   FCurrentIndex := 0;
 end;
 
-function TFluentTakeQueryableEnumerator<T>.GetCurrent: T;
+function TLQColligoTakeQueryableEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentTakeQueryableEnumerator<T>.MoveNext: Boolean;
+function TLQColligoTakeQueryableEnumerator<T>.MoveNext: Boolean;
 begin
   if FCurrentIndex < FCount then
   begin
@@ -184,7 +184,7 @@ begin
     Result := False;
 end;
 
-procedure TFluentTakeQueryableEnumerator<T>.Reset;
+procedure TLQColligoTakeQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FCurrentIndex := 0;

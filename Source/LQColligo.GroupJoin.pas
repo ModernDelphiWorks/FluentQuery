@@ -28,32 +28,32 @@ uses
   LQColligo.Adapters;
 
 type
-  TFluentGroupJoinEnumerable<T, TInner, TKey, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoGroupJoinEnumerable<T, TInner, TKey, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FInner: IFluentEnumerableBase<TInner>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FInner: ILQColligoEnumerableBase<TInner>;
     FOuterKeySelector: TFunc<T, TKey>;
     FInnerKeySelector: TFunc<TInner, TKey>;
-    FResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>;
+    FResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const AInner: IFluentEnumerableBase<TInner>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const AInner: ILQColligoEnumerableBase<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-      const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+      const AResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentGroupJoinEnumerator<T, TInner, TKey, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FInner: TList<TInner>;
     FOuterKeySelector: TFunc<T, TKey>;
     FInnerKeySelector: TFunc<TInner, TKey>;
-    FResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>;
+    FResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>;
     FCurrent: TResult;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const AInner: IFluentEnumerator<TInner>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const AInner: ILQColligoEnumerator<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-      const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
+      const AResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>);
     destructor Destroy; override;
     function GetCurrent: TResult;
     function MoveNext: Boolean;
@@ -63,11 +63,11 @@ type
 
 implementation
 
-{ TFluentGroupJoinEnumerable<T, TInner, TKey, TResult> }
+{ TLQColligoGroupJoinEnumerable<T, TInner, TKey, TResult> }
 
-constructor TFluentGroupJoinEnumerable<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerableBase<T>;
-  const AInner: IFluentEnumerableBase<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
-  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
+constructor TLQColligoGroupJoinEnumerable<T, TInner, TKey, TResult>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const AInner: ILQColligoEnumerableBase<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
+  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>);
 begin
   FSource := ASource;
   FInner := AInner;
@@ -76,17 +76,17 @@ begin
   FResultSelector := AResultSelector;
 end;
 
-function TFluentGroupJoinEnumerable<T, TInner, TKey, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoGroupJoinEnumerable<T, TInner, TKey, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Create(FSource.GetEnumerator, FInner.GetEnumerator,
+  Result := TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult>.Create(FSource.GetEnumerator, FInner.GetEnumerator,
     FOuterKeySelector, FInnerKeySelector, FResultSelector);
 end;
 
-{ TFluentGroupJoinEnumerator<T, TInner, TKey, TResult> }
+{ TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult> }
 
-constructor TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerator<T>;
-  const AInner: IFluentEnumerator<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
-  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
+constructor TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult>.Create(const ASource: ILQColligoEnumerator<T>;
+  const AInner: ILQColligoEnumerator<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
+  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>);
 begin
   FSource := ASource;
   FInner := TList<TInner>.Create;
@@ -97,27 +97,27 @@ begin
     FInner.Add(AInner.Current);
 end;
 
-destructor TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Destroy;
+destructor TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult>.Destroy;
 begin
   FInner.Free;
   inherited;
 end;
 
-function TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.GetCurrent: TResult;
+function TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.MoveNext: Boolean;
+function TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult>.MoveNext: Boolean;
 var
   LOuterKey: TKey;
-  LMatches: IFluentEnumerable<TInner>;
-  LWrapper: IFluentEnumerableAdapter<TInner>;
+  LMatches: ILQColligoEnumerable<TInner>;
+  LWrapper: ILQColligoEnumerableAdapter<TInner>;
 begin
   if FSource.MoveNext then
   begin
     LOuterKey := FOuterKeySelector(FSource.Current);
-    LMatches := IFluentEnumerable<TInner>.Create(TListAdapter<TInner>.Create(FInner)).Where(
+    LMatches := ILQColligoEnumerable<TInner>.Create(TListAdapter<TInner>.Create(FInner)).Where(
       function(Item: TInner): Boolean
       begin
         Result := TComparer<TKey>.Default.Compare(LOuterKey, FInnerKeySelector(Item)) = 0;
@@ -130,7 +130,7 @@ begin
     Result := False;
 end;
 
-procedure TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Reset;
+procedure TLQColligoGroupJoinEnumerator<T, TInner, TKey, TResult>.Reset;
 begin
   FSource.Reset;
 end;

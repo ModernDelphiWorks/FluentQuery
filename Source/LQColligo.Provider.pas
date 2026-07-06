@@ -44,7 +44,7 @@ uses
   LQColligo.Expression;
 
 type
-  TFluentQueryProvider<T> = class(TInterfacedObject, IFluentQueryProvider<T>)
+  TLQColligoQueryProvider<T> = class(TInterfacedObject, ILQColligoQueryProvider<T>)
   private
     FFluentSQL: IFluentSQLAST;
     FConnection: IDBConnection;
@@ -56,7 +56,7 @@ type
     FRegister: TFluentSQLRegister;
     FIsObject: Boolean;
     FSavedColumns: IFluentSQLNames;
-    function _CreateJoin(AJoinType: TJoinType; const ATableName: String): IFluentQueryProvider<T>;
+    function _CreateJoin(AJoinType: TJoinType; const ATableName: String): ILQColligoQueryProvider<T>;
     function _GetDriverDatabase: TFluentSQLDriver;
     procedure _InitializeConnection(const AInitializer: TConnectionInitializer); overload;
     procedure _InitializeConnection(const ADriver: TDriverName; const AConnection: IDBConnection); overload;
@@ -71,121 +71,121 @@ type
     type
       TStrictPrivateCreate<T> = class
       public
-        class function CreateProvider(const AInitializer: TConnectionInitializer): TFluentQueryProvider<T>; overload; static;
-        class function CreateProvider(const ADriver: TDriverName; const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST = nil): TFluentQueryProvider<T>; overload; static;
+        class function CreateProvider(const AInitializer: TConnectionInitializer): TLQColligoQueryProvider<T>; overload; static;
+        class function CreateProvider(const ADriver: TDriverName; const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST = nil): TLQColligoQueryProvider<T>; overload; static;
       end;
   public
-    function AndOpe(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function AndOpe(const AExpression: string): IFluentQueryProvider<T>; overload;
-    function Alias(const AAlias: string): IFluentQueryProvider<T>;
-    function Clear: IFluentQueryProvider<T>;
-    function ClearAll: IFluentQueryProvider<T>;
-    function All: IFluentQueryProvider<T>;
-    function Column(const AColumnName: string = ''): IFluentQueryProvider<T>; overload;
-    function Column(const ATableName: string; const AColumnName: string): IFluentQueryProvider<T>; overload;
-    function Column(const AColumnsName: array of const): IFluentQueryProvider<T>; overload;
-    function Delete: IFluentQueryProvider<T>;
-    function Desc: IFluentQueryProvider<T>;
-    function DistinctSQL: IFluentQueryProvider<T>;
+    function AndOpe(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function AndOpe(const AExpression: string): ILQColligoQueryProvider<T>; overload;
+    function Alias(const AAlias: string): ILQColligoQueryProvider<T>;
+    function Clear: ILQColligoQueryProvider<T>;
+    function ClearAll: ILQColligoQueryProvider<T>;
+    function All: ILQColligoQueryProvider<T>;
+    function Column(const AColumnName: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Column(const ATableName: string; const AColumnName: string): ILQColligoQueryProvider<T>; overload;
+    function Column(const AColumnsName: array of const): ILQColligoQueryProvider<T>; overload;
+    function Delete: ILQColligoQueryProvider<T>;
+    function Desc: ILQColligoQueryProvider<T>;
+    function DistinctSQL: ILQColligoQueryProvider<T>;
     function IsEmpty: Boolean;
-    function Select(const AColumns: string = ''): IFluentQueryProvider<T>; overload;
-    function From(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function From(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function GroupBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
-    function Having(const AExpression: string = ''): IFluentQueryProvider<T>; overload;
-    function Having(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function Insert: IFluentQueryProvider<T>;
-    function Into(const ATableName: string): IFluentQueryProvider<T>;
-    function FullJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function InnerJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function LeftJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function RightJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function FullJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function InnerJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function LeftJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function RightJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function OnCond(const AExpression: string): IFluentQueryProvider<T>; overload;
-    function OnCond(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function OrOpe(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function OrOpe(const AExpression: string): IFluentQueryProvider<T>; overload;
-    function OrderBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
-    function SetValue(const AColumnName, AColumnValue: string): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Extended; ADecimalPlaces: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Double; ADecimalPlaces: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Currency; ADecimalPlaces: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: array of const): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: TDate): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: TGUID): IFluentQueryProvider<T>; overload;
-    function Values(const AColumnName, AColumnValue: string): IFluentQueryProvider<T>; overload;
-    function Values(const AColumnName: string; const AColumnValue: array of const): IFluentQueryProvider<T>; overload;
-    function First(const AValue: Integer): IFluentQueryProvider<T>;
-    function Skip(const AValue: Integer): IFluentQueryProvider<T>;
-    function Update(const ATableName: string): IFluentQueryProvider<T>;
-    function Where(const AExpression: string = ''): IFluentQueryProvider<T>; overload;
-    function Where(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: string = ''): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: TGUID): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: string = ''): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: TGUID): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function IsNull: IFluentQueryProvider<T>;
-    function IsNotNull: IFluentQueryProvider<T>;
-    function Like(const AValue: string): IFluentQueryProvider<T>;
-    function LikeFull(const AValue: string): IFluentQueryProvider<T>;
-    function LikeLeft(const AValue: string): IFluentQueryProvider<T>;
-    function LikeRight(const AValue: string): IFluentQueryProvider<T>;
-    function NotLike(const AValue: string): IFluentQueryProvider<T>;
-    function NotLikeFull(const AValue: string): IFluentQueryProvider<T>;
-    function NotLikeLeft(const AValue: string): IFluentQueryProvider<T>;
-    function NotLikeRight(const AValue: string): IFluentQueryProvider<T>;
-    function InValues(const AValue: TArray<Double>): IFluentQueryProvider<T>; overload;
-    function InValues(const AValue: TArray<string>): IFluentQueryProvider<T>; overload;
-    function InValues(const AValue: string): IFluentQueryProvider<T>; overload;
-    function NotIn(const AValue: TArray<Double>): IFluentQueryProvider<T>; overload;
-    function NotIn(const AValue: TArray<string>): IFluentQueryProvider<T>; overload;
-    function NotIn(const AValue: string): IFluentQueryProvider<T>; overload;
-    function Exists(const AValue: string): IFluentQueryProvider<T>;
-    function NotExists(const AValue: string): IFluentQueryProvider<T>;
-    function Count: IFluentQueryProvider<T>;
-    function Lower: IFluentQueryProvider<T>;
-    function Min: IFluentQueryProvider<T>; overload;
-    function Max: IFluentQueryProvider<T>;
-    function Upper: IFluentQueryProvider<T>;
-    function SubString(const AStart: Integer; const ALength: Integer): IFluentQueryProvider<T>;
-    function Date(const AValue: string): IFluentQueryProvider<T>;
-    function Day(const AValue: string): IFluentQueryProvider<T>;
-    function Month(const AValue: string): IFluentQueryProvider<T>;
-    function Year(const AValue: string): IFluentQueryProvider<T>;
-    function Concat(const AValue: array of string): IFluentQueryProvider<T>;
-    function Sum(const AColumn: string; const AAlias: string = ''): IFluentQueryProvider<T>;
-    function Average(const AColumn: string; const AAlias: string = ''): IFluentQueryProvider<T>;
-    function ToArray: IFluentArray<T>;
-    function ToList: IFluentList<T>;
+    function Select(const AColumns: string = ''): ILQColligoQueryProvider<T>; overload;
+    function From(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function From(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function GroupBy(const AColumnName: string = ''): ILQColligoQueryProvider<T>;
+    function Having(const AExpression: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Having(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function Insert: ILQColligoQueryProvider<T>;
+    function Into(const ATableName: string): ILQColligoQueryProvider<T>;
+    function FullJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function InnerJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function LeftJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function RightJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function FullJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function InnerJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function LeftJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function RightJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function OnCond(const AExpression: string): ILQColligoQueryProvider<T>; overload;
+    function OnCond(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function OrOpe(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function OrOpe(const AExpression: string): ILQColligoQueryProvider<T>; overload;
+    function OrderBy(const AColumnName: string = ''): ILQColligoQueryProvider<T>;
+    function SetValue(const AColumnName, AColumnValue: string): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Extended; ADecimalPlaces: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Double; ADecimalPlaces: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Currency; ADecimalPlaces: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: array of const): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: TGUID): ILQColligoQueryProvider<T>; overload;
+    function Values(const AColumnName, AColumnValue: string): ILQColligoQueryProvider<T>; overload;
+    function Values(const AColumnName: string; const AColumnValue: array of const): ILQColligoQueryProvider<T>; overload;
+    function First(const AValue: Integer): ILQColligoQueryProvider<T>;
+    function Skip(const AValue: Integer): ILQColligoQueryProvider<T>;
+    function Update(const ATableName: string): ILQColligoQueryProvider<T>;
+    function Where(const AExpression: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Where(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: TGUID): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: string = ''): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: TGUID): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function IsNull: ILQColligoQueryProvider<T>;
+    function IsNotNull: ILQColligoQueryProvider<T>;
+    function Like(const AValue: string): ILQColligoQueryProvider<T>;
+    function LikeFull(const AValue: string): ILQColligoQueryProvider<T>;
+    function LikeLeft(const AValue: string): ILQColligoQueryProvider<T>;
+    function LikeRight(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLike(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLikeFull(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLikeLeft(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLikeRight(const AValue: string): ILQColligoQueryProvider<T>;
+    function InValues(const AValue: TArray<Double>): ILQColligoQueryProvider<T>; overload;
+    function InValues(const AValue: TArray<string>): ILQColligoQueryProvider<T>; overload;
+    function InValues(const AValue: string): ILQColligoQueryProvider<T>; overload;
+    function NotIn(const AValue: TArray<Double>): ILQColligoQueryProvider<T>; overload;
+    function NotIn(const AValue: TArray<string>): ILQColligoQueryProvider<T>; overload;
+    function NotIn(const AValue: string): ILQColligoQueryProvider<T>; overload;
+    function Exists(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotExists(const AValue: string): ILQColligoQueryProvider<T>;
+    function Count: ILQColligoQueryProvider<T>;
+    function Lower: ILQColligoQueryProvider<T>;
+    function Min: ILQColligoQueryProvider<T>; overload;
+    function Max: ILQColligoQueryProvider<T>;
+    function Upper: ILQColligoQueryProvider<T>;
+    function SubString(const AStart: Integer; const ALength: Integer): ILQColligoQueryProvider<T>;
+    function Date(const AValue: string): ILQColligoQueryProvider<T>;
+    function Day(const AValue: string): ILQColligoQueryProvider<T>;
+    function Month(const AValue: string): ILQColligoQueryProvider<T>;
+    function Year(const AValue: string): ILQColligoQueryProvider<T>;
+    function Concat(const AValue: array of string): ILQColligoQueryProvider<T>;
+    function Sum(const AColumn: string; const AAlias: string = ''): ILQColligoQueryProvider<T>;
+    function Average(const AColumn: string; const AAlias: string = ''): ILQColligoQueryProvider<T>;
+    function ToArray: ILQColligoArray<T>;
+    function ToList: ILQColligoList<T>;
     function AsString: string;
     function Database: TDriverName;
     function Connection: IDBConnection;
@@ -196,7 +196,7 @@ implementation
 uses
   LQColligo.Parse;
 
-constructor TFluentQueryProvider<T>.Create(const AInitializer: TConnectionInitializer);
+constructor TLQColligoQueryProvider<T>.Create(const AInitializer: TConnectionInitializer);
 begin
   inherited Create;
   _InitializeConnection(AInitializer);
@@ -209,7 +209,7 @@ begin
   FSavedColumns := TFluentSQLNames.Create;
 end;
 
-constructor TFluentQueryProvider<T>.Create(const ADriver: TDriverName;
+constructor TLQColligoQueryProvider<T>.Create(const ADriver: TDriverName;
   const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST);
 begin
   inherited Create;
@@ -227,7 +227,7 @@ begin
   FSavedColumns := TFluentSQLNames.Create;
 end;
 
-constructor TFluentQueryProvider<T>.Create;
+constructor TLQColligoQueryProvider<T>.Create;
 begin
   raise Exception.CreateFmt(
     'Class %s cannot be instantiated directly using Create. ' +
@@ -235,7 +235,7 @@ begin
   );
 end;
 
-destructor TFluentQueryProvider<T>.Destroy;
+destructor TLQColligoQueryProvider<T>.Destroy;
 begin
   FFluentSQL := nil;
   FActiveExpr := nil;
@@ -247,21 +247,21 @@ begin
   inherited;
 end;
 
-function TFluentQueryProvider<T>.AndOpe(const AExpression: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.AndOpe(const AExpression: array of const): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.AndOpe(TUtils.SqlParamsToStr(AExpression));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.AndOpe(const AExpression: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.AndOpe(const AExpression: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.AndOpe(AExpression);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Alias(const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Alias(const AAlias: string): ILQColligoQueryProvider<T>;
 begin
   if FFluentSQL.Select.TableNames.Count > 0 then
     FFluentSQL.Select.TableNames[FFluentSQL.Select.TableNames.Count - 1].Alias := AAlias
@@ -270,21 +270,21 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Clear: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Clear: ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Clear;
   FSavedColumns.Clear;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.ClearAll: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.ClearAll: ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Clear;
   FSavedColumns.Clear;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.All: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.All: ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.Columns.Clear;
   FFluentSQL.Select.Columns.Add.Name := '*';
@@ -293,37 +293,37 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Column(const AColumnName: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Column(const AColumnName: string = ''): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.Columns.Add.Name := AColumnName;
   FSavedColumns.Add.Name := AColumnName;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Column(const ATableName: string; const AColumnName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Column(const ATableName: string; const AColumnName: string): ILQColligoQueryProvider<T>;
 begin
   Result := Column(ATableName + '.' + AColumnName);
 end;
 
-function TFluentQueryProvider<T>.Column(const AColumnsName: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Column(const AColumnsName: array of const): ILQColligoQueryProvider<T>;
 begin
   Result := Column(TUtils.SqlParamsToStr(AColumnsName));
 end;
 
-function TFluentQueryProvider<T>.Delete: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Delete: ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Delete.TableNames.Clear;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Desc: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Desc: ILQColligoQueryProvider<T>;
 begin
   if FFluentSQL.OrderBy.Columns.Count > 0 then
     (FFluentSQL.OrderBy.Columns[FFluentSQL.OrderBy.Columns.Count - 1] as IFluentSQLOrderByColumn).Direction := dirDescending;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.DistinctSQL: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.DistinctSQL: ILQColligoQueryProvider<T>;
 var
   LQualifier: IFluentSQLSelectQualifier;
 begin
@@ -332,12 +332,12 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.IsEmpty: Boolean;
+function TLQColligoQueryProvider<T>.IsEmpty: Boolean;
 begin
   Result := FFluentSQL.IsEmpty;
 end;
 
-function TFluentQueryProvider<T>.Select(const AColumns: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Select(const AColumns: string = ''): ILQColligoQueryProvider<T>;
 var
   LColumns: TArray<string>;
   I: Integer;
@@ -361,14 +361,14 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.From(const ATableName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.From(const ATableName: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.TableNames.Clear;
   FFluentSQL.Select.TableNames.Add.Name := ATableName;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.From(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.From(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.TableNames.Clear;
   FFluentSQL.Select.TableNames.Add.Name := ATableName;
@@ -376,7 +376,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GroupBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GroupBy(const AColumnName: string = ''): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.GroupBy.Columns.Clear;
   if AColumnName <> '' then
@@ -384,7 +384,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Having(const AExpression: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Having(const AExpression: string = ''): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Having.Expression.Clear;
   if AExpression <> '' then
@@ -392,73 +392,73 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Having(const AExpression: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Having(const AExpression: array of const): ILQColligoQueryProvider<T>;
 begin
   Result := Having(TUtils.SqlParamsToStr(AExpression));
 end;
 
-function TFluentQueryProvider<T>.Insert: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Insert: ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Insert.Columns.Clear;
   FActiveValues := FFluentSQL.Insert.Values;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Into(const ATableName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Into(const ATableName: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Insert.TableName := ATableName;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.FullJoin(const ATableName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.FullJoin(const ATableName: string): ILQColligoQueryProvider<T>;
 begin
   Result := _CreateJoin(jtFULL, ATableName);
 end;
 
-function TFluentQueryProvider<T>.InnerJoin(const ATableName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.InnerJoin(const ATableName: string): ILQColligoQueryProvider<T>;
 begin
   Result := _CreateJoin(jtINNER, ATableName);
 end;
 
-function TFluentQueryProvider<T>.LeftJoin(const ATableName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LeftJoin(const ATableName: string): ILQColligoQueryProvider<T>;
 begin
   Result := _CreateJoin(jtLEFT, ATableName);
 end;
 
-function TFluentQueryProvider<T>.RightJoin(const ATableName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.RightJoin(const ATableName: string): ILQColligoQueryProvider<T>;
 begin
   Result := _CreateJoin(jtRIGHT, ATableName);
 end;
 
-function TFluentQueryProvider<T>.FullJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.FullJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>;
 begin
   FullJoin(ATableName);
   FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.InnerJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.InnerJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>;
 begin
   InnerJoin(ATableName);
   FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LeftJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LeftJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>;
 begin
   LeftJoin(ATableName);
   FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.RightJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.RightJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>;
 begin
   RightJoin(ATableName);
   FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>._CreateJoin(AJoinType: TJoinType; const ATableName: String): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>._CreateJoin(AJoinType: TJoinType; const ATableName: String): ILQColligoQueryProvider<T>;
 var
   LJoin: IFluentSQLJoin;
 begin
@@ -469,12 +469,12 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>._GetFluentSQL: IFluentSQLAST;
+function TLQColligoQueryProvider<T>._GetFluentSQL: IFluentSQLAST;
 begin
   Result := FFluentSQL;
 end;
 
-function TFluentQueryProvider<T>._GetDriverDatabase: TFluentSQLDriver;
+function TLQColligoQueryProvider<T>._GetDriverDatabase: TFluentSQLDriver;
 begin
   case FDatabase of
     dnMSSQL: Result := dbnMSSQL;
@@ -495,7 +495,7 @@ begin
   end;
 end;
 
-procedure TFluentQueryProvider<T>._InitializeConnection(const ADriver: TDriverName;
+procedure TLQColligoQueryProvider<T>._InitializeConnection(const ADriver: TDriverName;
   const AConnection: IDBConnection);
 begin
   if AConnection = nil then
@@ -507,12 +507,12 @@ begin
   FConnection := AConnection;
 end;
 
-procedure TFluentQueryProvider<T>._SetFluentSQL(const Value: IFluentSQLAST);
+procedure TLQColligoQueryProvider<T>._SetFluentSQL(const Value: IFluentSQLAST);
 begin
   FFluentSQL := Value;
 end;
 
-procedure TFluentQueryProvider<T>._InitializeConnection(const AInitializer: TConnectionInitializer);
+procedure TLQColligoQueryProvider<T>._InitializeConnection(const AInitializer: TConnectionInitializer);
 begin
   if not Assigned(AInitializer) then
     raise EArgumentNilException.Create('Connection initializer cannot be nil');
@@ -525,33 +525,33 @@ begin
     raise EInvalidOperation.Create('Database type must be specified');
 end;
 
-function TFluentQueryProvider<T>.OnCond(const AExpression: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.OnCond(const AExpression: string): ILQColligoQueryProvider<T>;
 begin
   if FFluentSQL.Joins.Count > 0 then
     FActiveExpr.AndOpe(AExpression);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.OnCond(const AExpression: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.OnCond(const AExpression: array of const): ILQColligoQueryProvider<T>;
 begin
   Result := OnCond(TUtils.SqlParamsToStr(AExpression));
 end;
 
-function TFluentQueryProvider<T>.OrOpe(const AExpression: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.OrOpe(const AExpression: array of const): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.OrOpe(TUtils.SqlParamsToStr(AExpression));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.OrOpe(const AExpression: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.OrOpe(const AExpression: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.OrOpe(AExpression);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.OrderBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.OrderBy(const AColumnName: string = ''): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.OrderBy.Columns.Clear;
   if AColumnName <> '' then
@@ -559,7 +559,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName, AColumnValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName, AColumnValue: string): ILQColligoQueryProvider<T>;
 var
   LPair: IFluentSQLNameValue;
 begin
@@ -572,12 +572,12 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Integer): ILQColligoQueryProvider<T>;
 begin
   Result := SetValue(AColumnName, IntToStr(AColumnValue));
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Extended; ADecimalPlaces: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Extended; ADecimalPlaces: Integer): ILQColligoQueryProvider<T>;
 var
   LFormat: TFormatSettings;
 begin
@@ -585,7 +585,7 @@ begin
   Result := SetValue(AColumnName, Format('%.' + IntToStr(ADecimalPlaces) + 'f', [AColumnValue], LFormat));
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Double; ADecimalPlaces: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Double; ADecimalPlaces: Integer): ILQColligoQueryProvider<T>;
 var
   LFormat: TFormatSettings;
 begin
@@ -593,7 +593,7 @@ begin
   Result := SetValue(AColumnName, Format('%.' + IntToStr(ADecimalPlaces) + 'f', [AColumnValue], LFormat));
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Currency; ADecimalPlaces: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; AColumnValue: Currency; ADecimalPlaces: Integer): ILQColligoQueryProvider<T>;
 var
   LFormat: TFormatSettings;
 begin
@@ -601,37 +601,37 @@ begin
   Result := SetValue(AColumnName, Format('%.' + IntToStr(ADecimalPlaces) + 'f', [AColumnValue], LFormat));
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: array of const): ILQColligoQueryProvider<T>;
 begin
   Result := SetValue(AColumnName, TUtils.SqlParamsToStr(AColumnValue));
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: TDate): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: TDate): ILQColligoQueryProvider<T>;
 begin
   Result := SetValue(AColumnName, QuotedStr(TUtils.DateToSQLFormat(_GetDriverDatabase, AColumnValue)));
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: TDateTime): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: TDateTime): ILQColligoQueryProvider<T>;
 begin
   Result := SetValue(AColumnName, QuotedStr(TUtils.DateTimeToSQLFormat(_GetDriverDatabase, AColumnValue)));
 end;
 
-function TFluentQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: TGUID): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SetValue(const AColumnName: string; const AColumnValue: TGUID): ILQColligoQueryProvider<T>;
 begin
   Result := SetValue(AColumnName, TUtils.GuidStrToSQLFormat(_GetDriverDatabase, AColumnValue));
 end;
 
-function TFluentQueryProvider<T>.Values(const AColumnName, AColumnValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Values(const AColumnName, AColumnValue: string): ILQColligoQueryProvider<T>;
 begin
   Result := SetValue(AColumnName, AColumnValue);
 end;
 
-function TFluentQueryProvider<T>.Values(const AColumnName: string; const AColumnValue: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Values(const AColumnName: string; const AColumnValue: array of const): ILQColligoQueryProvider<T>;
 begin
   Result := SetValue(AColumnName, AColumnValue);
 end;
 
-function TFluentQueryProvider<T>.First(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.First(const AValue: Integer): ILQColligoQueryProvider<T>;
 var
   LQualifier: IFluentSQLSelectQualifier;
 begin
@@ -642,7 +642,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Skip(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Skip(const AValue: Integer): ILQColligoQueryProvider<T>;
 var
   LQualifier: IFluentSQLSelectQualifier;
 begin
@@ -653,14 +653,14 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Update(const ATableName: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Update(const ATableName: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Update.TableName := ATableName;
   FActiveValues := FFluentSQL.Update.Values;
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Where(const AExpression: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Where(const AExpression: string = ''): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Where.Expression.Clear;
   if AExpression <> '' then
@@ -669,334 +669,334 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Where(const AExpression: array of const): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Where(const AExpression: array of const): ILQColligoQueryProvider<T>;
 begin
   Result := Where(TUtils.SqlParamsToStr(AExpression));
 end;
 
-function TFluentQueryProvider<T>.Equal(const AValue: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Equal(const AValue: string = ''): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Equal(const AValue: Extended): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Equal(const AValue: Extended): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Equal(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Equal(const AValue: Integer): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Equal(const AValue: TDate): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Equal(const AValue: TDate): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Equal(const AValue: TDateTime): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Equal(const AValue: TDateTime): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Equal(const AValue: TGUID): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Equal(const AValue: TGUID): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotEqual(const AValue: string = ''): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotEqual(const AValue: string = ''): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotEqual(const AValue: Extended): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotEqual(const AValue: Extended): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotEqual(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotEqual(const AValue: Integer): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotEqual(const AValue: TDate): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotEqual(const AValue: TDate): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotEqual(const AValue: TDateTime): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotEqual(const AValue: TDateTime): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotEqual(const AValue: TGUID): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotEqual(const AValue: TGUID): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotEqual(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterThan(const AValue: Extended): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterThan(const AValue: Extended): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterThan(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterThan(const AValue: Integer): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterThan(const AValue: TDate): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterThan(const AValue: TDate): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterThan(const AValue: TDateTime): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterThan(const AValue: TDateTime): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterEqThan(const AValue: Extended): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterEqThan(const AValue: Extended): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterEqThan(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterEqThan(const AValue: Integer): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterEqThan(const AValue: TDate): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterEqThan(const AValue: TDate): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.GreaterEqThan(const AValue: TDateTime): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.GreaterEqThan(const AValue: TDateTime): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsGreaterEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessThan(const AValue: Extended): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessThan(const AValue: Extended): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessThan(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessThan(const AValue: Integer): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessThan(const AValue: TDate): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessThan(const AValue: TDate): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessThan(const AValue: TDateTime): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessThan(const AValue: TDateTime): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessEqThan(const AValue: Extended): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessEqThan(const AValue: Extended): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessEqThan(const AValue: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessEqThan(const AValue: Integer): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessEqThan(const AValue: TDate): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessEqThan(const AValue: TDate): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LessEqThan(const AValue: TDateTime): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LessEqThan(const AValue: TDateTime): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLessEqThan(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.IsNull: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.IsNull: ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNull);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.IsNotNull: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.IsNotNull: ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotNull);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Like(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Like(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLike(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LikeFull(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LikeFull(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLikeFull(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LikeLeft(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LikeLeft(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLikeLeft(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.LikeRight(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.LikeRight(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsLikeRight(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotLike(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotLike(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotLike(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotLikeFull(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotLikeFull(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotLikeFull(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotLikeLeft(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotLikeLeft(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotLikeLeft(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotLikeRight(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotLikeRight(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotLikeRight(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.InValues(const AValue: TArray<Double>): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.InValues(const AValue: TArray<Double>): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsIn(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.InValues(const AValue: TArray<string>): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.InValues(const AValue: TArray<string>): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsIn(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.InValues(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.InValues(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsIn(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotIn(const AValue: TArray<Double>): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotIn(const AValue: TArray<Double>): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotIn(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotIn(const AValue: TArray<string>): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotIn(const AValue: TArray<string>): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotIn(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotIn(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotIn(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotIn(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Exists(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Exists(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsExists(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.NotExists(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.NotExists(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   if Assigned(FActiveExpr) then
     FActiveExpr.Ope(FOperator.IsNotExists(AValue));
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Count: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Count: ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
   LNewColumn: IFluentSQLName;
@@ -1019,7 +1019,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Lower: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Lower: ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
@@ -1032,7 +1032,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Min: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Min: ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
@@ -1045,7 +1045,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Max: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Max: ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
@@ -1058,7 +1058,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Upper: IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Upper: ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
@@ -1071,7 +1071,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.SubString(const AStart: Integer; const ALength: Integer): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.SubString(const AStart: Integer; const ALength: Integer): ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
@@ -1084,52 +1084,52 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Database: TDriverName;
+function TLQColligoQueryProvider<T>.Database: TDriverName;
 begin
   Result := FDatabase;
 end;
 
-function TFluentQueryProvider<T>.Date(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Date(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.Columns.Add.Name := FFunction.Date(AValue);
   FSavedColumns.Add.Name := FFunction.Date(AValue);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Day(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Day(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.Columns.Add.Name := FFunction.Day(AValue);
   FSavedColumns.Add.Name := FFunction.Day(AValue);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Month(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Month(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.Columns.Add.Name := FFunction.Month(AValue);
   FSavedColumns.Add.Name := FFunction.Month(AValue);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Year(const AValue: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Year(const AValue: string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.Columns.Add.Name := FFunction.Year(AValue);
   FSavedColumns.Add.Name := FFunction.Year(AValue);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Concat(const AValue: array of string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Concat(const AValue: array of string): ILQColligoQueryProvider<T>;
 begin
   FFluentSQL.Select.Columns.Add.Name := FFunction.Concat(AValue);
   FSavedColumns.Add.Name := FFunction.Concat(AValue);
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Connection: IDBConnection;
+function TLQColligoQueryProvider<T>.Connection: IDBConnection;
 begin
   Result := FConnection;
 end;
 
-function TFluentQueryProvider<T>.Sum(const AColumn: string; const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Sum(const AColumn: string; const AAlias: string): ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
@@ -1142,7 +1142,7 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.Average(const AColumn: string; const AAlias: string): IFluentQueryProvider<T>;
+function TLQColligoQueryProvider<T>.Average(const AColumn: string; const AAlias: string): ILQColligoQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
@@ -1155,17 +1155,17 @@ begin
   Result := Self;
 end;
 
-function TFluentQueryProvider<T>.ToArray: IFluentArray<T>;
+function TLQColligoQueryProvider<T>.ToArray: ILQColligoArray<T>;
 begin
   Result := ToList.ToArray;
 end;
 
-function TFluentQueryProvider<T>.ToList: IFluentList<T>;
+function TLQColligoQueryProvider<T>.ToList: ILQColligoList<T>;
 var
   LSQL: string;
   LDataSet: IDBDataSet;
-  LParserScalar: TFluentParseScalarDataSet<T>;
-  LParserObject: TFluentParseObjectDataSet<T>;
+  LParserScalar: TLQColligoParseScalarDataSet<T>;
+  LParserObject: TLQColligoParseObjectDataSet<T>;
   LContext: TRttiContext;
   LType: TRttiType;
 begin
@@ -1197,7 +1197,7 @@ begin
 
       if LType.TypeKind in [tkClass, tkInterface] then
       begin
-        LParserObject := TFluentParseObjectDataSet<T>.Create;
+        LParserObject := TLQColligoParseObjectDataSet<T>.Create;
         try
           Result := LParserObject.ToList(LDataSet);
         finally
@@ -1206,7 +1206,7 @@ begin
       end
       else
       begin
-        LParserScalar := TFluentParseScalarDataSet<T>.Create;
+        LParserScalar := TLQColligoParseScalarDataSet<T>.Create;
         try
           Result := LParserScalar.ToList(LDataSet);
         finally
@@ -1221,7 +1221,7 @@ begin
   end;
 end;
 
-function TFluentQueryProvider<T>.AsString: string;
+function TLQColligoQueryProvider<T>.AsString: string;
 var
   LSerialize: IFluentSQLSerialize;
 begin
@@ -1231,18 +1231,18 @@ begin
     Result := LSerialize.AsString(FFluentSQL);
 end;
 
-{ TFluentQueryProvider<T>.TStrictPrivateCreate<T> }
+{ TLQColligoQueryProvider<T>.TStrictPrivateCreate<T> }
 
-class function TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(
-  const AInitializer: TConnectionInitializer): TFluentQueryProvider<T>;
+class function TLQColligoQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(
+  const AInitializer: TConnectionInitializer): TLQColligoQueryProvider<T>;
 begin
-  Result := TFluentQueryProvider<T>.Create(AInitializer);
+  Result := TLQColligoQueryProvider<T>.Create(AInitializer);
 end;
 
-class function TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(
-  const ADriver: TDriverName; const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST): TFluentQueryProvider<T>;
+class function TLQColligoQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(
+  const ADriver: TDriverName; const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST): TLQColligoQueryProvider<T>;
 begin
-  Result := TFluentQueryProvider<T>.Create(ADriver, AConnection, AFluentSQL);
+  Result := TLQColligoQueryProvider<T>.Create(ADriver, AConnection, AFluentSQL);
 end;
 
 end.

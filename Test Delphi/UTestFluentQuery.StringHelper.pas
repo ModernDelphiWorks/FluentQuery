@@ -11,7 +11,7 @@ uses
   LQColligo.Helpers;
 
 type
-  TFluentStringTest = class
+  TLQColligoStringTest = class
   public
     [Test]
     procedure TestPartition;
@@ -53,9 +53,9 @@ type
 
 implementation
 
-{ TFluentStringTest }
+{ TLQColligoStringTest }
 
-procedure TFluentStringTest.TestPartition;
+procedure TLQColligoStringTest.TestPartition;
 var
   LString, LLeft, LRight: string;
 begin
@@ -69,10 +69,10 @@ begin
   Assert.AreEqual('Hello', LRight, 'Right should contain letters');
 end;
 
-procedure TFluentStringTest.TestWhere;
+procedure TLQColligoStringTest.TestWhere;
 var
   LString: string;
-  LFiltered: IFluentArray<Char>;
+  LFiltered: ILQColligoArray<Char>;
 begin
   LString := 'Hello123';
   LFiltered := LString.Where(
@@ -85,10 +85,10 @@ begin
   Assert.AreEqual('3', LFiltered[2], 'Last digit should be 3');
 end;
 
-procedure TFluentStringTest.TestCollect;
+procedure TLQColligoStringTest.TestCollect;
 var
   LString: string;
-  LWords: IFluentArray<string>;
+  LWords: ILQColligoArray<string>;
 begin
   LString := 'Hello World';
   LWords := LString.Collect.ToArray;
@@ -97,10 +97,10 @@ begin
   Assert.AreEqual('World', LWords[1], 'Second word should be World');
 end;
 
-procedure TFluentStringTest.TestSelect;
+procedure TLQColligoStringTest.TestSelect;
 var
   LString: string;
-  LMapped: IFluentArray<Integer>;
+  LMapped: ILQColligoArray<Integer>;
 begin
   LString := 'abc';
   LMapped := LString.Select<Integer>(
@@ -113,7 +113,7 @@ begin
   Assert.AreEqual(99, LMapped[2], 'Last should be ASCII of c');
 end;
 
-procedure TFluentStringTest.TestSelectMany;
+procedure TLQColligoStringTest.TestSelectMany;
 var
   LString: string;
   LFlatMapped: TArray<Char>;
@@ -129,7 +129,7 @@ begin
   Assert.AreEqual('b', LFlatMapped[2], 'Third should be b');
 end;
 
-procedure TFluentStringTest.TestSum;
+procedure TLQColligoStringTest.TestSum;
 var
   LString: string;
 begin
@@ -137,7 +137,7 @@ begin
   Assert.AreEqual(294, LString.Sum, 'Sum should be ASCII sum of abc (97+98+99)');
 end;
 
-procedure TFluentStringTest.TestFirst;
+procedure TLQColligoStringTest.TestFirst;
 var
   LString: string;
 begin
@@ -147,7 +147,7 @@ begin
   Assert.AreEqual(#0, LString.First, 'First of empty should be #0');
 end;
 
-procedure TFluentStringTest.TestLast;
+procedure TLQColligoStringTest.TestLast;
 var
   LString: string;
 begin
@@ -157,7 +157,7 @@ begin
   Assert.AreEqual(#0, LString.Last, 'Last of empty should be #0');
 end;
 
-procedure TFluentStringTest.TestReduce;
+procedure TLQColligoStringTest.TestReduce;
 var
   LString: string;
   LResult: string;
@@ -171,7 +171,7 @@ begin
   Assert.AreEqual('abc', LResult, 'Reduce should concatenate to abc');
 end;
 
-procedure TFluentStringTest.TestExists;
+procedure TLQColligoStringTest.TestExists;
 var
   LString: string;
 begin
@@ -183,7 +183,7 @@ begin
     end), 'Should exist an l');
 end;
 
-procedure TFluentStringTest.TestAll;
+procedure TLQColligoStringTest.TestAll;
 var
   LString: string;
 begin
@@ -201,7 +201,7 @@ begin
     end), 'Not all are a');
 end;
 
-procedure TFluentStringTest.TestAny;
+procedure TLQColligoStringTest.TestAny;
 var
   LString: string;
 begin
@@ -213,10 +213,10 @@ begin
     end), 'Should have an e');
 end;
 
-procedure TFluentStringTest.TestSort;
+procedure TLQColligoStringTest.TestSort;
 var
   LString: string;
-  LSorted: IFluentArray<Char>;
+  LSorted: ILQColligoArray<Char>;
 begin
   LString := 'cba';
   LSorted := LString.Sort.ToArray;
@@ -225,10 +225,10 @@ begin
   Assert.AreEqual('c', LSorted[2], 'Last should be c');
 end;
 
-procedure TFluentStringTest.TestTake;
+procedure TLQColligoStringTest.TestTake;
 var
   LString: string;
-  LTaken: IFluentArray<Char>;
+  LTaken: ILQColligoArray<Char>;
 begin
   LString := 'Hello';
   LTaken := LString.Take(3).ToArray;
@@ -237,10 +237,10 @@ begin
   Assert.AreEqual('l', LTaken[2], 'Last should be l');
 end;
 
-procedure TFluentStringTest.TestSkip;
+procedure TLQColligoStringTest.TestSkip;
 var
   LString: string;
-  LSkipped: IFluentArray<Char>;
+  LSkipped: ILQColligoArray<Char>;
 begin
   LString := 'Hello';
   LSkipped := LString.Skip(2).ToArray;
@@ -249,13 +249,13 @@ begin
   Assert.AreEqual('o', LSkipped[2], 'Last should be o');
 end;
 
-procedure TFluentStringTest.TestGroupBy;
+procedure TLQColligoStringTest.TestGroupBy;
 var
   LString: string;
   LGroups: IGroupByEnumerable<Boolean, Char>;
-  LEnum: IFluentEnumerator<IGrouping<Boolean, Char>>;
+  LEnum: ILQColligoEnumerator<IGrouping<Boolean, Char>>;
   LGroup: IGrouping<Boolean, Char>;
-  LArray: IFluentArray<Char>;
+  LArray: ILQColligoArray<Char>;
   LCount: Integer;
 begin
   LString := 'Hello';
@@ -282,10 +282,10 @@ begin
   Assert.AreEqual(2, LCount, 'Should have 2 groups');
 end;
 
-procedure TFluentStringTest.TestReverse;
+procedure TLQColligoStringTest.TestReverse;
 var
   LString: string;
-  LReversed: IFluentArray<Char>;
+  LReversed: ILQColligoArray<Char>;
 begin
   LString := 'Hello';
   LReversed := LString.Reverse.ToArray;
@@ -294,7 +294,7 @@ begin
   Assert.AreEqual('H', LReversed[4], 'Last should be H');
 end;
 
-procedure TFluentStringTest.TestCountWhere;
+procedure TLQColligoStringTest.TestCountWhere;
 var
   LString: string;
 begin
@@ -307,6 +307,6 @@ begin
 end;
 
 initialization
-  TDUnitX.RegisterTestFixture(TFluentStringTest);
+  TDUnitX.RegisterTestFixture(TLQColligoStringTest);
 
 end.

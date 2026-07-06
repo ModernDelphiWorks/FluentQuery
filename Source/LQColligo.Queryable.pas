@@ -63,214 +63,214 @@ type
   TConnectionInitializer = reference to procedure(var ADatabase: TDriverName;
                                                   var AConnection: IDBConnection);
 
-  IFluentQueryProvider<T> = interface;
+  ILQColligoQueryProvider<T> = interface;
   IGroupByQueryable<TKey, T> = interface;
 
-  IFluentQueryProvider<T> = interface
+  ILQColligoQueryProvider<T> = interface
     ['{A54C5B9B-89A3-41A8-99E7-EBAFD2758093}']
     function _GetFluentSQL: IFluentSQLAST;
     procedure _SetFluentSQL(const Value: IFluentSQLAST);
-    function AndOpe(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function AndOpe(const AExpression: string): IFluentQueryProvider<T>; overload;
-    function Alias(const AAlias: string): IFluentQueryProvider<T>;
-    function Clear: IFluentQueryProvider<T>;
-    function ClearAll: IFluentQueryProvider<T>;
-    function All: IFluentQueryProvider<T>;
-    function Column(const AColumnName: string = ''): IFluentQueryProvider<T>; overload;
-    function Column(const ATableName: string; const AColumnName: string): IFluentQueryProvider<T>; overload;
-    function Column(const AColumnsName: array of const): IFluentQueryProvider<T>; overload;
-    function Delete: IFluentQueryProvider<T>;
-    function Desc: IFluentQueryProvider<T>;
-    function DistinctSQL: IFluentQueryProvider<T>;
+    function AndOpe(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function AndOpe(const AExpression: string): ILQColligoQueryProvider<T>; overload;
+    function Alias(const AAlias: string): ILQColligoQueryProvider<T>;
+    function Clear: ILQColligoQueryProvider<T>;
+    function ClearAll: ILQColligoQueryProvider<T>;
+    function All: ILQColligoQueryProvider<T>;
+    function Column(const AColumnName: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Column(const ATableName: string; const AColumnName: string): ILQColligoQueryProvider<T>; overload;
+    function Column(const AColumnsName: array of const): ILQColligoQueryProvider<T>; overload;
+    function Delete: ILQColligoQueryProvider<T>;
+    function Desc: ILQColligoQueryProvider<T>;
+    function DistinctSQL: ILQColligoQueryProvider<T>;
     function IsEmpty: Boolean;
-    function Select(const AColumns: string = ''): IFluentQueryProvider<T>; overload;
-    function From(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function From(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function GroupBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
-    function Having(const AExpression: string = ''): IFluentQueryProvider<T>; overload;
-    function Having(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function Insert: IFluentQueryProvider<T>;
-    function Into(const ATableName: string): IFluentQueryProvider<T>;
-    function FullJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function InnerJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function LeftJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function RightJoin(const ATableName: string): IFluentQueryProvider<T>; overload;
-    function FullJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function InnerJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function LeftJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function RightJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>; overload;
-    function OnCond(const AExpression: string): IFluentQueryProvider<T>; overload;
-    function OnCond(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function OrOpe(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function OrOpe(const AExpression: string): IFluentQueryProvider<T>; overload;
-    function OrderBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
-    function SetValue(const AColumnName, AColumnValue: string): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Extended; ACurrencyPlaces: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Double; ACurrencyPlaces: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; AColumnValue: Currency; ACurrencyPlaces: Integer): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: array of const): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: TDate): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function SetValue(const AColumnName: string; const AColumnValue: TGUID): IFluentQueryProvider<T>; overload;
-    function Values(const AColumnName, AColumnValue: string): IFluentQueryProvider<T>; overload;
-    function Values(const AColumnName: string; const AColumnValue: array of const): IFluentQueryProvider<T>; overload;
-    function First(const AValue: Integer): IFluentQueryProvider<T>;
-    function Skip(const AValue: Integer): IFluentQueryProvider<T>;
-    function Update(const ATableName: string): IFluentQueryProvider<T>;
-    function Where(const AExpression: string = ''): IFluentQueryProvider<T>; overload;
-    function Where(const AExpression: array of const): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: string = ''): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function Equal(const AValue: TGUID): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: string = ''): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function NotEqual(const AValue: TGUID): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function GreaterThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function GreaterEqThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function LessThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: Extended): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: Integer): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: TDate): IFluentQueryProvider<T>; overload;
-    function LessEqThan(const AValue: TDateTime): IFluentQueryProvider<T>; overload;
-    function IsNull: IFluentQueryProvider<T>;
-    function IsNotNull: IFluentQueryProvider<T>;
-    function Like(const AValue: string): IFluentQueryProvider<T>;
-    function LikeFull(const AValue: string): IFluentQueryProvider<T>;
-    function LikeLeft(const AValue: string): IFluentQueryProvider<T>;
-    function LikeRight(const AValue: string): IFluentQueryProvider<T>;
-    function NotLike(const AValue: string): IFluentQueryProvider<T>;
-    function NotLikeFull(const AValue: string): IFluentQueryProvider<T>;
-    function NotLikeLeft(const AValue: string): IFluentQueryProvider<T>;
-    function NotLikeRight(const AValue: string): IFluentQueryProvider<T>;
-    function InValues(const AValue: TArray<Double>): IFluentQueryProvider<T>; overload;
-    function InValues(const AValue: TArray<string>): IFluentQueryProvider<T>; overload;
-    function InValues(const AValue: string): IFluentQueryProvider<T>; overload;
-    function NotIn(const AValue: TArray<Double>): IFluentQueryProvider<T>; overload;
-    function NotIn(const AValue: TArray<string>): IFluentQueryProvider<T>; overload;
-    function NotIn(const AValue: string): IFluentQueryProvider<T>; overload;
-    function Exists(const AValue: string): IFluentQueryProvider<T>;
-    function NotExists(const AValue: string): IFluentQueryProvider<T>;
-    function Count: IFluentQueryProvider<T>;
-    function Min: IFluentQueryProvider<T>; overload;
-    function Max: IFluentQueryProvider<T>;
-    function Sum(const AColumn: string; const AAlias: string = ''): IFluentQueryProvider<T>;
-    function Average(const AColumn: string; const AAlias: string = ''): IFluentQueryProvider<T>;
-    function Lower: IFluentQueryProvider<T>;
-    function Upper: IFluentQueryProvider<T>;
-    function SubString(const AStart: Integer; const ALength: Integer): IFluentQueryProvider<T>;
-    function Date(const AValue: string): IFluentQueryProvider<T>;
-    function Day(const AValue: string): IFluentQueryProvider<T>;
-    function Month(const AValue: string): IFluentQueryProvider<T>;
-    function Year(const AValue: string): IFluentQueryProvider<T>;
-    function Concat(const AValue: array of string): IFluentQueryProvider<T>;
-    function ToArray: IFluentArray<T>;
-    function ToList: IFluentList<T>;
+    function Select(const AColumns: string = ''): ILQColligoQueryProvider<T>; overload;
+    function From(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function From(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function GroupBy(const AColumnName: string = ''): ILQColligoQueryProvider<T>;
+    function Having(const AExpression: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Having(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function Insert: ILQColligoQueryProvider<T>;
+    function Into(const ATableName: string): ILQColligoQueryProvider<T>;
+    function FullJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function InnerJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function LeftJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function RightJoin(const ATableName: string): ILQColligoQueryProvider<T>; overload;
+    function FullJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function InnerJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function LeftJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function RightJoin(const ATableName: string; const AAlias: string): ILQColligoQueryProvider<T>; overload;
+    function OnCond(const AExpression: string): ILQColligoQueryProvider<T>; overload;
+    function OnCond(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function OrOpe(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function OrOpe(const AExpression: string): ILQColligoQueryProvider<T>; overload;
+    function OrderBy(const AColumnName: string = ''): ILQColligoQueryProvider<T>;
+    function SetValue(const AColumnName, AColumnValue: string): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Extended; ACurrencyPlaces: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Double; ACurrencyPlaces: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; AColumnValue: Currency; ACurrencyPlaces: Integer): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: array of const): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function SetValue(const AColumnName: string; const AColumnValue: TGUID): ILQColligoQueryProvider<T>; overload;
+    function Values(const AColumnName, AColumnValue: string): ILQColligoQueryProvider<T>; overload;
+    function Values(const AColumnName: string; const AColumnValue: array of const): ILQColligoQueryProvider<T>; overload;
+    function First(const AValue: Integer): ILQColligoQueryProvider<T>;
+    function Skip(const AValue: Integer): ILQColligoQueryProvider<T>;
+    function Update(const ATableName: string): ILQColligoQueryProvider<T>;
+    function Where(const AExpression: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Where(const AExpression: array of const): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: string = ''): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function Equal(const AValue: TGUID): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: string = ''): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function NotEqual(const AValue: TGUID): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function GreaterThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function GreaterEqThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function LessThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: Extended): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: Integer): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: TDate): ILQColligoQueryProvider<T>; overload;
+    function LessEqThan(const AValue: TDateTime): ILQColligoQueryProvider<T>; overload;
+    function IsNull: ILQColligoQueryProvider<T>;
+    function IsNotNull: ILQColligoQueryProvider<T>;
+    function Like(const AValue: string): ILQColligoQueryProvider<T>;
+    function LikeFull(const AValue: string): ILQColligoQueryProvider<T>;
+    function LikeLeft(const AValue: string): ILQColligoQueryProvider<T>;
+    function LikeRight(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLike(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLikeFull(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLikeLeft(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotLikeRight(const AValue: string): ILQColligoQueryProvider<T>;
+    function InValues(const AValue: TArray<Double>): ILQColligoQueryProvider<T>; overload;
+    function InValues(const AValue: TArray<string>): ILQColligoQueryProvider<T>; overload;
+    function InValues(const AValue: string): ILQColligoQueryProvider<T>; overload;
+    function NotIn(const AValue: TArray<Double>): ILQColligoQueryProvider<T>; overload;
+    function NotIn(const AValue: TArray<string>): ILQColligoQueryProvider<T>; overload;
+    function NotIn(const AValue: string): ILQColligoQueryProvider<T>; overload;
+    function Exists(const AValue: string): ILQColligoQueryProvider<T>;
+    function NotExists(const AValue: string): ILQColligoQueryProvider<T>;
+    function Count: ILQColligoQueryProvider<T>;
+    function Min: ILQColligoQueryProvider<T>; overload;
+    function Max: ILQColligoQueryProvider<T>;
+    function Sum(const AColumn: string; const AAlias: string = ''): ILQColligoQueryProvider<T>;
+    function Average(const AColumn: string; const AAlias: string = ''): ILQColligoQueryProvider<T>;
+    function Lower: ILQColligoQueryProvider<T>;
+    function Upper: ILQColligoQueryProvider<T>;
+    function SubString(const AStart: Integer; const ALength: Integer): ILQColligoQueryProvider<T>;
+    function Date(const AValue: string): ILQColligoQueryProvider<T>;
+    function Day(const AValue: string): ILQColligoQueryProvider<T>;
+    function Month(const AValue: string): ILQColligoQueryProvider<T>;
+    function Year(const AValue: string): ILQColligoQueryProvider<T>;
+    function Concat(const AValue: array of string): ILQColligoQueryProvider<T>;
+    function ToArray: ILQColligoArray<T>;
+    function ToList: ILQColligoList<T>;
     function AsString: string;
     function Database: TDriverName;
     function Connection: IDBConnection;
     property FluentSQL: IFluentSQLAST read _GetFluentSQL write _SetFluentSQL;
   end;
 
-  IFluentQueryableBase<T> = interface(IInterface)
+  ILQColligoQueryableBase<T> = interface(IInterface)
     ['{5E8E37CE-6372-4FBB-872B-9687A24F63DD}']
-    function GetEnumerator: IFluentEnumerator<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
     function BuildQuery: string;
   end;
 
-  TFluentQueryableBase<T> = class abstract(TInterfacedObject, IFluentQueryableBase<T>)
+  TLQColligoQueryableBase<T> = class abstract(TInterfacedObject, ILQColligoQueryableBase<T>)
   protected
-    function GetEnumerator: IFluentEnumerator<T>; virtual; abstract;
+    function GetEnumerator: ILQColligoEnumerator<T>; virtual; abstract;
     function BuildQuery: string; virtual; abstract;
   end;
 
-  TFluentQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FProvider: IFluentQueryProvider<T>;
+    FProvider: ILQColligoQueryProvider<T>;
   protected
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   public
-    constructor Create(const AProvider: IFluentQueryProvider<T>); overload;
+    constructor Create(const AProvider: ILQColligoQueryProvider<T>); overload;
   end;
 
-  IFluentQueryable<T> = record
+  ILQColligoQueryable<T> = record
   private
-    FQueryable: IFluentQueryableBase<T>;
-    FEnumerable: IFluentEnumerable<T>;
-    FProvider: IFluentQueryProvider<T>;
-    FExpression: IFluentQueryExpression;
-    function _GetEnumerable: IFluentEnumerable<T>;
+    FQueryable: ILQColligoQueryableBase<T>;
+    FEnumerable: ILQColligoEnumerable<T>;
+    FProvider: ILQColligoQueryProvider<T>;
+    FExpression: ILQColligoQueryExpression;
+    function _GetEnumerable: ILQColligoEnumerable<T>;
     function _ExecuteScalar<TResult>(const ASql: string): TResult;
-    function _ExecuteList(const ASql: string): IFluentList<T>;
-    function _InitializeFluentSQL: IFluentQueryProvider<T>;
+    function _ExecuteList(const ASql: string): ILQColligoList<T>;
+    function _InitializeFluentSQL: ILQColligoQueryProvider<T>;
     function _GetDriverDatabase(const ADatabase: TDriverName): TFluentSQLDriver;
   public
-    constructor Create(const AQueryable: IFluentQueryableBase<T>); overload;
+    constructor Create(const AQueryable: ILQColligoQueryableBase<T>); overload;
     constructor CreateForDatabase(const AInitializer: TConnectionInitializer); overload;
     constructor CreateForDatabase(const ADatabase: TDriverName; const AConnection: IDBConnection;
       const AFluentSQL: IFluentSQLAST = nil); overload;
     function IsNotAssigned: Boolean;
-    function QE: IFluentQueryExpression;
-    function From(const ATableName: string): IFluentQueryable<T>; overload;
-    function From(const ATableName: string; const AAlias: string): IFluentQueryable<T>; overload;
-    function Where(const AExpression: string = ''): IFluentQueryable<T>; overload;
-    function Where(const AExpression: array of const): IFluentQueryable<T>; overload;
-    function Where(const AExpression: IFluentQueryExpression): IFluentQueryable<T>; overload;
-    function InnerJoin(const ATableName: string): IFluentQueryable<T>; overload;
-    function InnerJoin(const ATableName: string; const AAlias: string): IFluentQueryable<T>; overload;
-    function OnCond(const AExpression: string): IFluentQueryable<T>; overload;
-    function OnCond(const AExpression: array of const): IFluentQueryable<T>; overload;
-    function Alias(const AAlias: string): IFluentQueryable<T>;
-    function AndOpe(const AExpression: array of const): IFluentQueryable<T>; overload;
-    function AndOpe(const AExpression: string): IFluentQueryable<T>; overload;
-    function AndOpe(const AExpression: IFluentQueryExpression): IFluentQueryable<T>; overload;
-    function OrOpe(const AExpression: array of const): IFluentQueryable<T>; overload;
-    function OrOpe(const AExpression: string): IFluentQueryable<T>; overload;
-    function OrOpe(const AExpression: IFluentQueryExpression): IFluentQueryable<T>; overload;
-    function GroupBy(const AColumnName: string): IFluentQueryable<T>; overload;
-    function GroupBy<TKey>(const AExpression: IFluentQueryExpression): IGroupByQueryable<TKey, T>; overload;
-    function OrderBy(const AColumnName: string): IFluentQueryable<T>; overload;
-    function OrderBy(const AExpression: IFluentQueryExpression): IFluentQueryable<T>; overload;
-    function OrderByDesc(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
-    function ThenBy(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
-    function ThenByDescending(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
-    function Take(const ACount: Integer): IFluentQueryable<T>;
-    function Skip(const ACount: Integer): IFluentQueryable<T>;
-    function Select(const AColumns: string = ''): IFluentQueryable<T>; overload;
-    function Select(const AExpressions: TArray<IFluentQueryExpression>): IFluentQueryable<T>; overload;
-    function Union(const ASecond: IFluentQueryable<T>): IFluentQueryable<T>;
-    function Intersect(const ASecond: IFluentQueryable<T>): IFluentQueryable<T>;
-    function Exclude(const ASecond: IFluentQueryable<T>): IFluentQueryable<T>;
-    function Join<TInner, TResult>(const AInner: IFluentQueryable<TInner>;
-      const AOuterKey: IFluentQueryExpression; const AInnerKey: IFluentQueryExpression;
-      const AResultColumns: TArray<IFluentQueryExpression>): IFluentQueryable<TResult>;
-    function Distinct: IFluentQueryable<T>;
-//    function Cast<TResult>(const AConverter: TFunc<T, TResult>): IFluentQueryable<TResult>;
+    function QE: ILQColligoQueryExpression;
+    function From(const ATableName: string): ILQColligoQueryable<T>; overload;
+    function From(const ATableName: string; const AAlias: string): ILQColligoQueryable<T>; overload;
+    function Where(const AExpression: string = ''): ILQColligoQueryable<T>; overload;
+    function Where(const AExpression: array of const): ILQColligoQueryable<T>; overload;
+    function Where(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>; overload;
+    function InnerJoin(const ATableName: string): ILQColligoQueryable<T>; overload;
+    function InnerJoin(const ATableName: string; const AAlias: string): ILQColligoQueryable<T>; overload;
+    function OnCond(const AExpression: string): ILQColligoQueryable<T>; overload;
+    function OnCond(const AExpression: array of const): ILQColligoQueryable<T>; overload;
+    function Alias(const AAlias: string): ILQColligoQueryable<T>;
+    function AndOpe(const AExpression: array of const): ILQColligoQueryable<T>; overload;
+    function AndOpe(const AExpression: string): ILQColligoQueryable<T>; overload;
+    function AndOpe(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>; overload;
+    function OrOpe(const AExpression: array of const): ILQColligoQueryable<T>; overload;
+    function OrOpe(const AExpression: string): ILQColligoQueryable<T>; overload;
+    function OrOpe(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>; overload;
+    function GroupBy(const AColumnName: string): ILQColligoQueryable<T>; overload;
+    function GroupBy<TKey>(const AExpression: ILQColligoQueryExpression): IGroupByQueryable<TKey, T>; overload;
+    function OrderBy(const AColumnName: string): ILQColligoQueryable<T>; overload;
+    function OrderBy(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>; overload;
+    function OrderByDesc(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
+    function ThenBy(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
+    function ThenByDescending(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
+    function Take(const ACount: Integer): ILQColligoQueryable<T>;
+    function Skip(const ACount: Integer): ILQColligoQueryable<T>;
+    function Select(const AColumns: string = ''): ILQColligoQueryable<T>; overload;
+    function Select(const AExpressions: TArray<ILQColligoQueryExpression>): ILQColligoQueryable<T>; overload;
+    function Union(const ASecond: ILQColligoQueryable<T>): ILQColligoQueryable<T>;
+    function Intersect(const ASecond: ILQColligoQueryable<T>): ILQColligoQueryable<T>;
+    function Exclude(const ASecond: ILQColligoQueryable<T>): ILQColligoQueryable<T>;
+    function Join<TInner, TResult>(const AInner: ILQColligoQueryable<TInner>;
+      const AOuterKey: ILQColligoQueryExpression; const AInnerKey: ILQColligoQueryExpression;
+      const AResultColumns: TArray<ILQColligoQueryExpression>): ILQColligoQueryable<TResult>;
+    function Distinct: ILQColligoQueryable<T>;
+//    function Cast<TResult>(const AConverter: TFunc<T, TResult>): ILQColligoQueryable<TResult>;
 //    function OfType<TResult>(const AIsType: TFunc<T, Boolean>;
-//      const AConverter: TFunc<T, TResult>): IFluentQueryable<TResult>;
-    function Any(const AExpression: IFluentQueryExpression): Boolean; overload;
+//      const AConverter: TFunc<T, TResult>): ILQColligoQueryable<TResult>;
+    function Any(const AExpression: ILQColligoQueryExpression): Boolean; overload;
     function Any: Boolean; overload;
-    function All(const AExpression: IFluentQueryExpression): Boolean;
+    function All(const AExpression: ILQColligoQueryExpression): Boolean;
     function Contains(const AValue: T; const AComparer: IEqualityComparer<T>): Boolean;
-    function Count(const AExpression: IFluentQueryExpression): Integer; overload;
+    function Count(const AExpression: ILQColligoQueryExpression): Integer; overload;
     function Count: Integer; overload;
-    function LongCount(const AExpression: IFluentQueryExpression): Int64; overload;
+    function LongCount(const AExpression: ILQColligoQueryExpression): Int64; overload;
     function LongCount: Int64; overload;
     function Min: T; overload;
     function Min(const AComparer: IComparer<T>): T; overload;
@@ -282,17 +282,17 @@ type
     function MaxBy(const AFieldName: string): T;
     function Sum<TResult>(const AFieldName: string; const AAlias: string = ''): TResult;
     function Average<TResult>(const AFieldName: string; const AAlias: string = ''): TResult;
-    function First(const AExpression: IFluentQueryExpression): T; overload;
+    function First(const AExpression: ILQColligoQueryExpression): T; overload;
     function First: T; overload;
-    function FirstOrDefault(const AExpression: IFluentQueryExpression): T; overload;
+    function FirstOrDefault(const AExpression: ILQColligoQueryExpression): T; overload;
     function FirstOrDefault: T; overload;
-    function Last(const AExpression: IFluentQueryExpression): T; overload;
+    function Last(const AExpression: ILQColligoQueryExpression): T; overload;
     function Last: T; overload;
-    function LastOrDefault(const AExpression: IFluentQueryExpression): T; overload;
+    function LastOrDefault(const AExpression: ILQColligoQueryExpression): T; overload;
     function LastOrDefault: T; overload;
-    function Single(const AExpression: IFluentQueryExpression): T; overload;
+    function Single(const AExpression: ILQColligoQueryExpression): T; overload;
     function Single: T; overload;
-    function SingleOrDefault(const AExpression: IFluentQueryExpression): T; overload;
+    function SingleOrDefault(const AExpression: ILQColligoQueryExpression): T; overload;
     function SingleOrDefault: T; overload;
     function ElementAt(const AIndex: Integer): T;
     function ElementAtOrDefault(const AIndex: Integer): T;
@@ -301,21 +301,21 @@ type
 //    function Aggregate<TAccumulate, TResult>(const ASeed: TAccumulate;
 //      const AFunc: TFunc<TAccumulate, T, TAccumulate>;
 //      const AResultSelector: TFunc<TAccumulate, TResult>): TResult; overload;
-//    function Chunk(const ASize: Integer): IFluentChunkResult<T>;
-    function ToArray: IFluentArray<T>;
-    function ToList: IFluentList<T>;
+//    function Chunk(const ASize: Integer): ILQColligoChunkResult<T>;
+    function ToArray: ILQColligoArray<T>;
+    function ToList: ILQColligoList<T>;
     function AsString: string;
-    function AsEnumerable: IFluentEnumerable<T>;
+    function AsEnumerable: ILQColligoEnumerable<T>;
   end;
 
   IGroupByQueryable<TKey, T> = interface(IInterface)
     ['{A85DB3F6-E808-4E81-B386-75190087507B}']
-    function GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>;
-    function AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
-    function ToList: IFluentList<IGrouping<TKey, T>>;
+    function GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, T>>;
+    function AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, T>>;
+    function ToList: ILQColligoList<IGrouping<TKey, T>>;
   end;
 
-  TDataSetEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TDataSetEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
     FDataSet: IDBDataSet;
     FIsFirst: Boolean;
@@ -331,7 +331,7 @@ type
 
   TQE = class
   public
-    class function New<T>(const ADatabase: TFluentSQLDriver): IFluentQueryExpression; static;
+    class function New<T>(const ADatabase: TFluentSQLDriver): ILQColligoQueryExpression; static;
   end;
 
 implementation
@@ -351,65 +351,65 @@ uses
   LQColligo.Cast;
 
 {$IFDEF QUERYABLE}
-{ IFluentQueryable<T> }
+{ ILQColligoQueryable<T> }
 
-constructor IFluentQueryable<T>.Create(const AQueryable: IFluentQueryableBase<T>);
+constructor ILQColligoQueryable<T>.Create(const AQueryable: ILQColligoQueryableBase<T>);
 begin
   FQueryable := AQueryable;
   FEnumerable := _GetEnumerable;
   _InitializeFluentSQL;
 end;
 
-constructor IFluentQueryable<T>.CreateForDatabase(const AInitializer: TConnectionInitializer);
+constructor ILQColligoQueryable<T>.CreateForDatabase(const AInitializer: TConnectionInitializer);
 begin
   if not Assigned(AInitializer) then
     raise EArgumentNilException.Create('Connection initializer cannot be nil');
-  FProvider := TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(AInitializer);
-  FQueryable := TFluentQueryable<T>.Create(FProvider);
+  FProvider := TLQColligoQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(AInitializer);
+  FQueryable := TLQColligoQueryable<T>.Create(FProvider);
   FEnumerable := _GetEnumerable;
-  FExpression := TFluentQueryExpression<T>.Create(_GetDriverDatabase(FProvider.Database));
+  FExpression := TLQColligoQueryExpression<T>.Create(_GetDriverDatabase(FProvider.Database));
   _InitializeFluentSQL;
 end;
 
-constructor IFluentQueryable<T>.CreateForDatabase(const ADatabase: TDriverName;
+constructor ILQColligoQueryable<T>.CreateForDatabase(const ADatabase: TDriverName;
   const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST);
 begin
   if AConnection = nil then
     raise EArgumentNilException.Create('Connection cannot be nil');
   if TStrDriverName[ADatabase] = '' then
     raise EArgumentNilException.Create('Database type must be specified');
-  FProvider := TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(ADatabase, AConnection, AFluentSQL);
-  FQueryable := TFluentQueryable<T>.Create(FProvider);
+  FProvider := TLQColligoQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(ADatabase, AConnection, AFluentSQL);
+  FQueryable := TLQColligoQueryable<T>.Create(FProvider);
   FEnumerable := _GetEnumerable;
-  FExpression := TFluentQueryExpression<T>.Create(_GetDriverDatabase(ADatabase));
+  FExpression := TLQColligoQueryExpression<T>.Create(_GetDriverDatabase(ADatabase));
   _InitializeFluentSQL;
 end;
 
-function IFluentQueryable<T>._GetEnumerable: IFluentEnumerable<T>;
+function ILQColligoQueryable<T>._GetEnumerable: ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
+  Result := ILQColligoEnumerable<T>.Create(
     TQueryableToEnumerableAdapter<T>.Create(FQueryable),
     ftNone,
     TEqualityComparer<T>.Default
   );
 end;
 
-function IFluentQueryable<T>._InitializeFluentSQL: IFluentQueryProvider<T>;
+function ILQColligoQueryable<T>._InitializeFluentSQL: ILQColligoQueryProvider<T>;
 begin
   Result := FProvider;
   if FProvider.FluentSQL.Select.IsEmpty then
     Result.Select('*');
 end;
 
-function IFluentQueryable<T>._ExecuteScalar<TResult>(const ASql: string): TResult;
+function ILQColligoQueryable<T>._ExecuteScalar<TResult>(const ASql: string): TResult;
 var
   LSQL: string;
   LDataSet: IDBDataSet;
-  LParserScalar: TFluentParseScalarDataSet<TResult>;
-  LParserObject: TFluentParseObjectDataSet<TResult>;
+  LParserScalar: TLQColligoParseScalarDataSet<TResult>;
+  LParserObject: TLQColligoParseObjectDataSet<TResult>;
   LContext: TRttiContext;
   LType: TRttiType;
-  LList: IFluentList<TResult>;
+  LList: ILQColligoList<TResult>;
 begin
   LSQL := ASql;
   if LSQL.IsEmpty then
@@ -435,7 +435,7 @@ begin
 
       if LType.TypeKind in [tkClass, tkInterface] then
       begin
-        LParserObject := TFluentParseObjectDataSet<TResult>.Create;
+        LParserObject := TLQColligoParseObjectDataSet<TResult>.Create;
         try
           LList := LParserObject.ToList(LDataSet);
         finally
@@ -444,7 +444,7 @@ begin
       end
       else
       begin
-        LParserScalar := TFluentParseScalarDataSet<TResult>.Create;
+        LParserScalar := TLQColligoParseScalarDataSet<TResult>.Create;
         try
           LList := LParserScalar.ToList(LDataSet);
         finally
@@ -462,117 +462,117 @@ begin
   end;
 end;
 
-function IFluentQueryable<T>._ExecuteList(const ASql: string): IFluentList<T>;
+function ILQColligoQueryable<T>._ExecuteList(const ASql: string): ILQColligoList<T>;
 begin
   Result := FProvider.ToList;
 end;
 
-function IFluentQueryable<T>.Select(const AColumns: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Select(const AColumns: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.Select(IfThen(AColumns = EmptyStr, '*', AColumns));
   Result := Self;
 end;
 
-function IFluentQueryable<T>.From(const ATableName: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.From(const ATableName: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.From(ATableName);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.From(const ATableName, AAlias: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.From(const ATableName, AAlias: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.From(ATableName, AAlias);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Where(const AExpression: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Where(const AExpression: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.Where(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Where(const AExpression: array of const): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Where(const AExpression: array of const): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.Where(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.InnerJoin(const ATableName: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.InnerJoin(const ATableName: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.InnerJoin(ATableName);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.InnerJoin(const ATableName, AAlias: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.InnerJoin(const ATableName, AAlias: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.InnerJoin(ATableName, AAlias);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.OnCond(const AExpression: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OnCond(const AExpression: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.OnCond(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.OnCond(const AExpression: array of const): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OnCond(const AExpression: array of const): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.OnCond(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Alias(const AAlias: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Alias(const AAlias: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.Alias(AAlias);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.AndOpe(const AExpression: array of const): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.AndOpe(const AExpression: array of const): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.AndOpe(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.AndOpe(const AExpression: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.AndOpe(const AExpression: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.AndOpe(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.OrOpe(const AExpression: array of const): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OrOpe(const AExpression: array of const): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.OrOpe(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.OrOpe(const AExpression: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OrOpe(const AExpression: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.OrOpe(AExpression);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.GroupBy(const AColumnName: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.GroupBy(const AColumnName: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.GroupBy(AColumnName);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.GroupBy<TKey>(const AExpression: IFluentQueryExpression): IGroupByQueryable<TKey, T>;
+function ILQColligoQueryable<T>.GroupBy<TKey>(const AExpression: ILQColligoQueryExpression): IGroupByQueryable<TKey, T>;
 var
   LColumnName: string;
 begin
@@ -584,17 +584,17 @@ begin
     raise EInvalidOperation.Create('Could not extract column name from selector');
 
   FProvider.GroupBy(LColumnName);
-  Result := TFluentGroupByQueryable<TKey, T>.Create(FQueryable, AExpression, FProvider);
+  Result := TLQColligoGroupByQueryable<TKey, T>.Create(FQueryable, AExpression, FProvider);
 end;
 
-function IFluentQueryable<T>.OrderBy(const AColumnName: string): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OrderBy(const AColumnName: string): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.OrderBy(AColumnName);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.OrderBy(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OrderBy(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
 var
   LColumnName: string;
 begin
@@ -609,7 +609,7 @@ begin
   Result := Self;
 end;
 
-function IFluentQueryable<T>.OrderByDesc(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OrderByDesc(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
 var
   LColumnName: string;
 begin
@@ -624,19 +624,19 @@ begin
   Result := Self;
 end;
 
-function IFluentQueryable<T>.OrOpe(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.OrOpe(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.OrOpe(AExpression.Serialize);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.QE: IFluentQueryExpression;
+function ILQColligoQueryable<T>.QE: ILQColligoQueryExpression;
 begin
   Result := FExpression;
 end;
 
-function IFluentQueryable<T>.ThenBy(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.ThenBy(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
 var
   LColumnName: string;
 begin
@@ -652,7 +652,7 @@ begin
   Result := Self;
 end;
 
-function IFluentQueryable<T>.ThenByDescending(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.ThenByDescending(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
 var
   LColumnName: string;
 begin
@@ -668,7 +668,7 @@ begin
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Take(const ACount: Integer): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Take(const ACount: Integer): ILQColligoQueryable<T>;
 begin
   if ACount < 1 then
     raise EArgumentException.Create('ACount must be greater than 0');
@@ -676,16 +676,16 @@ begin
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Skip(const ACount: Integer): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Skip(const ACount: Integer): ILQColligoQueryable<T>;
 begin
-  Result := IFluentQueryable<T>.Create(FQueryable);
+  Result := ILQColligoQueryable<T>.Create(FQueryable);
   FProvider.Skip(ACount);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Select(const AExpressions: TArray<IFluentQueryExpression>): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Select(const AExpressions: TArray<ILQColligoQueryExpression>): ILQColligoQueryable<T>;
 var
-  LExpression: IFluentQueryExpression;
+  LExpression: ILQColligoQueryExpression;
   LColumnName: string;
 begin
   if Length(AExpressions) = 0 then
@@ -706,36 +706,36 @@ begin
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Union(const ASecond: IFluentQueryable<T>): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Union(const ASecond: ILQColligoQueryable<T>): ILQColligoQueryable<T>;
 begin
-  Result := IFluentQueryable<T>.Create(
-    TFluentUnionQueryable<T>.Create(FQueryable, ASecond.FQueryable, nil)
+  Result := ILQColligoQueryable<T>.Create(
+    TLQColligoUnionQueryable<T>.Create(FQueryable, ASecond.FQueryable, nil)
   );
 end;
 
-function IFluentQueryable<T>.Intersect(const ASecond: IFluentQueryable<T>): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Intersect(const ASecond: ILQColligoQueryable<T>): ILQColligoQueryable<T>;
 begin
-  Result := IFluentQueryable<T>.Create(
-    TFluentIntersectQueryable<T>.Create(FQueryable, ASecond.FQueryable, nil)
+  Result := ILQColligoQueryable<T>.Create(
+    TLQColligoIntersectQueryable<T>.Create(FQueryable, ASecond.FQueryable, nil)
   );
 end;
 
-function IFluentQueryable<T>.Exclude(const ASecond: IFluentQueryable<T>): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Exclude(const ASecond: ILQColligoQueryable<T>): ILQColligoQueryable<T>;
 begin
-  Result := IFluentQueryable<T>.Create(
-    TFluentExcludeQueryable<T>.Create(FQueryable, ASecond.FQueryable, nil)
+  Result := ILQColligoQueryable<T>.Create(
+    TLQColligoExcludeQueryable<T>.Create(FQueryable, ASecond.FQueryable, nil)
   );
 end;
 
-function IFluentQueryable<T>.Join<TInner, TResult>(const AInner: IFluentQueryable<TInner>;
-  const AOuterKey: IFluentQueryExpression; const AInnerKey: IFluentQueryExpression;
-  const AResultColumns: TArray<IFluentQueryExpression>): IFluentQueryable<TResult>;
+function ILQColligoQueryable<T>.Join<TInner, TResult>(const AInner: ILQColligoQueryable<TInner>;
+  const AOuterKey: ILQColligoQueryExpression; const AInnerKey: ILQColligoQueryExpression;
+  const AResultColumns: TArray<ILQColligoQueryExpression>): ILQColligoQueryable<TResult>;
 var
   LOuterKeyName, LInnerKeyName, LInnerTableName: string;
-  LExpression: IFluentQueryExpression;
+  LExpression: ILQColligoQueryExpression;
   LColumnName: string;
-  LJoinQuery: TFluentJoinQueryable<TInner, TResult, T>;
-  LNewProvider: IFluentQueryProvider<TResult>;
+  LJoinQuery: TLQColligoJoinQueryable<TInner, TResult, T>;
+  LNewProvider: ILQColligoQueryProvider<TResult>;
 begin
   if not Assigned(AInner.FProvider) then
     raise EArgumentNilException.Create('Inner query cannot be nil');
@@ -772,11 +772,11 @@ begin
 
     FProvider.FluentSQL.Select.Columns.Add.Name := LColumnName;
   end;
-  LNewProvider := TFluentQueryProvider<TResult>.TStrictPrivateCreate<TResult>
+  LNewProvider := TLQColligoQueryProvider<TResult>.TStrictPrivateCreate<TResult>
                                                .CreateProvider(FProvider.Database,
                                                                FProvider.Connection,
                                                                FProvider.FluentSQL);
-  LJoinQuery := TFluentJoinQueryable<TInner, TResult, T>.Create(LNewProvider);
+  LJoinQuery := TLQColligoJoinQueryable<TInner, TResult, T>.Create(LNewProvider);
   try
     Result := LJoinQuery.AsQueryable;
   finally
@@ -784,73 +784,73 @@ begin
   end;
 end;
 
-function IFluentQueryable<T>.Distinct: IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Distinct: ILQColligoQueryable<T>;
 begin
-  Result := IFluentQueryable<T>.Create(FQueryable);
+  Result := ILQColligoQueryable<T>.Create(FQueryable);
   FProvider.DistinctSQL;
 end;
 
-//function IFluentQueryable<T>.OfType<TResult>(
+//function ILQColligoQueryable<T>.OfType<TResult>(
 //  const AIsType: TFunc<T, Boolean>;
-//  const AConverter: TFunc<T, TResult>): IFluentQueryable<TResult>;
+//  const AConverter: TFunc<T, TResult>): ILQColligoQueryable<TResult>;
 //begin
 //  if not Assigned(AIsType) then
 //    raise EArgumentNilException.Create('IsType cannot be nil');
 //  if not Assigned(AConverter) then
 //    raise EArgumentNilException.Create('Converter cannot be nil');
-//  Result := IFluentQueryable<TResult>.Create(
-//    TFluentOfTypeQueryable<T, TResult>.Create(FQueryable, AIsType, AConverter)
+//  Result := ILQColligoQueryable<TResult>.Create(
+//    TLQColligoOfTypeQueryable<T, TResult>.Create(FQueryable, AIsType, AConverter)
 //  );
 //end;
 
-//function IFluentQueryable<T>.Cast<TResult>(const AConverter: TFunc<T, TResult>): IFluentQueryable<TResult>;
+//function ILQColligoQueryable<T>.Cast<TResult>(const AConverter: TFunc<T, TResult>): ILQColligoQueryable<TResult>;
 //begin
 //  if not Assigned(AConverter) then
 //    raise EArgumentNilException.Create('Converter cannot be nil');
-//  Result := IFluentQueryable<TResult>.Create(
-//    TFluentCastQueryable<T, TResult>.Create(FQueryable, AConverter)
+//  Result := ILQColligoQueryable<TResult>.Create(
+//    TLQColligoCastQueryable<T, TResult>.Create(FQueryable, AConverter)
 //  );
 //end;
 
-function IFluentQueryable<T>.Any(const AExpression: IFluentQueryExpression): Boolean;
+function ILQColligoQueryable<T>.Any(const AExpression: ILQColligoQueryExpression): Boolean;
 begin
   FProvider.Where('NOT (' + AExpression.Serialize + ')');
   FProvider.Count;
   Result := _ExecuteScalar<Integer>(FQueryable.BuildQuery) > 0;
 end;
 
-function IFluentQueryable<T>.Any: Boolean;
+function ILQColligoQueryable<T>.Any: Boolean;
 begin
   Result := _ExecuteScalar<Integer>(FQueryable.BuildQuery) > 0;
 end;
 
-function IFluentQueryable<T>.All(const AExpression: IFluentQueryExpression): Boolean;
+function ILQColligoQueryable<T>.All(const AExpression: ILQColligoQueryExpression): Boolean;
 begin
   FProvider.Where('NOT (' + AExpression.Serialize + ')');
   FProvider.Count;
   Result := _ExecuteScalar<Integer>(FQueryable.BuildQuery) = 0;
 end;
 
-function IFluentQueryable<T>.Contains(const AValue: T;
+function ILQColligoQueryable<T>.Contains(const AValue: T;
   const AComparer: IEqualityComparer<T>): Boolean;
 begin
   Result := FEnumerable.Contains(AValue, AComparer);
 end;
 
-function IFluentQueryable<T>.Count(const AExpression: IFluentQueryExpression): Integer;
+function ILQColligoQueryable<T>.Count(const AExpression: ILQColligoQueryExpression): Integer;
 begin
   FProvider.Where(AExpression.Serialize);
   FProvider.Count;
   Result := _ExecuteScalar<Integer>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Count: Integer;
+function ILQColligoQueryable<T>.Count: Integer;
 begin
   FProvider.Count;
   Result := _ExecuteScalar<Integer>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.LongCount(const AExpression: IFluentQueryExpression): Int64;
+function ILQColligoQueryable<T>.LongCount(const AExpression: ILQColligoQueryExpression): Int64;
 var
   LColumns: string;
 begin
@@ -865,24 +865,24 @@ begin
   FProvider.Column(LColumns);
 end;
 
-function IFluentQueryable<T>.LongCount: Int64;
+function ILQColligoQueryable<T>.LongCount: Int64;
 begin
   FProvider.Count;
   Result := _ExecuteScalar<Int64>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Min: T;
+function ILQColligoQueryable<T>.Min: T;
 begin
   FProvider.Min;
   Result := _ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Min(const AComparer: IComparer<T>): T;
+function ILQColligoQueryable<T>.Min(const AComparer: IComparer<T>): T;
 begin
   Result := FEnumerable.Min(AComparer);
 end;
 
-function IFluentQueryable<T>.Min<TResult>(const AFieldName: string; const AAlias: string): TResult;
+function ILQColligoQueryable<T>.Min<TResult>(const AFieldName: string; const AAlias: string): TResult;
 var
   LColumn: IFluentSQLName;
 begin
@@ -897,7 +897,7 @@ begin
   Result := _ExecuteScalar<TResult>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.MinBy(const AFieldName: string): T;
+function ILQColligoQueryable<T>.MinBy(const AFieldName: string): T;
 var
   LColumn: IFluentSQLName;
   LFor: Integer;
@@ -924,18 +924,18 @@ begin
   Result := _ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Max: T;
+function ILQColligoQueryable<T>.Max: T;
 begin
   FProvider.Max;
   Result := _ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Max(const AComparer: IComparer<T>): T;
+function ILQColligoQueryable<T>.Max(const AComparer: IComparer<T>): T;
 begin
   Result := FEnumerable.Max(AComparer);
 end;
 
-function IFluentQueryable<T>.Max<TResult>(const AFieldName: string; const AAlias: string): TResult;
+function ILQColligoQueryable<T>.Max<TResult>(const AFieldName: string; const AAlias: string): TResult;
 var
   LColumn: IFluentSQLName;
 begin
@@ -950,7 +950,7 @@ begin
   Result := _ExecuteScalar<TResult>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.MaxBy(const AFieldName: string): T;
+function ILQColligoQueryable<T>.MaxBy(const AFieldName: string): T;
 var
   LColumn: IFluentSQLName;
   LFor: Integer;
@@ -977,7 +977,7 @@ begin
   Result := _ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Sum<TResult>(const AFieldName: string; const AAlias: string): TResult;
+function ILQColligoQueryable<T>.Sum<TResult>(const AFieldName: string; const AAlias: string): TResult;
 var
   LColumn: IFluentSQLName;
   LFor: Integer;
@@ -1008,7 +1008,7 @@ begin
   Result := _ExecuteScalar<TResult>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Average<TResult>(const AFieldName: string; const AAlias: string): TResult;
+function ILQColligoQueryable<T>.Average<TResult>(const AFieldName: string; const AAlias: string): TResult;
 var
   LColumn: IFluentSQLName;
   LFor: Integer;
@@ -1039,19 +1039,19 @@ begin
   Result := _ExecuteScalar<TResult>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.First(const AExpression: IFluentQueryExpression): T;
+function ILQColligoQueryable<T>.First(const AExpression: ILQColligoQueryExpression): T;
 begin
   FProvider.Where(AExpression.Serialize);
   FProvider.First(1);
   Result := _ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.First: T;
+function ILQColligoQueryable<T>.First: T;
 begin
   Result := Take(1)._ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.FirstOrDefault(const AExpression: IFluentQueryExpression): T;
+function ILQColligoQueryable<T>.FirstOrDefault(const AExpression: ILQColligoQueryExpression): T;
 begin
   FProvider.Where(AExpression.Serialize);
   FProvider.First(1);
@@ -1066,7 +1066,7 @@ begin
   end;
 end;
 
-function IFluentQueryable<T>.FirstOrDefault: T;
+function ILQColligoQueryable<T>.FirstOrDefault: T;
 begin
   FProvider.Count;
   if _ExecuteScalar<Integer>(FQueryable.BuildQuery) > 0 then
@@ -1075,7 +1075,7 @@ begin
     Result := Default(T);
 end;
 
-function IFluentQueryable<T>.Last(const AExpression: IFluentQueryExpression): T;
+function ILQColligoQueryable<T>.Last(const AExpression: ILQColligoQueryExpression): T;
 begin
   FProvider.Where(AExpression.Serialize);
   FProvider.OrderBy('ID').Desc;
@@ -1083,12 +1083,12 @@ begin
   Result := _ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Last: T;
+function ILQColligoQueryable<T>.Last: T;
 begin
   Result := OrderByDesc(nil).Take(1)._ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.LastOrDefault(const AExpression: IFluentQueryExpression): T;
+function ILQColligoQueryable<T>.LastOrDefault(const AExpression: ILQColligoQueryExpression): T;
 begin
   FProvider.Where(AExpression.Serialize);
   FProvider.OrderBy('ID').Desc;
@@ -1104,7 +1104,7 @@ begin
   end;
 end;
 
-function IFluentQueryable<T>.LastOrDefault: T;
+function ILQColligoQueryable<T>.LastOrDefault: T;
 begin
   FProvider.Count;
   if _ExecuteScalar<Integer>(FQueryable.BuildQuery) > 0 then
@@ -1113,7 +1113,7 @@ begin
     Result := Default(T);
 end;
 
-function IFluentQueryable<T>.Single(const AExpression: IFluentQueryExpression): T;
+function ILQColligoQueryable<T>.Single(const AExpression: ILQColligoQueryExpression): T;
 var
   LCount: Integer;
   LColumns: string;
@@ -1132,7 +1132,7 @@ begin
   Result := _ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.Single: T;
+function ILQColligoQueryable<T>.Single: T;
 var
   LCount: Integer;
 begin
@@ -1144,7 +1144,7 @@ begin
     raise EInvalidOperation.Create('Sequence contains more than one element or is empty');
 end;
 
-function IFluentQueryable<T>.SingleOrDefault(const AExpression: IFluentQueryExpression): T;
+function ILQColligoQueryable<T>.SingleOrDefault(const AExpression: ILQColligoQueryExpression): T;
 var
   LCount: Integer;
   LColumns: string;
@@ -1170,7 +1170,7 @@ begin
     Result := Default(T);
 end;
 
-function IFluentQueryable<T>.SingleOrDefault: T;
+function ILQColligoQueryable<T>.SingleOrDefault: T;
 var
   LCount: Integer;
 begin
@@ -1184,12 +1184,12 @@ begin
     raise EInvalidOperation.Create('Sequence contains more than one element');
 end;
 
-function IFluentQueryable<T>.ElementAt(const AIndex: Integer): T;
+function ILQColligoQueryable<T>.ElementAt(const AIndex: Integer): T;
 begin
   Result := Skip(AIndex).Take(1)._ExecuteScalar<T>(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.ElementAtOrDefault(const AIndex: Integer): T;
+function ILQColligoQueryable<T>.ElementAtOrDefault(const AIndex: Integer): T;
 begin
   FProvider.Count;
   if Skip(AIndex)._ExecuteScalar<Integer>(FQueryable.BuildQuery) > 0 then
@@ -1198,14 +1198,14 @@ begin
     Result := Default(T);
 end;
 
-//function IFluentQueryable<T>.Aggregate<TAccumulate>(
+//function ILQColligoQueryable<T>.Aggregate<TAccumulate>(
 //  const ASeed: TAccumulate;
 //  const AFunc: TFunc<TAccumulate, T, TAccumulate>): TAccumulate;
 //begin
 //  Result := FEnumerable.Aggregate<TAccumulate>(ASeed, AFunc);
 //end;
 
-//function IFluentQueryable<T>.Aggregate<TAccumulate, TResult>(
+//function ILQColligoQueryable<T>.Aggregate<TAccumulate, TResult>(
 //  const ASeed: TAccumulate;
 //  const AFunc: TFunc<TAccumulate, T, TAccumulate>;
 //  const AResultSelector: TFunc<TAccumulate, TResult>): TResult;
@@ -1213,41 +1213,41 @@ end;
 //  Result := FEnumerable.Aggregate<TAccumulate, TResult>(ASeed, AFunc, AResultSelector);
 //end;
 
-//function IFluentQueryable<T>.Chunk(const ASize: Integer): IFluentChunkResult<T>;
+//function ILQColligoQueryable<T>.Chunk(const ASize: Integer): ILQColligoChunkResult<T>;
 //begin
 //  Result := FEnumerable.Chunk(ASize);
 //end;
 
-function IFluentQueryable<T>.ToArray: IFluentArray<T>;
+function ILQColligoQueryable<T>.ToArray: ILQColligoArray<T>;
 begin
   Result := _ExecuteList(FQueryable.BuildQuery).ToArray;
 end;
 
-function IFluentQueryable<T>.ToList: IFluentList<T>;
+function ILQColligoQueryable<T>.ToList: ILQColligoList<T>;
 begin
   Result := _ExecuteList(FQueryable.BuildQuery);
 end;
 
-function IFluentQueryable<T>.AsString: string;
+function ILQColligoQueryable<T>.AsString: string;
 begin
   Result := FProvider.AsString;
 end;
 
-function IFluentQueryable<T>.AsEnumerable: IFluentEnumerable<T>;
+function ILQColligoQueryable<T>.AsEnumerable: ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
+  Result := ILQColligoEnumerable<T>.Create(
     TQueryableToEnumerableAdapter<T>.Create(FQueryable),
     ftNone,
     TEqualityComparer<T>.Default
   );
 end;
 
-function IFluentQueryable<T>.IsNotAssigned: Boolean;
+function ILQColligoQueryable<T>.IsNotAssigned: Boolean;
 begin
-  Result := not TEqualityComparer<IFluentQueryable<T>>.Default.Equals(Self, Default(IFluentQueryable<T>));
+  Result := not TEqualityComparer<ILQColligoQueryable<T>>.Default.Equals(Self, Default(ILQColligoQueryable<T>));
 end;
 
-function IFluentQueryable<T>._GetDriverDatabase(const ADatabase: TDriverName): TFluentSQLDriver;
+function ILQColligoQueryable<T>._GetDriverDatabase(const ADatabase: TDriverName): TFluentSQLDriver;
 begin
   case ADatabase of
     dnMSSQL: Result := dbnMSSQL;
@@ -1268,27 +1268,27 @@ begin
   end;
 end;
 
-function IFluentQueryable<T>.AndOpe(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.AndOpe(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
 begin
   if Assigned(FProvider) then
     FProvider.AndOpe(AExpression.Serialize);
   Result := Self;
 end;
 
-function IFluentQueryable<T>.Where(const AExpression: IFluentQueryExpression): IFluentQueryable<T>;
+function ILQColligoQueryable<T>.Where(const AExpression: ILQColligoQueryExpression): ILQColligoQueryable<T>;
 begin
   FProvider.Where(AExpression.Serialize);
   Result := Self;
 end;
 
-{ TFluentQueryable<T> }
+{ TLQColligoQueryable<T> }
 
-constructor TFluentQueryable<T>.Create(const AProvider: IFluentQueryProvider<T>);
+constructor TLQColligoQueryable<T>.Create(const AProvider: ILQColligoQueryProvider<T>);
 begin
   FProvider := AProvider;
 end;
 
-function TFluentQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 var
   LSql: string;
   LDataSet: IDBDataSet;
@@ -1298,7 +1298,7 @@ begin
   Result := TDataSetEnumerator<T>.Create(LDataSet);
 end;
 
-function TFluentQueryable<T>.BuildQuery: string;
+function TLQColligoQueryable<T>.BuildQuery: string;
 begin
   if Assigned(FProvider) then
     Result := FProvider.AsString
@@ -1418,11 +1418,11 @@ begin
   Result := ParseCurrent;
 end;
 
-{ FluentQE }
+{ LQColligoQE }
 
-class function TQE.New<T>(const ADatabase: TFluentSQLDriver): IFluentQueryExpression;
+class function TQE.New<T>(const ADatabase: TFluentSQLDriver): ILQColligoQueryExpression;
 begin
-  Result := TFluentQueryExpression<T>.Create(ADatabase);
+  Result := TLQColligoQueryExpression<T>.Create(ADatabase);
 end;
 
 end.

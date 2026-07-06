@@ -27,28 +27,28 @@ uses
   LQColligo;
 
 type
-  TFluentExcludeEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoExcludeEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSecond: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSecond: ILQColligoEnumerableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const ASecond: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
+      const ASecond: ILQColligoEnumerableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentExcludeEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoExcludeEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSecond: TDictionary<T, Boolean>;
     FEmitted: TDictionary<T, Boolean>;
     FCurrent: T;
     FComparer: IEqualityComparer<T>;
     function ContainsValue(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -58,28 +58,28 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentExcludeQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoExcludeQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FSource: IFluentQueryableBase<T>;
-    FSecond: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
+    FSecond: ILQColligoQueryableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const ASecond: IFluentQueryableBase<T>;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const ASecond: ILQColligoQueryableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   end;
 
-  TFluentExcludeQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoExcludeQueryableEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSecond: TDictionary<T, Boolean>;
     FEmitted: TDictionary<T, Boolean>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     function _ContainsValue(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -91,25 +91,25 @@ type
 
 implementation
 
-{ TFluentExcludeEnumerable<T> }
+{ TLQColligoExcludeEnumerable<T> }
 
-constructor TFluentExcludeEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecond: IFluentEnumerableBase<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoExcludeEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const ASecond: ILQColligoEnumerableBase<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FComparer := AComparer;
 end;
 
-function TFluentExcludeEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoExcludeEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentExcludeEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
+  Result := TLQColligoExcludeEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
 end;
 
-{ TFluentExcludeEnumerator<T> }
+{ TLQColligoExcludeEnumerator<T> }
 
-constructor TFluentExcludeEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoExcludeEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FComparer := AComparer;
@@ -121,25 +121,25 @@ begin
     FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
-destructor TFluentExcludeEnumerator<T>.Destroy;
+destructor TLQColligoExcludeEnumerator<T>.Destroy;
 begin
   FSecond.Free;
   FEmitted.Free;
   inherited;
 end;
 
-function TFluentExcludeEnumerator<T>.GetCurrent: T;
+function TLQColligoExcludeEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentExcludeEnumerator<T>.ContainsValue(const AValue: T): Boolean;
+function TLQColligoExcludeEnumerator<T>.ContainsValue(const AValue: T): Boolean;
 begin
   // O(1) hash lookup — the dictionary was already built with FComparer.
   Result := FSecond.ContainsKey(AValue);
 end;
 
-function TFluentExcludeEnumerator<T>.MoveNext: Boolean;
+function TLQColligoExcludeEnumerator<T>.MoveNext: Boolean;
 begin
   while FSource.MoveNext do
   begin
@@ -157,39 +157,39 @@ begin
   Result := False;
 end;
 
-procedure TFluentExcludeEnumerator<T>.Reset;
+procedure TLQColligoExcludeEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FEmitted.Clear;
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentExcludeQueryable<T> }
+{ TLQColligoExcludeQueryable<T> }
 
-constructor TFluentExcludeQueryable<T>.Create(const ASource: IFluentQueryableBase<T>;
-  const ASecond: IFluentQueryableBase<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoExcludeQueryable<T>.Create(const ASource: ILQColligoQueryableBase<T>;
+  const ASecond: ILQColligoQueryableBase<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FComparer := AComparer;
 end;
 
-function TFluentExcludeQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoExcludeQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentExcludeQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
+  Result := TLQColligoExcludeQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
 end;
 
-function TFluentExcludeQueryable<T>.BuildQuery: string;
+function TLQColligoExcludeQueryable<T>.BuildQuery: string;
 begin
   // Placeholder: traduzir Exclude pra SQL (ex.: LEFT JOIN com WHERE NULL)
   Result := FSource.BuildQuery + ' EXCEPT ' + FSecond.BuildQuery;
   // Exemplo fictício: 'SELECT * FROM Table1 EXCEPT SELECT * FROM Table2'
 end;
 
-{ TFluentExcludeQueryableEnumerator<T> }
+{ TLQColligoExcludeQueryableEnumerator<T> }
 
-constructor TFluentExcludeQueryableEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoExcludeQueryableEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FComparer := AComparer;
@@ -201,25 +201,25 @@ begin
     FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
-destructor TFluentExcludeQueryableEnumerator<T>.Destroy;
+destructor TLQColligoExcludeQueryableEnumerator<T>.Destroy;
 begin
   FSecond.Free;
   FEmitted.Free;
   inherited;
 end;
 
-function TFluentExcludeQueryableEnumerator<T>.GetCurrent: T;
+function TLQColligoExcludeQueryableEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentExcludeQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
+function TLQColligoExcludeQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
 begin
   // O(1) hash lookup — the dictionary was already built with FComparer.
   Result := FSecond.ContainsKey(AValue);
 end;
 
-function TFluentExcludeQueryableEnumerator<T>.MoveNext: Boolean;
+function TLQColligoExcludeQueryableEnumerator<T>.MoveNext: Boolean;
 begin
   while FSource.MoveNext do
   begin
@@ -235,7 +235,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentExcludeQueryableEnumerator<T>.Reset;
+procedure TLQColligoExcludeQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FEmitted.Clear;

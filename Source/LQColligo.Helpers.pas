@@ -34,7 +34,7 @@ uses
 {$D-}
 
 type
-  TFluentChar = record helper for Char
+  TLQColligoChar = record helper for Char
   public
     function ToUpper: Char;
     function ToLower: Char;
@@ -42,7 +42,7 @@ type
     function IsDigit: Boolean;
   end;
 
-  TFluentString = record helper for string
+  TLQColligoString = record helper for string
   private type
     TSplitKind = (StringSeparatorsNoQuoted, StringSeparatorsQuoted, StringSeparatorNoQuoted,
       CharSeparatorsNoQuoted, CharSeparatorsQuoted, CharSeparatorNoQuoted);
@@ -59,7 +59,7 @@ type
       IndexB, LengthA, LengthB: Integer; IgnoreCase: Boolean; LocaleID: TLocaleID): Integer; overload; static;
     class function InternalCompare(const StrA: string; IndexA: Integer; const StrB: string;
       IndexB, LengthA, LengthB: Integer; Options: TCompareOptions; LocaleID: TLocaleID): Integer; overload; static;
-    function AsEnumerable(const AString: string): IFluentEnumerable<Char>;
+    function AsEnumerable(const AString: string): ILQColligoEnumerable<Char>;
   public
     const Empty = '';
     // TStringHelper (System.SysUtils)
@@ -199,10 +199,10 @@ type
     property Length: Integer read GetLength;
     // LQColligo
     procedure Partition(const APredicate: TFunc<Char, Boolean>; out ALeft, ARight: String);
-    function Where(const APredicate: TFunc<Char, Boolean>): IFluentEnumerable<Char>;
-    function Collect: IFluentEnumerable<String>;
-    function Select<TResult>(const ATransform: TFunc<Char, TResult>): IFluentEnumerable<TResult>;
-    function SelectMany<TResult>(const ASelector: TFunc<Char, TArray<TResult>>): IFluentEnumerable<TResult>;
+    function Where(const APredicate: TFunc<Char, Boolean>): ILQColligoEnumerable<Char>;
+    function Collect: ILQColligoEnumerable<String>;
+    function Select<TResult>(const ATransform: TFunc<Char, TResult>): ILQColligoEnumerable<TResult>;
+    function SelectMany<TResult>(const ASelector: TFunc<Char, TArray<TResult>>): ILQColligoEnumerable<TResult>;
     function Sum: Integer;
     function First: Char;
     function Last: Char;
@@ -210,15 +210,15 @@ type
     function Exists(const APredicate: TFunc<Char, Boolean>): Boolean;
     function All(const APredicate: TFunc<Char, Boolean>): Boolean;
     function Any(const APredicate: TFunc<Char, Boolean>): Boolean;
-    function Sort: IFluentEnumerable<Char>;
-    function Take(const ACount: Integer): IFluentEnumerable<Char>;
-    function Skip(const ACount: Integer): IFluentEnumerable<Char>;
+    function Sort: ILQColligoEnumerable<Char>;
+    function Take(const ACount: Integer): ILQColligoEnumerable<Char>;
+    function Skip(const ACount: Integer): ILQColligoEnumerable<Char>;
     function GroupBy<TKey>(const AKeySelector: TFunc<Char, TKey>): IGroupByEnumerable<TKey, Char>;
-    function Reverse: IFluentEnumerable<Char>;
+    function Reverse: ILQColligoEnumerable<Char>;
     function CountWhere(const APredicate: TFunc<Char, Boolean>): Integer;
   end;
 
-  TFluentInteger = record helper for Integer
+  TLQColligoInteger = record helper for Integer
   public
     function Select(const ATransform: TFunc<Integer, Integer>): Integer;
     function IsEven: Boolean;
@@ -226,21 +226,21 @@ type
     function Times(const ATransform: TFunc<Integer, Integer>): Integer;
   end;
 
-  TFluentBoolean = record helper for Boolean
+  TLQColligoBoolean = record helper for Boolean
   public
     function Select<T>(const ATrueValue, AFalseValue: T): T;
     procedure IfTrue(const AAction: TProc);
     procedure IfFalse(const AAction: TProc);
   end;
 
-  TFluentFloat = record helper for Double
+  TLQColligoFloat = record helper for Double
   public
     function Select(const ATransform: TFunc<Double, Double>): Double;
     function Round: Integer;
     function ApproxEqual(const AValue: Double; const ATolerance: Double = 0.0001): Boolean;
   end;
 
-  TFluentDateTime = record helper for TDateTime
+  TLQColligoDateTime = record helper for TDateTime
   public
     function Select(const ATransform: TFunc<TDateTime, TDateTime>): TDateTime;
     function AddDays(ADays: Integer): TDateTime;
@@ -250,9 +250,9 @@ type
 
 implementation
 
-{ TFluentChar }
+{ TLQColligoChar }
 
-function TFluentChar.ToUpper: Char;
+function TLQColligoChar.ToUpper: Char;
 begin
   if CharInSet(Self, ['a'..'z']) then
     Result := Chr(Ord(Self) - 32)
@@ -260,25 +260,25 @@ begin
     Result := Self;
 end;
 
-function TFluentChar.ToLower: Char;
+function TLQColligoChar.ToLower: Char;
 begin
   Result := System.SysUtils.LowerCase(Self)[1];
 end;
 
-function TFluentChar.IsLetter: Boolean;
+function TLQColligoChar.IsLetter: Boolean;
 begin
   Result := System.SysUtils.CharInSet(Self, ['A'..'Z', 'a'..'z']);
 end;
 
-function TFluentChar.IsDigit: Boolean;
+function TLQColligoChar.IsDigit: Boolean;
 begin
   Result := System.SysUtils.CharInSet(Self, ['0'..'9']);
 end;
 
 {$ZEROBASEDSTRINGS ON}
-{ TFluentString }
+{ TLQColligoString }
 
-class function TFluentString.CharInArray(const C: Char; const InArray: array of Char): Boolean;
+class function TLQColligoString.CharInArray(const C: Char; const InArray: array of Char): Boolean;
 var
   LFor: Integer;
 begin
@@ -288,49 +288,49 @@ begin
       Exit(True);
 end;
 
-class function TFluentString.Compare(const StrA, StrB: string; Options: TCompareOptions; LocaleID: TLocaleID): Integer;
+class function TLQColligoString.Compare(const StrA, StrB: string; Options: TCompareOptions; LocaleID: TLocaleID): Integer;
 begin
   Result := InternalCompare(StrA, 0, StrB, 0, StrA.Length, StrB.Length, Options, LocaleID);
 end;
 
-class function TFluentString.Compare(const StrA, StrB: string; Options: TCompareOptions): Integer;
+class function TLQColligoString.Compare(const StrA, StrB: string; Options: TCompareOptions): Integer;
 begin
   Result := InternalCompare(StrA, 0, StrB, 0, StrA.Length, StrB.Length, Options, SysLocale.DefaultLCID);
 end;
 
-class function TFluentString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB, Length: Integer;
+class function TLQColligoString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB, Length: Integer;
   Options: TCompareOptions; LocaleID: TLocaleID): Integer;
 begin
   Result := InternalCompare(StrA, IndexA, StrB, IndexB, Length, Length, Options, LocaleID);
 end;
 
-class function TFluentString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB, Length: Integer;
+class function TLQColligoString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB, Length: Integer;
   Options: TCompareOptions): Integer;
 begin
   Result := InternalCompare(StrA, IndexA, StrB, IndexB, Length, Length, Options, SysLocale.DefaultLCID);
 end;
 
-class function TFluentString.Compare(const StrA, StrB: string): Integer;
+class function TLQColligoString.Compare(const StrA, StrB: string): Integer;
 begin
   Result := InternalCompare(StrA, 0, StrB, 0, StrA.Length, StrB.Length, [], SysLocale.DefaultLCID);
 end;
 
-class function TFluentString.Compare(const StrA, StrB: string; LocaleID: TLocaleID): Integer;
+class function TLQColligoString.Compare(const StrA, StrB: string; LocaleID: TLocaleID): Integer;
 begin
   Result := InternalCompare(StrA, 0, StrB, 0, StrA.Length, StrB.Length, [], LocaleID);
 end;
 
-class function TFluentString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB: Integer; Length: Integer): Integer;
+class function TLQColligoString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB: Integer; Length: Integer): Integer;
 begin
   Result := InternalCompare(StrA, IndexA, StrB, IndexB, Length, Length, False, SysLocale.DefaultLCID);
 end;
 
-class function TFluentString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB: Integer; Length: Integer; LocaleID: TLocaleID): Integer;
+class function TLQColligoString.Compare(const StrA: string; IndexA: Integer; const StrB: string; IndexB: Integer; Length: Integer; LocaleID: TLocaleID): Integer;
 begin
   Result := InternalCompare(StrA, IndexA, StrB, IndexB, Length, Length, False, LocaleID);
 end;
 
-class function TFluentString.CompareOrdinal(const StrA, StrB: string): Integer;
+class function TLQColligoString.CompareOrdinal(const StrA, StrB: string): Integer;
 var
   LMaxLen: Integer;
 begin
@@ -341,108 +341,108 @@ begin
   Result := System.SysUtils.StrLComp(PChar(@StrA[0]), PChar(@StrB[0]), LMaxLen);
 end;
 
-class function TFluentString.CompareOrdinal(const StrA: string; IndexA: Integer; const StrB: string; IndexB,
+class function TLQColligoString.CompareOrdinal(const StrA: string; IndexA: Integer; const StrB: string; IndexB,
   Length: Integer): Integer;
 begin
   Result := System.SysUtils.StrLComp(PChar(@StrA[IndexA]), PChar(@StrB[IndexB]), Length);
 end;
 
-class function TFluentString.CompareText(const StrA: string; const StrB: string): Integer;
+class function TLQColligoString.CompareText(const StrA: string; const StrB: string): Integer;
 begin
   Result := System.SysUtils.CompareText(StrA, StrB);
 end;
 
-class function TFluentString.ToBoolean(const S: string): Boolean;
+class function TLQColligoString.ToBoolean(const S: string): Boolean;
 begin
   Result := StrToBool(S);
 end;
 
-class function TFluentString.ToInteger(const S: string): Integer;
+class function TLQColligoString.ToInteger(const S: string): Integer;
 begin
   Result := StrToInt(S);
 end;
 
-class function TFluentString.ToInt64(const S: string): Int64;
+class function TLQColligoString.ToInt64(const S: string): Int64;
 begin
   Result := StrToInt64(S);
 end;
 
-class function TFluentString.ToSingle(const S: string): Single;
+class function TLQColligoString.ToSingle(const S: string): Single;
 begin
   Result := StrToFloat(S);
 end;
 
-class function TFluentString.ToDouble(const S: string): Double;
+class function TLQColligoString.ToDouble(const S: string): Double;
 begin
   Result := StrToFloat(S);
 end;
 
-class function TFluentString.ToExtended(const S: string): Extended;
+class function TLQColligoString.ToExtended(const S: string): Extended;
 begin
   Result := StrToFloat(S);
 end;
 
-class function TFluentString.Parse(const Value: Integer): string;
+class function TLQColligoString.Parse(const Value: Integer): string;
 begin
   Result := IntToStr(Value);
 end;
 
-class function TFluentString.Parse(const Value: Int64): string;
+class function TLQColligoString.Parse(const Value: Int64): string;
 begin
   Result := IntToStr(Value);
 end;
 
-class function TFluentString.Parse(const Value: Boolean): string;
+class function TLQColligoString.Parse(const Value: Boolean): string;
 begin
   Result := BoolToStr(Value);
 end;
 
-class function TFluentString.Parse(const Value: Extended): string;
+class function TLQColligoString.Parse(const Value: Extended): string;
 begin
   Result := FloatToStr(Value);
 end;
 
-class function TFluentString.LowerCase(const S: string): string;
+class function TLQColligoString.LowerCase(const S: string): string;
 begin
   Result := System.SysUtils.LowerCase(S);
 end;
 
-class function TFluentString.LowerCase(const S: string; LocaleOptions: TLocaleOptions): string;
+class function TLQColligoString.LowerCase(const S: string; LocaleOptions: TLocaleOptions): string;
 begin
   Result := System.SysUtils.LowerCase(S, LocaleOptions);
 end;
 
-class function TFluentString.UpperCase(const S: string): string;
+class function TLQColligoString.UpperCase(const S: string): string;
 begin
   Result := System.SysUtils.UpperCase(S);
 end;
 
-class function TFluentString.UpperCase(const S: string; LocaleOptions: TLocaleOptions): string;
+class function TLQColligoString.UpperCase(const S: string; LocaleOptions: TLocaleOptions): string;
 begin
   Result := System.SysUtils.UpperCase(S, LocaleOptions);
 end;
 
-function TFluentString.CompareTo(const strB: string): Integer;
+function TLQColligoString.CompareTo(const strB: string): Integer;
 begin
   Result := System.SysUtils.StrComp(PChar(Self), PChar(strB));
 end;
 
-function TFluentString.Contains(const Value: string): Boolean;
+function TLQColligoString.Contains(const Value: string): Boolean;
 begin
   Result := System.Pos(Value, Self) > 0;
 end;
 
-class function TFluentString.Copy(const Str: string): string;
+class function TLQColligoString.Copy(const Str: string): string;
 begin
   Result := System.Copy(Str, 1, Str.Length);
 end;
 
-procedure TFluentString.CopyTo(SourceIndex: Integer; var Destination: array of Char; DestinationIndex, Count: Integer);
+procedure TLQColligoString.CopyTo(SourceIndex: Integer; var Destination: array of Char; DestinationIndex, Count: Integer);
 begin
   Move((PChar(Self) + SourceIndex)^, Destination[DestinationIndex], Count * SizeOf(Char));
 end;
 
-function TFluentString.CountChar(const C: Char): Integer;
+function TLQColligoString.CountChar(const C: Char): Integer;
 var
   LFor: Integer;
 begin
@@ -452,24 +452,24 @@ begin
       Inc(Result);
 end;
 
-class function TFluentString.Create(C: Char; Count: Integer): string;
+class function TLQColligoString.Create(C: Char; Count: Integer): string;
 begin
   Result := StringOfChar(C, Count);
 end;
 
-class function TFluentString.Create(const Value: array of Char; StartIndex, Length: Integer): string;
+class function TLQColligoString.Create(const Value: array of Char; StartIndex, Length: Integer): string;
 begin
   SetLength(Result, Length);
   Move(Value[StartIndex], PChar(Result)^, Length * SizeOf(Char));
 end;
 
-class function TFluentString.Create(const Value: array of Char): string;
+class function TLQColligoString.Create(const Value: array of Char): string;
 begin
   SetLength(Result, System.Length(Value));
   Move(Value[0], PChar(Result)^, System.Length(Value) * SizeOf(Char));
 end;
 
-function TFluentString.DeQuotedString(const QuoteChar: Char): string;
+function TLQColligoString.DeQuotedString(const QuoteChar: Char): string;
 var
   LFor: Integer;
   LastQuoted: Boolean;
@@ -509,22 +509,22 @@ begin
     Result := Self;
 end;
 
-function TFluentString.DeQuotedString: string;
+function TLQColligoString.DeQuotedString: string;
 begin
   Result := Self.DeQuotedString('''');
 end;
 
-class function TFluentString.EndsText(const ASubText, AText: string): Boolean;
+class function TLQColligoString.EndsText(const ASubText, AText: string): Boolean;
 begin
   Result := AText.EndsWith(ASubText, True);
 end;
 
-function TFluentString.EndsWith(const Value: string): Boolean;
+function TLQColligoString.EndsWith(const Value: string): Boolean;
 begin
   Result := EndsWith(Value, False);
 end;
 
-function TFluentString.EndsWith(const Value: string; IgnoreCase: Boolean): Boolean;
+function TLQColligoString.EndsWith(const Value: string; IgnoreCase: Boolean): Boolean;
 var
   LSubTextLocation: Integer;
   LOptions: TCompareOptions;
@@ -547,46 +547,46 @@ begin
   end;
 end;
 
-class function TFluentString.Equals(const a, b: string): Boolean;
+class function TLQColligoString.Equals(const a, b: string): Boolean;
 begin
   Result := a = b;
 end;
 
-function TFluentString.Equals(const Value: string): Boolean;
+function TLQColligoString.Equals(const Value: string): Boolean;
 begin
   Result := Self = Value;
 end;
 
-class function TFluentString.Format(const Format: string; const args: array of const): string;
+class function TLQColligoString.Format(const Format: string; const args: array of const): string;
 begin
   Result := System.SysUtils.Format(Format, args);
 end;
 
-function TFluentString.IndexOf(Value: Char; StartIndex, Count: Integer): Integer;
+function TLQColligoString.IndexOf(Value: Char; StartIndex, Count: Integer): Integer;
 begin
   Result := System.Pos(Value, Self, StartIndex + 1) - 1;
   if (Result + 1) > (StartIndex + Count) then
     Result := -1;
 end;
 
-function TFluentString.IndexOf(const Value: string; StartIndex, Count: Integer): Integer;
+function TLQColligoString.IndexOf(const Value: string; StartIndex, Count: Integer): Integer;
 begin
   Result := System.Pos(Value, Self, StartIndex + 1) - 1;
   if (Result + Value.Length) > (StartIndex + Count) then
     Result := -1;
 end;
 
-function TFluentString.IndexOf(const Value: string; StartIndex: Integer): Integer;
+function TLQColligoString.IndexOf(const Value: string; StartIndex: Integer): Integer;
 begin
   Result := System.Pos(Value, Self, StartIndex + 1) - 1;
 end;
 
-function TFluentString.IndexOf(const Value: string): Integer;
+function TLQColligoString.IndexOf(const Value: string): Integer;
 begin
   Result := System.Pos(Value, Self) - 1;
 end;
 
-function TFluentString.IndexOf(Value: Char): Integer;
+function TLQColligoString.IndexOf(Value: Char): Integer;
 var
   LPoniter: PChar;
   LFor: Integer;
@@ -597,7 +597,7 @@ begin
   Result := -1;
 end;
 
-function TFluentString.IndexOf(Value: Char; StartIndex: Integer): Integer;
+function TLQColligoString.IndexOf(Value: Char; StartIndex: Integer): Integer;
 var
   LPointer: PChar;
   LFor: Integer;
@@ -609,7 +609,7 @@ begin
   Result := -1;
 end;
 
-function TFluentString.IndexOfAny(const AnyOf: array of Char; StartIndex, Count: Integer): Integer;
+function TLQColligoString.IndexOfAny(const AnyOf: array of Char; StartIndex, Count: Integer): Integer;
 var
   LFor: Integer;
   LChar: Char;
@@ -631,28 +631,28 @@ begin
   Result := -1;
 end;
 
-function TFluentString.IndexOfAny(const AnyOf: array of Char; StartIndex: Integer): Integer;
+function TLQColligoString.IndexOfAny(const AnyOf: array of Char; StartIndex: Integer): Integer;
 begin
   Result := IndexOfAny(AnyOf, StartIndex, Self.Length);
 end;
 
-function TFluentString.IndexOfAny(const AnyOf: array of Char): Integer;
+function TLQColligoString.IndexOfAny(const AnyOf: array of Char): Integer;
 begin
   Result := IndexOfAny(AnyOf, 0, Self.Length);
 end;
 
-function TFluentString.IndexOfAnyUnquoted(const AnyOf: array of Char; StartQuote, EndQuote: Char): Integer;
+function TLQColligoString.IndexOfAnyUnquoted(const AnyOf: array of Char; StartQuote, EndQuote: Char): Integer;
 begin
   Result := IndexOfAnyUnquoted(AnyOf, StartQuote, EndQuote, 0, Self.Length);
 end;
 
-function TFluentString.IndexOfAnyUnquoted(const AnyOf: array of Char; StartQuote, EndQuote: Char;
+function TLQColligoString.IndexOfAnyUnquoted(const AnyOf: array of Char; StartQuote, EndQuote: Char;
   StartIndex: Integer): Integer;
 begin
   Result := IndexOfAnyUnquoted(AnyOf, StartQuote, EndQuote, StartIndex, Self.Length);
 end;
 
-function TFluentString.IndexOfAnyUnquoted(const AnyOf: array of Char; StartQuote, EndQuote: Char; StartIndex,
+function TLQColligoString.IndexOfAnyUnquoted(const AnyOf: array of Char; StartQuote, EndQuote: Char; StartIndex,
   Count: Integer): Integer;
 var
   LIndex: Integer;
@@ -703,35 +703,35 @@ begin
   Result := -1;
 end;
 
-function TFluentString.Insert(StartIndex: Integer; const Value: string): string;
+function TLQColligoString.Insert(StartIndex: Integer; const Value: string): string;
 begin
   Result := Self;
   System.Insert(Value, Result, StartIndex + 1);
 end;
 
-function TFluentString.IsDelimiter(const Delimiters: string; Index: Integer): Boolean;
+function TLQColligoString.IsDelimiter(const Delimiters: string; Index: Integer): Boolean;
 begin
   Result := False;
   if (Index < Low(string)) or (Index > High(Self)) or (ByteType(Self, Index) <> mbSingleByte) then exit;
   Result := StrScan(PChar(Delimiters), Self[Index]) <> nil;
 end;
 
-function TFluentString.IsEmpty: Boolean;
+function TLQColligoString.IsEmpty: Boolean;
 begin
   Result := Self = Empty;
 end;
 
-class function TFluentString.IsNullOrEmpty(const Value: string): Boolean;
+class function TLQColligoString.IsNullOrEmpty(const Value: string): Boolean;
 begin
   Result := Value = Empty;
 end;
 
-class function TFluentString.IsNullOrWhiteSpace(const Value: string): Boolean;
+class function TLQColligoString.IsNullOrWhiteSpace(const Value: string): Boolean;
 begin
   Result := Value.Trim.Length = 0;
 end;
 
-class function TFluentString.Join(const Separator: string; const Values: array of const): string;
+class function TLQColligoString.Join(const Separator: string; const Values: array of const): string;
 var
   LFor: Integer;
   LLength: Integer;
@@ -765,12 +765,12 @@ begin
   end;
 end;
 
-class function TFluentString.Join(const Separator: string; const Values: array of string): string;
+class function TLQColligoString.Join(const Separator: string; const Values: array of string): string;
 begin
   Result := Join(Separator, Values, 0, System.Length(Values));
 end;
 
-class function TFluentString.Join(const Separator: string; const Values: IEnumerator<string>): string;
+class function TLQColligoString.Join(const Separator: string; const Values: IEnumerator<string>): string;
 begin
   if (Values <> nil) and Values.MoveNext then
   begin
@@ -782,7 +782,7 @@ begin
     Result := '';
 end;
 
-class function TFluentString.Join(const Separator: string; const Values: IEnumerable<string>): string;
+class function TLQColligoString.Join(const Separator: string; const Values: IEnumerable<string>): string;
 begin
   if Values <> nil then
     Result := Join(Separator, Values.GetEnumerator)
@@ -790,7 +790,7 @@ begin
     Result := '';
 end;
 
-class function TFluentString.Join(const Separator: string; const Values: array of string; StartIndex,
+class function TLQColligoString.Join(const Separator: string; const Values: array of string; StartIndex,
   Count: Integer): string;
 var
   LFor: Integer;
@@ -814,7 +814,7 @@ begin
   end;
 end;
 
-function TFluentString.LastDelimiter(const Delims: string): Integer;
+function TLQColligoString.LastDelimiter(const Delims: string): Integer;
 var
   LHigh, LFor: Integer;
 begin
@@ -829,7 +829,7 @@ begin
   Result := -1;
 end;
 
-function TFluentString.LastDelimiter(const Delims: TSysCharSet): Integer;
+function TLQColligoString.LastDelimiter(const Delims: TSysCharSet): Integer;
 var
   LPointerSelf, LPointerChar: PChar;
 begin
@@ -847,27 +847,27 @@ begin
   Result := -1;
 end;
 
-function TFluentString.LastIndexOf(const Value: string; StartIndex: Integer): Integer;
+function TLQColligoString.LastIndexOf(const Value: string; StartIndex: Integer): Integer;
 begin
   Result := LastIndexOf(Value, StartIndex, StartIndex + 1);
 end;
 
-function TFluentString.LastIndexOf(Value: Char; StartIndex: Integer): Integer;
+function TLQColligoString.LastIndexOf(Value: Char; StartIndex: Integer): Integer;
 begin
   Result := LastIndexOf(Value, StartIndex, StartIndex + 1);
 end;
 
-function TFluentString.LastIndexOf(Value: Char): Integer;
+function TLQColligoString.LastIndexOf(Value: Char): Integer;
 begin
   Result := LastIndexOf(Value, Self.Length - 1, Self.Length);
 end;
 
-function TFluentString.LastIndexOf(const Value: string): Integer;
+function TLQColligoString.LastIndexOf(const Value: string): Integer;
 begin
   Result := LastIndexOf(Value, Self.Length - 1, Self.Length);
 end;
 
-function TFluentString.LastIndexOf(const Value: string; StartIndex, Count: Integer): Integer;
+function TLQColligoString.LastIndexOf(const Value: string; StartIndex, Count: Integer): Integer;
 var
   LIndex: Integer;
   LMin: Integer;
@@ -891,7 +891,7 @@ begin
   Result := -1;
 end;
 
-function TFluentString.LastIndexOf(Value: Char; StartIndex, Count: Integer): Integer;
+function TLQColligoString.LastIndexOf(Value: Char; StartIndex, Count: Integer): Integer;
 var
   LIndex: Integer;
   LMin: Integer;
@@ -913,12 +913,12 @@ begin
   Result := -1;
 end;
 
-function TFluentString.LastIndexOfAny(const AnyOf: array of Char): Integer;
+function TLQColligoString.LastIndexOfAny(const AnyOf: array of Char): Integer;
 begin
   Result := LastIndexOfAny(AnyOf, Self.Length - 1, Self.Length);
 end;
 
-function TFluentString.LastIndexOfAny(const AnyOf: array of Char; StartIndex, Count: Integer): Integer;
+function TLQColligoString.LastIndexOfAny(const AnyOf: array of Char; StartIndex, Count: Integer): Integer;
 var
   LIndex: Integer;
   LMin: Integer;
@@ -942,12 +942,12 @@ begin
   Result := -1;
 end;
 
-function TFluentString.LastIndexOfAny(const AnyOf: array of Char; StartIndex: Integer): Integer;
+function TLQColligoString.LastIndexOfAny(const AnyOf: array of Char; StartIndex: Integer): Integer;
 begin
   Result := LastIndexOfAny(AnyOf, StartIndex, Self.Length);
 end;
 
-function TFluentString.PadLeft(TotalWidth: Integer; PaddingChar: Char): string;
+function TLQColligoString.PadLeft(TotalWidth: Integer; PaddingChar: Char): string;
 begin
   TotalWidth := TotalWidth - Length;
   if TotalWidth > 0 then
@@ -956,12 +956,12 @@ begin
     Result := Self;
 end;
 
-function TFluentString.PadLeft(TotalWidth: Integer): string;
+function TLQColligoString.PadLeft(TotalWidth: Integer): string;
 begin
   Result := PadLeft(TotalWidth, ' ');
 end;
 
-function TFluentString.PadRight(TotalWidth: Integer; PaddingChar: Char): string;
+function TLQColligoString.PadRight(TotalWidth: Integer; PaddingChar: Char): string;
 begin
   TotalWidth := TotalWidth - Length;
   if TotalWidth > 0 then
@@ -970,12 +970,12 @@ begin
     Result := Self;
 end;
 
-function TFluentString.PadRight(TotalWidth: Integer): string;
+function TLQColligoString.PadRight(TotalWidth: Integer): string;
 begin
   Result := PadRight(TotalWidth, ' ');
 end;
 
-function TFluentString.QuotedString(const QuoteChar: Char): string;
+function TLQColligoString.QuotedString(const QuoteChar: Char): string;
 var
   LFor: Integer;
 begin
@@ -985,7 +985,7 @@ begin
   Result := QuoteChar + Result + QuoteChar;
 end;
 
-function TFluentString.QuotedString: string;
+function TLQColligoString.QuotedString: string;
 var
   LFor: Integer;
 begin
@@ -995,54 +995,54 @@ begin
   Result := '''' + Result + '''';
 end;
 
-function TFluentString.Remove(StartIndex, Count: Integer): string;
+function TLQColligoString.Remove(StartIndex, Count: Integer): string;
 begin
   Result := Self;
   System.Delete(Result, StartIndex + 1, Count);
 end;
 
-function TFluentString.Remove(StartIndex: Integer): string;
+function TLQColligoString.Remove(StartIndex: Integer): string;
 begin
   Result := Self;
   System.Delete(Result, StartIndex + 1, Result.Length);
 end;
 
-function TFluentString.Replace(OldChar, NewChar: Char): string;
+function TLQColligoString.Replace(OldChar, NewChar: Char): string;
 begin
   Result := System.SysUtils.StringReplace(Self, OldChar, NewChar, [rfReplaceAll]);
 end;
 
-function TFluentString.Replace(OldChar: Char; NewChar: Char; ReplaceFlags: TReplaceFlags): string;
+function TLQColligoString.Replace(OldChar: Char; NewChar: Char; ReplaceFlags: TReplaceFlags): string;
 begin
   Result := System.SysUtils.StringReplace(Self, OldChar, NewChar, ReplaceFlags);
 end;
 
-function TFluentString.Replace(const OldValue: string; const NewValue: string): string;
+function TLQColligoString.Replace(const OldValue: string; const NewValue: string): string;
 begin
   Result := System.SysUtils.StringReplace(Self, OldValue, NewValue, [rfReplaceAll]);
 end;
 
-function TFluentString.Replace(const OldValue: string; const NewValue: string; ReplaceFlags: TReplaceFlags): string;
+function TLQColligoString.Replace(const OldValue: string; const NewValue: string; ReplaceFlags: TReplaceFlags): string;
 begin
   Result := System.SysUtils.StringReplace(Self, OldValue, NewValue, ReplaceFlags);
 end;
 
-function TFluentString.Split(const Separator: array of Char; Options: TStringSplitOptions): TArray<string>;
+function TLQColligoString.Split(const Separator: array of Char; Options: TStringSplitOptions): TArray<string>;
 begin
   Result := Split(Separator, MaxInt, Options);
 end;
 
-function TFluentString.Split(const Separator: array of Char; Count: Integer): TArray<string>;
+function TLQColligoString.Split(const Separator: array of Char; Count: Integer): TArray<string>;
 begin
   Result := Split(Separator, Count, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of Char): TArray<string>;
+function TLQColligoString.Split(const Separator: array of Char): TArray<string>;
 begin
   Result := Split(Separator, MaxInt, TStringSplitOptions.None);
 end;
 
-function TFluentString.IndexOfAny(const Values: array of string; var Index: Integer; StartIndex: Integer): Integer;
+function TLQColligoString.IndexOfAny(const Values: array of string; var Index: Integer; StartIndex: Integer): Integer;
 var
   LFor, LIndex, LIoA: Integer;
 begin
@@ -1059,7 +1059,7 @@ begin
   Result := LIoA;
 end;
 
-function TFluentString.IndexOfAnyUnquoted(const Values: array of string; StartQuote, EndQuote: Char; var Index: Integer; StartIndex: Integer): Integer;
+function TLQColligoString.IndexOfAnyUnquoted(const Values: array of string; StartQuote, EndQuote: Char; var Index: Integer; StartIndex: Integer): Integer;
 var
   LFor, LIndex, LIoA: Integer;
 begin
@@ -1076,7 +1076,7 @@ begin
   Result := LIoA;
 end;
 
-function TFluentString.IndexOfQuoted(const Value: string; StartQuote, EndQuote: Char; StartIndex: Integer): Integer;
+function TLQColligoString.IndexOfQuoted(const Value: string; StartQuote, EndQuote: Char; StartIndex: Integer): Integer;
 var
   LFor, LIterCnt, LLength, LWhile: Integer;
   LPSubStr, LPS: PWideChar;
@@ -1151,7 +1151,7 @@ begin
   Result := -1;
 end;
 
-function TFluentString.InternalSplit(SplitType: TSplitKind; const SeparatorC: array of Char; const SeparatorS: array of string;
+function TLQColligoString.InternalSplit(SplitType: TSplitKind; const SeparatorC: array of Char; const SeparatorS: array of string;
   QuoteStart, QuoteEnd: Char; Count: Integer; Options: TStringSplitOptions): TArray<string>;
 const
   DeltaGrow = 32;
@@ -1258,88 +1258,88 @@ begin
     SetLength(Result, LTotal);
 end;
 
-function TFluentString.Split(const Separator: array of string; Count: Integer;
+function TLQColligoString.Split(const Separator: array of string; Count: Integer;
   Options: TStringSplitOptions): TArray<string>;
 begin
   Result := InternalSplit(TSplitKind.StringSeparatorsNoQuoted, [], Separator, Char(0), Char(0), Count, Options);
 end;
 
-function TFluentString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char;
+function TLQColligoString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char;
   Count: Integer; Options: TStringSplitOptions): TArray<string>;
 begin
   Result := InternalSplit(TSplitKind.StringSeparatorsQuoted, [], Separator, QuoteStart, QuoteEnd, Count, Options);
 end;
 
-function TFluentString.Split(const Separator: array of Char; Count: Integer;
+function TLQColligoString.Split(const Separator: array of Char; Count: Integer;
   Options: TStringSplitOptions): TArray<string>;
 begin
   Result := InternalSplit(TSplitKind.CharSeparatorsNoQuoted, Separator, [], Char(0), Char(0), Count, Options);
 end;
 
-function TFluentString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char; Count: Integer;
+function TLQColligoString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char; Count: Integer;
   Options: TStringSplitOptions): TArray<string>;
 begin
   Result := InternalSplit(TSplitKind.CharSeparatorsQuoted, Separator, [], QuoteStart, QuoteEnd, Count, Options);
 end;
 
-function TFluentString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char): TArray<string>;
+function TLQColligoString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char): TArray<string>;
 begin
   Result := Split(Separator, QuoteStart, QuoteEnd, MaxInt, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of Char; Quote: Char): TArray<string>;
+function TLQColligoString.Split(const Separator: array of Char; Quote: Char): TArray<string>;
 begin
   Result := Split(Separator, Quote, Quote, MaxInt, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char;
+function TLQColligoString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char;
   Count: Integer): TArray<string>;
 begin
   Result := Split(Separator, QuoteStart, QuoteEnd, Count, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char;
+function TLQColligoString.Split(const Separator: array of Char; QuoteStart, QuoteEnd: Char;
   Options: TStringSplitOptions): TArray<string>;
 begin
   Result := Split(Separator, QuoteStart, QuoteEnd, MaxInt, Options);
 end;
 
-function TFluentString.Split(const Separator: array of string): TArray<string>;
+function TLQColligoString.Split(const Separator: array of string): TArray<string>;
 begin
   Result := Split(Separator, MaxInt, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of string; Count: Integer): TArray<string>;
+function TLQColligoString.Split(const Separator: array of string; Count: Integer): TArray<string>;
 begin
   Result := Split(Separator, Count, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of string; Options: TStringSplitOptions): TArray<string>;
+function TLQColligoString.Split(const Separator: array of string; Options: TStringSplitOptions): TArray<string>;
 begin
   Result := Split(Separator, MaxInt, Options);
 end;
 
-function TFluentString.Split(const Separator: array of string; Quote: Char): TArray<string>;
+function TLQColligoString.Split(const Separator: array of string; Quote: Char): TArray<string>;
 begin
   Result := Split(Separator, Quote, Quote, MaxInt, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char): TArray<string>;
+function TLQColligoString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char): TArray<string>;
 begin
   Result := Split(Separator, QuoteStart, QuoteEnd, MaxInt, TStringSplitOptions.None);
 end;
 
-function TFluentString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char; Options: TStringSplitOptions): TArray<string>;
+function TLQColligoString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char; Options: TStringSplitOptions): TArray<string>;
 begin
   Result := Split(Separator, QuoteStart, QuoteEnd, MaxInt, Options);
 end;
 
-function TFluentString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char; Count: Integer): TArray<string>;
+function TLQColligoString.Split(const Separator: array of string; QuoteStart, QuoteEnd: Char; Count: Integer): TArray<string>;
 begin
   Result := Split(Separator, QuoteStart, QuoteEnd, Count, TStringSplitOptions.None);
 end;
 
-class function TFluentString.StartsText(const ASubText, AText: string): Boolean;
+class function TLQColligoString.StartsText(const ASubText, AText: string): Boolean;
 var
   LSubLen: Integer;
 begin
@@ -1352,12 +1352,12 @@ begin
     Result := False;
 end;
 
-function TFluentString.StartsWith(const Value: string): Boolean;
+function TLQColligoString.StartsWith(const Value: string): Boolean;
 begin
   Result := StartsWith(Value, False);
 end;
 
-function TFluentString.StartsWith(const Value: string; IgnoreCase: Boolean): Boolean;
+function TLQColligoString.StartsWith(const Value: string; IgnoreCase: Boolean): Boolean;
 var
   LValLen: Integer;
 begin
@@ -1372,53 +1372,53 @@ begin
     Result := False;
 end;
 
-function TFluentString.ToBoolean: Boolean;
+function TLQColligoString.ToBoolean: Boolean;
 begin
   Result := StrToBool(Self);
 end;
 
-function TFluentString.ToInteger: Integer;
+function TLQColligoString.ToInteger: Integer;
 begin
   Result := StrToInt(Self);
 end;
 
-function TFluentString.ToInt64: Int64;
+function TLQColligoString.ToInt64: Int64;
 begin
   Result := StrToInt64(Self);
 end;
 
-function TFluentString.ToSingle: Single;
+function TLQColligoString.ToSingle: Single;
 begin
   Result := StrToFloat(Self);
 end;
 
-function TFluentString.ToDouble: Double;
+function TLQColligoString.ToDouble: Double;
 begin
   Result := StrToFloat(Self);
 end;
 
-function TFluentString.ToExtended: Extended;
+function TLQColligoString.ToExtended: Extended;
 begin
   Result := StrToFloat(Self);
 end;
 
-function TFluentString.ToCharArray: TArray<Char>;
+function TLQColligoString.ToCharArray: TArray<Char>;
 begin
   Result := ToCharArray(0, Self.Length);
 end;
 
-function TFluentString.ToCharArray(StartIndex, Length: Integer): TArray<Char>;
+function TLQColligoString.ToCharArray(StartIndex, Length: Integer): TArray<Char>;
 begin
   SetLength(Result, Length);
   Move((PChar(Self) + StartIndex)^, Result[0], Length * SizeOf(Char));
 end;
 
-function TFluentString.ToLower: string;
+function TLQColligoString.ToLower: string;
 begin
   Result := ToLower(SysLocale.DefaultLCID);
 end;
 
-function TFluentString.ToLower(LocaleID: TLocaleID): string;
+function TLQColligoString.ToLower(LocaleID: TLocaleID): string;
 {$IF defined(MSWINDOWS)}
 begin
   Result := Self;
@@ -1518,7 +1518,7 @@ begin
 end;
 {$ENDIF !MSWINDOWS !MACOS}
 
-function TFluentString.ToLowerInvariant: string;
+function TLQColligoString.ToLowerInvariant: string;
 {$IF defined(MSWINDOWS)}
 var
   LMapLocale: LCID;
@@ -1584,12 +1584,12 @@ begin
 end;
 {$ENDIF !MSWINDOWS !USE_LIBICU !MACOS}
 
-function TFluentString.ToUpper: string;
+function TLQColligoString.ToUpper: string;
 begin
   Result := ToUpper(SysLocale.DefaultLCID);
 end;
 
-function TFluentString.ToUpper(LocaleID: TLocaleID): string;
+function TLQColligoString.ToUpper(LocaleID: TLocaleID): string;
 {$IF defined(MSWINDOWS)}
 begin
   Result := Self;
@@ -1691,7 +1691,7 @@ begin
 end;
 {$ENDIF !MSWINDOWS !USE_LIBICU !MACOS}
 
-function TFluentString.ToUpperInvariant: string;
+function TLQColligoString.ToUpperInvariant: string;
 {$IF defined(MSWINDOWS)}
 var
   MapLocale: LCID;
@@ -1757,7 +1757,7 @@ begin
 end;
 {$ENDIF !MSWINDOWS !USE_LIBICU !MACOS}
 
-function TFluentString.GetHashCode: Integer;
+function TLQColligoString.GetHashCode: Integer;
 var
   LResult: UInt32;
   I: Integer;
@@ -1771,7 +1771,7 @@ begin
   Result := Int32(LResult);
 end;
 
-function TFluentString.Trim: string;
+function TLQColligoString.Trim: string;
 var
   I, L: Integer;
 begin
@@ -1784,7 +1784,7 @@ begin
   Result := Self.SubString(I, L - I + 1);
 end;
 
-function TFluentString.TrimLeft: string;
+function TLQColligoString.TrimLeft: string;
 var
   I, L: Integer;
 begin
@@ -1797,7 +1797,7 @@ begin
     Result := Self;
 end;
 
-function TFluentString.TrimRight: string;
+function TLQColligoString.TrimRight: string;
 var
   I: Integer;
 begin
@@ -1809,7 +1809,7 @@ begin
   end;
 end;
 
-function TFluentString.Trim(const TrimChars: array of Char): string;
+function TLQColligoString.Trim(const TrimChars: array of Char): string;
 var
   I, L: Integer;
 begin
@@ -1825,7 +1825,7 @@ begin
   Result := Self.Substring(I, L - I + 1);
 end;
 
-function TFluentString.TrimLeft(const TrimChars: array of Char): string;
+function TLQColligoString.TrimLeft(const TrimChars: array of Char): string;
 var
   I, L: Integer;
 begin
@@ -1839,7 +1839,7 @@ begin
     Result := Self;
 end;
 
-function TFluentString.TrimRight(const TrimChars: array of Char): string;
+function TLQColligoString.TrimRight(const TrimChars: array of Char): string;
 var
   I: Integer;
 begin
@@ -1852,12 +1852,12 @@ begin
   Result := Self.SubString(0, I + 1);
 end;
 
-function TFluentString.TrimEnd(const TrimChars: array of Char): string;
+function TLQColligoString.TrimEnd(const TrimChars: array of Char): string;
 begin
   Result := Self.TrimRight(TrimChars);
 end;
 
-function TFluentString.TrimStart(const TrimChars: array of Char): string;
+function TLQColligoString.TrimStart(const TrimChars: array of Char): string;
 begin
   Result := Self.TrimLeft(TrimChars);
 end;
@@ -1867,28 +1867,28 @@ end;
 {$ENDIF}
 
 {$ZEROBASEDSTRINGS ON}
-function TFluentString.GetChars(Index: Integer): Char;
+function TLQColligoString.GetChars(Index: Integer): Char;
 begin
   Result := Self[Index];
 end;
 
-function TFluentString.GetLength: Integer;
+function TLQColligoString.GetLength: Integer;
 begin
   Result := System.Length(Self);
 end;
 
-function TFluentString.Substring(StartIndex: Integer): string;
+function TLQColligoString.Substring(StartIndex: Integer): string;
 begin
   Result := System.Copy(Self, StartIndex + 1, Self.Length);
 end;
 
-function TFluentString.Substring(StartIndex, Length: Integer): string;
+function TLQColligoString.Substring(StartIndex, Length: Integer): string;
 begin
   Result := System.Copy(Self, StartIndex + 1, Length);
 end;
 {$ZEROBASEDSTRINGS OFF}
 
-class function TFluentString.InternalCompare(const StrA: string; IndexA: Integer; const StrB: string;
+class function TLQColligoString.InternalCompare(const StrA: string; IndexA: Integer; const StrB: string;
   IndexB, LengthA, LengthB: Integer; IgnoreCase: Boolean; LocaleID: TLocaleID): Integer;
 begin
   if IgnoreCase then
@@ -1897,7 +1897,7 @@ begin
     Result := AnsiStrLComp(PChar(@StrA[IndexA]), PChar(@StrB[IndexB]), Min(LengthA, LengthB));
 end;
 
-class function TFluentString.InternalCompare(const StrA: string; IndexA: Integer; const StrB: string;
+class function TLQColligoString.InternalCompare(const StrA: string; IndexA: Integer; const StrB: string;
   IndexB, LengthA, LengthB: Integer; Options: TCompareOptions; LocaleID: TLocaleID): Integer;
 var
   LStrA, LStrB: string;
@@ -1917,14 +1917,14 @@ begin
   {$ENDIF}
 end;
 
-{ TFluentString }
+{ TLQColligoString }
 
-function TFluentString.AsEnumerable(const AString: string): IFluentEnumerable<Char>;
+function TLQColligoString.AsEnumerable(const AString: string): ILQColligoEnumerable<Char>;
 begin
-  Result := IFluentEnumerable<Char>.Create(TStringAdapter.Create(AString));
+  Result := ILQColligoEnumerable<Char>.Create(TStringAdapter.Create(AString));
 end;
 
-procedure TFluentString.Partition(const APredicate: TFunc<Char, Boolean>; out ALeft, ARight: String);
+procedure TLQColligoString.Partition(const APredicate: TFunc<Char, Boolean>; out ALeft, ARight: String);
 var
   LChar: Char;
 begin
@@ -1937,32 +1937,32 @@ begin
       ARight := ARight + LChar;
 end;
 
-function TFluentString.Where(const APredicate: TFunc<Char, Boolean>): IFluentEnumerable<Char>;
+function TLQColligoString.Where(const APredicate: TFunc<Char, Boolean>): ILQColligoEnumerable<Char>;
 begin
   Result := AsEnumerable(Self).Where(APredicate);
 end;
 
-function TFluentString.Collect: IFluentEnumerable<String>;
+function TLQColligoString.Collect: ILQColligoEnumerable<String>;
 var
   LWords: TArray<string>;
 begin
   LWords := SplitString(Self, ' ');
-  Result := IFluentEnumerable<String>.Create(TArrayAdapter<string>.Create(LWords));
+  Result := ILQColligoEnumerable<String>.Create(TArrayAdapter<string>.Create(LWords));
 end;
 
-function TFluentString.Select<TResult>(const ATransform: TFunc<Char, TResult>): IFluentEnumerable<TResult>;
+function TLQColligoString.Select<TResult>(const ATransform: TFunc<Char, TResult>): ILQColligoEnumerable<TResult>;
 begin
   Result := AsEnumerable(Self).Select<TResult>(ATransform);
 end;
 
-function TFluentString.SelectMany<TResult>(const ASelector: TFunc<Char, TArray<TResult>>): IFluentEnumerable<TResult>;
+function TLQColligoString.SelectMany<TResult>(const ASelector: TFunc<Char, TArray<TResult>>): ILQColligoEnumerable<TResult>;
 begin
   Result := AsEnumerable(Self).SelectMany<TResult>(ASelector);
 end;
 
-function TFluentString.Sum: Integer;
+function TLQColligoString.Sum: Integer;
 var
-  LEnum: IFluentEnumerator<Char>;
+  LEnum: ILQColligoEnumerator<Char>;
   LSum: Integer;
 begin
   LEnum := AsEnumerable(Self).GetEnumerator;
@@ -1972,7 +1972,7 @@ begin
   Result := LSum;
 end;
 
-function TFluentString.First: Char;
+function TLQColligoString.First: Char;
 begin
   if System.Length(Self) > 0 then
     Result := Self[1]
@@ -1980,7 +1980,7 @@ begin
     Result := #0;
 end;
 
-function TFluentString.Last: Char;
+function TLQColligoString.Last: Char;
 begin
   if System.Length(Self) > 0 then
     Result := Self[System.Length(Self)]
@@ -1988,20 +1988,20 @@ begin
     Result := #0;
 end;
 
-function TFluentString.Aggregate<T>(const AInitialValue: T;
+function TLQColligoString.Aggregate<T>(const AInitialValue: T;
   const AAccumulator: TFunc<T, Char, T>): T;
 begin
   Result := AsEnumerable(Self).Aggregate<T>(AInitialValue, AAccumulator);
 end;
 
-function TFluentString.Exists(const APredicate: TFunc<Char, Boolean>): Boolean;
+function TLQColligoString.Exists(const APredicate: TFunc<Char, Boolean>): Boolean;
 begin
   Result := AsEnumerable(Self).Any(APredicate);
 end;
 
-function TFluentString.All(const APredicate: TFunc<Char, Boolean>): Boolean;
+function TLQColligoString.All(const APredicate: TFunc<Char, Boolean>): Boolean;
 var
-  LEnum: IFluentEnumerator<Char>;
+  LEnum: ILQColligoEnumerator<Char>;
 begin
   LEnum := AsEnumerable(Self).GetEnumerator;
   while LEnum.MoveNext do
@@ -2010,12 +2010,12 @@ begin
   Result := True;
 end;
 
-function TFluentString.Any(const APredicate: TFunc<Char, Boolean>): Boolean;
+function TLQColligoString.Any(const APredicate: TFunc<Char, Boolean>): Boolean;
 begin
   Result := AsEnumerable(Self).Any(APredicate);
 end;
 
-function TFluentString.Sort: IFluentEnumerable<Char>;
+function TLQColligoString.Sort: ILQColligoEnumerable<Char>;
 begin
   Result := AsEnumerable(Self).OrderBy(
     function(LA, LB: Char): Integer
@@ -2024,22 +2024,22 @@ begin
     end);
 end;
 
-function TFluentString.Take(const ACount: Integer): IFluentEnumerable<Char>;
+function TLQColligoString.Take(const ACount: Integer): ILQColligoEnumerable<Char>;
 begin
   Result := AsEnumerable(Self).Take(ACount);
 end;
 
-function TFluentString.Skip(const ACount: Integer): IFluentEnumerable<Char>;
+function TLQColligoString.Skip(const ACount: Integer): ILQColligoEnumerable<Char>;
 begin
   Result := AsEnumerable(Self).Skip(ACount);
 end;
 
-function TFluentString.GroupBy<TKey>(const AKeySelector: TFunc<Char, TKey>): IGroupByEnumerable<TKey, Char>;
+function TLQColligoString.GroupBy<TKey>(const AKeySelector: TFunc<Char, TKey>): IGroupByEnumerable<TKey, Char>;
 begin
   Result := AsEnumerable(Self).GroupBy<TKey>(AKeySelector);
 end;
 
-function TFluentString.Reverse: IFluentEnumerable<Char>;
+function TLQColligoString.Reverse: ILQColligoEnumerable<Char>;
 var
   LArray: TArray<Char>;
   LIndex: Integer;
@@ -2047,32 +2047,32 @@ begin
   SetLength(LArray, System.Length(Self));
   for LIndex := 1 to System.Length(Self) do
     LArray[LIndex - 1] := Self[System.Length(Self) - LIndex + 1];
-  Result := IFluentEnumerable<Char>.Create(TArrayAdapter<Char>.Create(LArray));
+  Result := ILQColligoEnumerable<Char>.Create(TArrayAdapter<Char>.Create(LArray));
 end;
 
-function TFluentString.CountWhere(const APredicate: TFunc<Char, Boolean>): Integer;
+function TLQColligoString.CountWhere(const APredicate: TFunc<Char, Boolean>): Integer;
 begin
   Result := AsEnumerable(Self).Count(APredicate);
 end;
 
-{ TFluentInteger }
+{ TLQColligoInteger }
 
-function TFluentInteger.Select(const ATransform: TFunc<Integer, Integer>): Integer;
+function TLQColligoInteger.Select(const ATransform: TFunc<Integer, Integer>): Integer;
 begin
   Result := ATransform(Self);
 end;
 
-function TFluentInteger.IsEven: Boolean;
+function TLQColligoInteger.IsEven: Boolean;
 begin
   Result := (Self mod 2) = 0;
 end;
 
-function TFluentInteger.IsOdd: Boolean;
+function TLQColligoInteger.IsOdd: Boolean;
 begin
   Result := (Self mod 2) <> 0;
 end;
 
-function TFluentInteger.Times(const ATransform: TFunc<Integer, Integer>): Integer;
+function TLQColligoInteger.Times(const ATransform: TFunc<Integer, Integer>): Integer;
 var
   LCount: Integer;
   LResult: Integer;
@@ -2083,9 +2083,9 @@ begin
   Result := LResult;
 end;
 
-{ TFluentBoolean }
+{ TLQColligoBoolean }
 
-function TFluentBoolean.Select<T>(const ATrueValue, AFalseValue: T): T;
+function TLQColligoBoolean.Select<T>(const ATrueValue, AFalseValue: T): T;
 begin
   if Self then
     Result := ATrueValue
@@ -2093,53 +2093,53 @@ begin
     Result := AFalseValue;
 end;
 
-procedure TFluentBoolean.IfTrue(const AAction: TProc);
+procedure TLQColligoBoolean.IfTrue(const AAction: TProc);
 begin
   if Self then
     AAction;
 end;
 
-procedure TFluentBoolean.IfFalse(const AAction: TProc);
+procedure TLQColligoBoolean.IfFalse(const AAction: TProc);
 begin
   if not Self then
     AAction;
 end;
 
-{ TFluentFloat }
+{ TLQColligoFloat }
 
-function TFluentFloat.Select(const ATransform: TFunc<Double, Double>): Double;
+function TLQColligoFloat.Select(const ATransform: TFunc<Double, Double>): Double;
 begin
   Result := ATransform(Self);
 end;
 
-function TFluentFloat.Round: Integer;
+function TLQColligoFloat.Round: Integer;
 begin
   Result := System.Round(Self);
 end;
 
-function TFluentFloat.ApproxEqual(const AValue: Double; const ATolerance: Double): Boolean;
+function TLQColligoFloat.ApproxEqual(const AValue: Double; const ATolerance: Double): Boolean;
 begin
   Result := Abs(Self - AValue) < ATolerance;
 end;
 
-{ TFluentDateTime }
+{ TLQColligoDateTime }
 
-function TFluentDateTime.Select(const ATransform: TFunc<TDateTime, TDateTime>): TDateTime;
+function TLQColligoDateTime.Select(const ATransform: TFunc<TDateTime, TDateTime>): TDateTime;
 begin
   Result := ATransform(Self);
 end;
 
-function TFluentDateTime.AddDays(ADays: Integer): TDateTime;
+function TLQColligoDateTime.AddDays(ADays: Integer): TDateTime;
 begin
   Result := Self + ADays;
 end;
 
-function TFluentDateTime.IsPast: Boolean;
+function TLQColligoDateTime.IsPast: Boolean;
 begin
   Result := Self < Now;
 end;
 
-function TFluentDateTime.ToFormat(const AFormat: String): String;
+function TLQColligoDateTime.ToFormat(const AFormat: String): String;
 begin
   Result := FormatDateTime(AFormat, Self);
 end;

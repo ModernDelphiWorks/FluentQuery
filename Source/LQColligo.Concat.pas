@@ -25,23 +25,23 @@ uses
   LQColligo;
 
 type
-  TFluentConcatEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoConcatEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSecond: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSecond: ILQColligoEnumerableBase<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ASecond: IFluentEnumerableBase<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ASecond: ILQColligoEnumerableBase<T>);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentConcatEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoConcatEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
-    FSecond: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
+    FSecond: ILQColligoEnumerator<T>;
     FCurrent: T;
     FOnSecond: Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -49,24 +49,24 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentConcatQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoConcatQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FSource: IFluentQueryableBase<T>;
-    FSecond: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
+    FSecond: ILQColligoQueryableBase<T>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const ASecond: IFluentQueryableBase<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const ASecond: ILQColligoQueryableBase<T>);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   end;
 
-  TFluentConcatQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoConcatQueryableEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
-    FSecond: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
+    FSecond: ILQColligoEnumerator<T>;
     FCurrent: T;
     FOnSecond: Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -76,35 +76,35 @@ type
 
 implementation
 
-{ TFluentConcatEnumerable<T> }
+{ TLQColligoConcatEnumerable<T> }
 
-constructor TFluentConcatEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecond: IFluentEnumerableBase<T>);
+constructor TLQColligoConcatEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const ASecond: ILQColligoEnumerableBase<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
 end;
 
-function TFluentConcatEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoConcatEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentConcatEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator);
+  Result := TLQColligoConcatEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator);
 end;
 
-{ TFluentConcatEnumerator<T> }
+{ TLQColligoConcatEnumerator<T> }
 
-constructor TFluentConcatEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>);
+constructor TLQColligoConcatEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FOnSecond := False;
 end;
 
-function TFluentConcatEnumerator<T>.GetCurrent: T;
+function TLQColligoConcatEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentConcatEnumerator<T>.MoveNext: Boolean;
+function TLQColligoConcatEnumerator<T>.MoveNext: Boolean;
 begin
   if not FOnSecond then
   begin
@@ -126,7 +126,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentConcatEnumerator<T>.Reset;
+procedure TLQColligoConcatEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSecond.Reset;
@@ -134,43 +134,43 @@ begin
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentConcatQueryable<T> }
+{ TLQColligoConcatQueryable<T> }
 
-constructor TFluentConcatQueryable<T>.Create(const ASource: IFluentQueryableBase<T>;
-  const ASecond: IFluentQueryableBase<T>);
+constructor TLQColligoConcatQueryable<T>.Create(const ASource: ILQColligoQueryableBase<T>;
+  const ASecond: ILQColligoQueryableBase<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
 end;
 
-function TFluentConcatQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoConcatQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentConcatQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator);
+  Result := TLQColligoConcatQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator);
 end;
 
-function TFluentConcatQueryable<T>.BuildQuery: string;
+function TLQColligoConcatQueryable<T>.BuildQuery: string;
 begin
   // Placeholder: traduzir Concat pra SQL (ex.: UNION ALL)
   Result := FSource.BuildQuery + ' UNION ALL ' + FSecond.BuildQuery;
   // Exemplo fictício: 'SELECT * FROM Table1 UNION ALL SELECT * FROM Table2'
 end;
 
-{ TFluentConcatQueryableEnumerator<T> }
+{ TLQColligoConcatQueryableEnumerator<T> }
 
-constructor TFluentConcatQueryableEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>);
+constructor TLQColligoConcatQueryableEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FOnSecond := False;
 end;
 
-function TFluentConcatQueryableEnumerator<T>.GetCurrent: T;
+function TLQColligoConcatQueryableEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentConcatQueryableEnumerator<T>.MoveNext: Boolean;
+function TLQColligoConcatQueryableEnumerator<T>.MoveNext: Boolean;
 begin
   if not FOnSecond then
   begin
@@ -192,7 +192,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentConcatQueryableEnumerator<T>.Reset;
+procedure TLQColligoConcatQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSecond.Reset;

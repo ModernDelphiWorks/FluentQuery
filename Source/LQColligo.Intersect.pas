@@ -27,28 +27,28 @@ uses
   LQColligo;
 
 type
-  TFluentIntersectEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoIntersectEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSecond: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSecond: ILQColligoEnumerableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const ASecond: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
+      const ASecond: ILQColligoEnumerableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentIntersectEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoIntersectEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSecond: TDictionary<T, Boolean>;
     FEmitted: TDictionary<T, Boolean>;
     FCurrent: T;
     FComparer: IEqualityComparer<T>;
     function ContainsValue(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -58,28 +58,28 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentIntersectQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoIntersectQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FSource: IFluentQueryableBase<T>;
-    FSecond: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
+    FSecond: ILQColligoQueryableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const ASecond: IFluentQueryableBase<T>;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const ASecond: ILQColligoQueryableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   end;
 
-  TFluentIntersectQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoIntersectQueryableEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSecond: TDictionary<T, Boolean>;
     FEmitted: TDictionary<T, Boolean>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     function _ContainsValue(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -91,25 +91,25 @@ type
 
 implementation
 
-{ TFluentIntersectEnumerable<T> }
+{ TLQColligoIntersectEnumerable<T> }
 
-constructor TFluentIntersectEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecond: IFluentEnumerableBase<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoIntersectEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const ASecond: ILQColligoEnumerableBase<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FComparer := AComparer;
 end;
 
-function TFluentIntersectEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoIntersectEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentIntersectEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
+  Result := TLQColligoIntersectEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
 end;
 
-{ TFluentIntersectEnumerator<T> }
+{ TLQColligoIntersectEnumerator<T> }
 
-constructor TFluentIntersectEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoIntersectEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FComparer := AComparer;
@@ -123,25 +123,25 @@ begin
     FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
-destructor TFluentIntersectEnumerator<T>.Destroy;
+destructor TLQColligoIntersectEnumerator<T>.Destroy;
 begin
   FSecond.Free;
   FEmitted.Free;
   inherited;
 end;
 
-function TFluentIntersectEnumerator<T>.GetCurrent: T;
+function TLQColligoIntersectEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentIntersectEnumerator<T>.ContainsValue(const AValue: T): Boolean;
+function TLQColligoIntersectEnumerator<T>.ContainsValue(const AValue: T): Boolean;
 begin
   // O(1) hash lookup — the dictionary was already built with FComparer.
   Result := FSecond.ContainsKey(AValue);
 end;
 
-function TFluentIntersectEnumerator<T>.MoveNext: Boolean;
+function TLQColligoIntersectEnumerator<T>.MoveNext: Boolean;
 begin
   while FSource.MoveNext do
   begin
@@ -156,39 +156,39 @@ begin
   Result := False;
 end;
 
-procedure TFluentIntersectEnumerator<T>.Reset;
+procedure TLQColligoIntersectEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FEmitted.Clear;
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentIntersectQueryable<T> }
+{ TLQColligoIntersectQueryable<T> }
 
-constructor TFluentIntersectQueryable<T>.Create(const ASource: IFluentQueryableBase<T>;
-  const ASecond: IFluentQueryableBase<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoIntersectQueryable<T>.Create(const ASource: ILQColligoQueryableBase<T>;
+  const ASecond: ILQColligoQueryableBase<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FComparer := AComparer;
 end;
 
-function TFluentIntersectQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoIntersectQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentIntersectQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
+  Result := TLQColligoIntersectQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
 end;
 
-function TFluentIntersectQueryable<T>.BuildQuery: string;
+function TLQColligoIntersectQueryable<T>.BuildQuery: string;
 begin
   // Placeholder: traduzir Intersect pra SQL (ex.: INTERSECT)
   Result := FSource.BuildQuery + ' INTERSECT ' + FSecond.BuildQuery;
   // Exemplo fictício: 'SELECT * FROM Table1 INTERSECT SELECT * FROM Table2'
 end;
 
-{ TFluentIntersectQueryableEnumerator<T> }
+{ TLQColligoIntersectQueryableEnumerator<T> }
 
-constructor TFluentIntersectQueryableEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoIntersectQueryableEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FComparer := AComparer;
@@ -202,25 +202,25 @@ begin
     FSecond.AddOrSetValue(ASecond.Current, True);
 end;
 
-destructor TFluentIntersectQueryableEnumerator<T>.Destroy;
+destructor TLQColligoIntersectQueryableEnumerator<T>.Destroy;
 begin
   FSecond.Free;
   FEmitted.Free;
   inherited;
 end;
 
-function TFluentIntersectQueryableEnumerator<T>.GetCurrent: T;
+function TLQColligoIntersectQueryableEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentIntersectQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
+function TLQColligoIntersectQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
 begin
   // O(1) hash lookup — the dictionary was already built with FComparer.
   Result := FSecond.ContainsKey(AValue);
 end;
 
-function TFluentIntersectQueryableEnumerator<T>.MoveNext: Boolean;
+function TLQColligoIntersectQueryableEnumerator<T>.MoveNext: Boolean;
 begin
   while FSource.MoveNext do
   begin
@@ -235,7 +235,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentIntersectQueryableEnumerator<T>.Reset;
+procedure TLQColligoIntersectQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FEmitted.Clear;

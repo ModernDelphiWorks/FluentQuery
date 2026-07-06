@@ -24,10 +24,10 @@ uses
   Generics.Defaults;
 
 type
-  TFluentType = (ftNone, ftList, ftDictionary);
+  TLQColligoType = (ftNone, ftList, ftDictionary);
   TAction<T> = reference to procedure(const AArg: T);
 
-  FluentNullable<T: record> = record
+  LQColligoNullable<T: record> = record
   private
     FValue: T;
     FHasValue: Boolean;
@@ -35,21 +35,21 @@ type
     procedure SetValue(const AValue: T);
   public
     constructor Create(const AValue: T); overload;
-    class function CreateEmpty: FluentNullable<T>; static;
-    class operator Equal(const A, B: FluentNullable<T>): Boolean;
-    class operator NotEqual(const A, B: FluentNullable<T>): Boolean;
-    class operator Implicit(const AValue: T): FluentNullable<T>;
-    class operator Implicit(const AValue: FluentNullable<T>): T;
-    class operator Explicit(const AValue: FluentNullable<T>): T;
+    class function CreateEmpty: LQColligoNullable<T>; static;
+    class operator Equal(const A, B: LQColligoNullable<T>): Boolean;
+    class operator NotEqual(const A, B: LQColligoNullable<T>): Boolean;
+    class operator Implicit(const AValue: T): LQColligoNullable<T>;
+    class operator Implicit(const AValue: LQColligoNullable<T>): T;
+    class operator Explicit(const AValue: LQColligoNullable<T>): T;
     property HasValue: Boolean read FHasValue;
     property Value: T read GetValue write SetValue;
   end;
 
-  NullableInt32 = FluentNullable<Int32>;
-  NullableInt64 = FluentNullable<Int64>;
-  NullableSingle = FluentNullable<Single>;
-  NullableCurrency = FluentNullable<Currency>;
-  NullableDouble = FluentNullable<Double>;
+  NullableInt32 = LQColligoNullable<Int32>;
+  NullableInt64 = LQColligoNullable<Int64>;
+  NullableSingle = LQColligoNullable<Single>;
+  NullableCurrency = LQColligoNullable<Currency>;
+  NullableDouble = LQColligoNullable<Double>;
 
 const
   ABSTRACT_METHOD_ERROR = 'Abstract method "%s" called in %s. ' +
@@ -57,15 +57,15 @@ const
 
 implementation
 
-{ FluentNullable<T> }
+{ LQColligoNullable<T> }
 
-constructor FluentNullable<T>.Create(const AValue: T);
+constructor LQColligoNullable<T>.Create(const AValue: T);
 begin
   FValue := AValue;
   FHasValue := True;
 end;
 
-class function FluentNullable<T>.CreateEmpty: FluentNullable<T>;
+class function LQColligoNullable<T>.CreateEmpty: LQColligoNullable<T>;
 begin
   // A real null: no value. (Previously delegated to Create(Default(T)), which
   // set HasValue := True and thus was NOT empty.)
@@ -73,20 +73,20 @@ begin
   Result.FHasValue := False;
 end;
 
-function FluentNullable<T>.GetValue: T;
+function LQColligoNullable<T>.GetValue: T;
 begin
   if not FHasValue then
     raise EInvalidOperation.Create('Nullable não tem valor');
   Result := FValue;
 end;
 
-procedure FluentNullable<T>.SetValue(const AValue: T);
+procedure LQColligoNullable<T>.SetValue(const AValue: T);
 begin
   FValue := AValue;
   FHasValue := True;
 end;
 
-class operator FluentNullable<T>.Equal(const A, B: FluentNullable<T>): Boolean;
+class operator LQColligoNullable<T>.Equal(const A, B: LQColligoNullable<T>): Boolean;
 begin
   if A.FHasValue and B.FHasValue then
     Result := TEqualityComparer<T>.Default.Equals(A.FValue, B.FValue)
@@ -94,22 +94,22 @@ begin
     Result := A.FHasValue = B.FHasValue;
 end;
 
-class operator FluentNullable<T>.NotEqual(const A, B: FluentNullable<T>): Boolean;
+class operator LQColligoNullable<T>.NotEqual(const A, B: LQColligoNullable<T>): Boolean;
 begin
   Result := not (A = B);
 end;
 
-class operator FluentNullable<T>.Implicit(const AValue: T): FluentNullable<T>;
+class operator LQColligoNullable<T>.Implicit(const AValue: T): LQColligoNullable<T>;
 begin
-  Result := FluentNullable<T>.Create(AValue);
+  Result := LQColligoNullable<T>.Create(AValue);
 end;
 
-class operator FluentNullable<T>.Implicit(const AValue: FluentNullable<T>): T;
+class operator LQColligoNullable<T>.Implicit(const AValue: LQColligoNullable<T>): T;
 begin
   Result := AValue.Value;
 end;
 
-class operator FluentNullable<T>.Explicit(const AValue: FluentNullable<T>): T;
+class operator LQColligoNullable<T>.Explicit(const AValue: LQColligoNullable<T>): T;
 begin
   Result := AValue.Value;
 end;

@@ -27,23 +27,23 @@ uses
 type
   // LINQ Prepend: deferred/streaming — yields one extra element, then the
   // source. Nothing runs until enumeration (no materialization at construction).
-  TFluentPrependEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoPrependEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FElement: T;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const AElement: T);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const AElement: T);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentPrependEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoPrependEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FElement: T;
     FCurrent: T;
     FElementYielded: Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const AElement: T);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const AElement: T);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -52,34 +52,34 @@ type
 
 implementation
 
-{ TFluentPrependEnumerable<T> }
+{ TLQColligoPrependEnumerable<T> }
 
-constructor TFluentPrependEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const AElement: T);
+constructor TLQColligoPrependEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const AElement: T);
 begin
   FSource := ASource;
   FElement := AElement;
 end;
 
-function TFluentPrependEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoPrependEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentPrependEnumerator<T>.Create(FSource.GetEnumerator, FElement);
+  Result := TLQColligoPrependEnumerator<T>.Create(FSource.GetEnumerator, FElement);
 end;
 
-{ TFluentPrependEnumerator<T> }
+{ TLQColligoPrependEnumerator<T> }
 
-constructor TFluentPrependEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const AElement: T);
+constructor TLQColligoPrependEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const AElement: T);
 begin
   FSource := ASource;
   FElement := AElement;
   FElementYielded := False;
 end;
 
-function TFluentPrependEnumerator<T>.GetCurrent: T;
+function TLQColligoPrependEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentPrependEnumerator<T>.MoveNext: Boolean;
+function TLQColligoPrependEnumerator<T>.MoveNext: Boolean;
 begin
   if not FElementYielded then
   begin
@@ -97,7 +97,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentPrependEnumerator<T>.Reset;
+procedure TLQColligoPrependEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FElementYielded := False;

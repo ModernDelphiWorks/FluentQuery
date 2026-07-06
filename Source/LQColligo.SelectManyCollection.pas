@@ -22,28 +22,28 @@ uses
   LQColligo;
 
 type
-  TFluentSelectManyCollectionEnumerable<T, TCollection, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoSelectManyCollectionEnumerable<T, TCollection, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FCollectionSelector: TFunc<T, TArray<TCollection>>;
     FResultSelector: TFunc<T, TCollection, TResult>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
       const ACollectionSelector: TFunc<T, TArray<TCollection>>;
       const AResultSelector: TFunc<T, TCollection, TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentSelectManyCollectionEnumerator<T, TCollection, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoSelectManyCollectionEnumerator<T, TCollection, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCollectionSelector: TFunc<T, TArray<TCollection>>;
     FResultSelector: TFunc<T, TCollection, TResult>;
     FCurrentArray: TArray<TCollection>;
     FIndex: Integer;
     FCurrent: TResult;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
       const ACollectionSelector: TFunc<T, TArray<TCollection>>;
       const AResultSelector: TFunc<T, TCollection, TResult>);
     function GetCurrent: TResult;
@@ -54,10 +54,10 @@ type
 
 implementation
 
-{ TFluentSelectManyCollectionEnumerable<T, TCollection, TResult> }
+{ TLQColligoSelectManyCollectionEnumerable<T, TCollection, TResult> }
 
-constructor TFluentSelectManyCollectionEnumerable<T, TCollection, TResult>.Create(
-  const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoSelectManyCollectionEnumerable<T, TCollection, TResult>.Create(
+  const ASource: ILQColligoEnumerableBase<T>;
   const ACollectionSelector: TFunc<T, TArray<TCollection>>;
   const AResultSelector: TFunc<T, TCollection, TResult>);
 begin
@@ -66,16 +66,16 @@ begin
   FResultSelector := AResultSelector;
 end;
 
-function TFluentSelectManyCollectionEnumerable<T, TCollection, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoSelectManyCollectionEnumerable<T, TCollection, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentSelectManyCollectionEnumerator<T, TCollection, TResult>.Create(
+  Result := TLQColligoSelectManyCollectionEnumerator<T, TCollection, TResult>.Create(
     FSource.GetEnumerator, FCollectionSelector, FResultSelector);
 end;
 
-{ TFluentSelectManyCollectionEnumerator<T, TCollection, TResult> }
+{ TLQColligoSelectManyCollectionEnumerator<T, TCollection, TResult> }
 
-constructor TFluentSelectManyCollectionEnumerator<T, TCollection, TResult>.Create(
-  const ASource: IFluentEnumerator<T>;
+constructor TLQColligoSelectManyCollectionEnumerator<T, TCollection, TResult>.Create(
+  const ASource: ILQColligoEnumerator<T>;
   const ACollectionSelector: TFunc<T, TArray<TCollection>>;
   const AResultSelector: TFunc<T, TCollection, TResult>);
 begin
@@ -85,12 +85,12 @@ begin
   FIndex := -1;
 end;
 
-function TFluentSelectManyCollectionEnumerator<T, TCollection, TResult>.GetCurrent: TResult;
+function TLQColligoSelectManyCollectionEnumerator<T, TCollection, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSelectManyCollectionEnumerator<T, TCollection, TResult>.MoveNext: Boolean;
+function TLQColligoSelectManyCollectionEnumerator<T, TCollection, TResult>.MoveNext: Boolean;
 var
   LSourceItem: T;
 begin
@@ -121,7 +121,7 @@ begin
   end;
 end;
 
-procedure TFluentSelectManyCollectionEnumerator<T, TCollection, TResult>.Reset;
+procedure TLQColligoSelectManyCollectionEnumerator<T, TCollection, TResult>.Reset;
 begin
   FSource.Reset;
   FIndex := -1;

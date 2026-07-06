@@ -31,36 +31,36 @@ uses
 
 type
   // Parser for object types (classes)
-  TFluentParseObjectDataSet<T> = class
+  TLQColligoParseObjectDataSet<T> = class
   private
-    function _ParseDataSet(const ADataSet: IDBDataSet): TFluentList<T>;
+    function _ParseDataSet(const ADataSet: IDBDataSet): TLQColligoList<T>;
   public
-    function ToList(const ADataSet: IDBDataSet): TFluentList<T>;
-    function ToArray(const ADataSet: IDBDataSet): TFluentArray<T>;
+    function ToList(const ADataSet: IDBDataSet): TLQColligoList<T>;
+    function ToArray(const ADataSet: IDBDataSet): TLQColligoArray<T>;
     function ToDictionary<TKey, TValue>(
       const ADataSet: IDBDataSet;
       const AKeySelector: TFunc<T, TKey>;
-      const AValueSelector: TFunc<T, TValue>): TFluentDictionary<TKey, TValue>;
+      const AValueSelector: TFunc<T, TValue>): TLQColligoDictionary<TKey, TValue>;
   end;
 
   // Parser for scalar types (primitives or tuples)
-  TFluentParseScalarDataSet<T> = class
+  TLQColligoParseScalarDataSet<T> = class
   private
-    function _ParseDataSet(const ADataSet: IDBDataSet): TFluentList<T>;
+    function _ParseDataSet(const ADataSet: IDBDataSet): TLQColligoList<T>;
   public
-    function ToList(const ADataSet: IDBDataSet): TFluentList<T>;
-    function ToArray(const ADataSet: IDBDataSet): TFluentArray<T>;
+    function ToList(const ADataSet: IDBDataSet): TLQColligoList<T>;
+    function ToArray(const ADataSet: IDBDataSet): TLQColligoArray<T>;
     function ToDictionary<TKey, TValue>(
       const ADataSet: IDBDataSet;
       const AKeySelector: TFunc<T, TKey>;
-      const AValueSelector: TFunc<T, TValue>): TFluentDictionary<TKey, TValue>;
+      const AValueSelector: TFunc<T, TValue>): TLQColligoDictionary<TKey, TValue>;
   end;
 
 implementation
 
-{ TFluentParseObjectDataSet<T> }
+{ TLQColligoParseObjectDataSet<T> }
 
-function TFluentParseObjectDataSet<T>._ParseDataSet(const ADataSet: IDBDataSet): TFluentList<T>;
+function TLQColligoParseObjectDataSet<T>._ParseDataSet(const ADataSet: IDBDataSet): TLQColligoList<T>;
 var
   LItem: T;
   LValue: TValue;
@@ -71,12 +71,12 @@ var
   LInstance: TObject;
   LFor: Integer;
 begin
-  Result := TFluentList<T>.Create;
+  Result := TLQColligoList<T>.Create;
   LContext := TRttiContext.Create;
   try
     LType := LContext.GetType(TypeInfo(T));
     if not (LType.TypeKind in [tkClass, tkInterface]) then
-      raise Exception.Create('Type T must be a class for TFluentParseObjectDataSet');
+      raise Exception.Create('Type T must be a class for TLQColligoParseObjectDataSet');
 
     while not ADataSet.Eof do
     begin
@@ -128,34 +128,34 @@ begin
   end;
 end;
 
-function TFluentParseObjectDataSet<T>.ToList(const ADataSet: IDBDataSet): TFluentList<T>;
+function TLQColligoParseObjectDataSet<T>.ToList(const ADataSet: IDBDataSet): TLQColligoList<T>;
 begin
   Result := _ParseDataSet(ADataSet);
 end;
 
-function TFluentParseObjectDataSet<T>.ToArray(const ADataSet: IDBDataSet): TFluentArray<T>;
+function TLQColligoParseObjectDataSet<T>.ToArray(const ADataSet: IDBDataSet): TLQColligoArray<T>;
 var
-  LList: IFluentList<T>;
+  LList: ILQColligoList<T>;
 begin
   LList := _ParseDataSet(ADataSet);
   try
-    Result := TFluentArray<T>.Create(LList.ToArray.ArrayData);
+    Result := TLQColligoArray<T>.Create(LList.ToArray.ArrayData);
   finally
     LList := nil;
   end;
 end;
 
-function TFluentParseObjectDataSet<T>.ToDictionary<TKey, TValue>(
+function TLQColligoParseObjectDataSet<T>.ToDictionary<TKey, TValue>(
   const ADataSet: IDBDataSet;
   const AKeySelector: TFunc<T, TKey>;
-  const AValueSelector: TFunc<T, TValue>): TFluentDictionary<TKey, TValue>;
+  const AValueSelector: TFunc<T, TValue>): TLQColligoDictionary<TKey, TValue>;
 var
-  LList: IFluentList<T>;
+  LList: ILQColligoList<T>;
   LItem: T;
 begin
   LList := _ParseDataSet(ADataSet);
   try
-    Result := TFluentDictionary<TKey, TValue>.Create;
+    Result := TLQColligoDictionary<TKey, TValue>.Create;
     try
       for LItem in LList do
         Result.Add(AKeySelector(LItem), AValueSelector(LItem));
@@ -168,9 +168,9 @@ begin
   end;
 end;
 
-{ TFluentParseScalarDataSet<T> }
+{ TLQColligoParseScalarDataSet<T> }
 
-function TFluentParseScalarDataSet<T>._ParseDataSet(const ADataSet: IDBDataSet): TFluentList<T>;
+function TLQColligoParseScalarDataSet<T>._ParseDataSet(const ADataSet: IDBDataSet): TLQColligoList<T>;
 var
   LItem: T;
   LValue: TValue;
@@ -187,7 +187,7 @@ begin
   if not Assigned(ADataSet) then
     raise EInvalidOperation.Create('DataSet is nil');
 
-  Result := TFluentList<T>.Create;
+  Result := TLQColligoList<T>.Create;
   LContext := TRttiContext.Create;
   try
     try
@@ -201,7 +201,7 @@ begin
       while not ADataSet.Eof do
       begin
         if (ADataSet.FieldCount = 1) and not
-          ((LType.TypeKind = tkRecord) and (LType.Name = 'TFluentTuple<System.string>')) then
+          ((LType.TypeKind = tkRecord) and (LType.Name = 'TLQColligoTuple<System.string>')) then
         begin
           LField := ADataSet.Fields[0];
           if not Assigned(LField) then
@@ -299,34 +299,34 @@ begin
   end;
 end;
 
-function TFluentParseScalarDataSet<T>.ToList(const ADataSet: IDBDataSet): TFluentList<T>;
+function TLQColligoParseScalarDataSet<T>.ToList(const ADataSet: IDBDataSet): TLQColligoList<T>;
 begin
   Result := _ParseDataSet(ADataSet);
 end;
 
-function TFluentParseScalarDataSet<T>.ToArray(const ADataSet: IDBDataSet): TFluentArray<T>;
+function TLQColligoParseScalarDataSet<T>.ToArray(const ADataSet: IDBDataSet): TLQColligoArray<T>;
 var
-  LList: IFluentList<T>;
+  LList: ILQColligoList<T>;
 begin
   LList := _ParseDataSet(ADataSet);
   try
-    Result := TFluentArray<T>.Create(LList.ToArray.ArrayData);
+    Result := TLQColligoArray<T>.Create(LList.ToArray.ArrayData);
   finally
     LList := nil;
   end;
 end;
 
-function TFluentParseScalarDataSet<T>.ToDictionary<TKey, TValue>(
+function TLQColligoParseScalarDataSet<T>.ToDictionary<TKey, TValue>(
   const ADataSet: IDBDataSet;
   const AKeySelector: TFunc<T, TKey>;
-  const AValueSelector: TFunc<T, TValue>): TFluentDictionary<TKey, TValue>;
+  const AValueSelector: TFunc<T, TValue>): TLQColligoDictionary<TKey, TValue>;
 var
-  LList: IFluentList<T>;
+  LList: ILQColligoList<T>;
   LItem: T;
 begin
   LList := _ParseDataSet(ADataSet);
   try
-    Result := TFluentDictionary<TKey, TValue>.Create;
+    Result := TLQColligoDictionary<TKey, TValue>.Create;
     try
       for LItem in LList do
         Result.Add(AKeySelector(LItem), AValueSelector(LItem));

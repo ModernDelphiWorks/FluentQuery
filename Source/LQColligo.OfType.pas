@@ -29,21 +29,21 @@ type
   // LINQ OfType<TResult>(): no arguments. Deferred/streaming filter by runtime
   // type; elements not convertible to TResult are silently discarded. Never
   // raises on a type mismatch (contrast with Cast).
-  TFluentOfTypeEnumerable<T, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoOfTypeEnumerable<T, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentOfTypeEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoOfTypeEnumerator<T, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCurrent: TResult;
     class function TryConvert(const AItem: T; out AResult: TResult): Boolean; static;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
     procedure Reset;
@@ -51,27 +51,27 @@ type
   end;
 
 //  {$IFDEF QUERYABLE}
-//  TFluentOfTypeQueryable<T, TResult> = class(TFluentQueryableBase<TResult>, IFluentQueryableBase<TResult>)
+//  TLQColligoOfTypeQueryable<T, TResult> = class(TLQColligoQueryableBase<TResult>, ILQColligoQueryableBase<TResult>)
 //  private
-//    FSource: IFluentQueryableBase<T>;
+//    FSource: ILQColligoQueryableBase<T>;
 //    FIsType: TFunc<T, Boolean>;
 //    FConverter: TFunc<T, TResult>;
 //  public
-//    constructor Create(const ASource: IFluentQueryableBase<T>;
+//    constructor Create(const ASource: ILQColligoQueryableBase<T>;
 //      const AIsType: TFunc<T, Boolean>;
 //      const AConverter: TFunc<T, TResult>);
-//    function GetEnumerator: IFluentEnumerator<TResult>; override;
+//    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
 //    function BuildQuery: string; override;
 //  end;
 //
-//  TFluentOfTypeQueryableEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+//  TLQColligoOfTypeQueryableEnumerator<T, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
 //  private
-//    FSourceEnum: IFluentEnumerator<T>;
+//    FSourceEnum: ILQColligoEnumerator<T>;
 //    FIsType: TFunc<T, Boolean>;
 //    FConverter: TFunc<T, TResult>;
 //    FCurrent: TResult;
 //  public
-//    constructor Create(const ASource: IFluentEnumerator<T>;
+//    constructor Create(const ASource: ILQColligoEnumerator<T>;
 //      const AIsType: TFunc<T, Boolean>;
 //      const AConverter: TFunc<T, TResult>);
 //    destructor Destroy; override;
@@ -84,26 +84,26 @@ type
 
 implementation
 
-{ TFluentOfTypeEnumerable<T, TResult> }
+{ TLQColligoOfTypeEnumerable<T, TResult> }
 
-constructor TFluentOfTypeEnumerable<T, TResult>.Create(const ASource: IFluentEnumerableBase<T>);
+constructor TLQColligoOfTypeEnumerable<T, TResult>.Create(const ASource: ILQColligoEnumerableBase<T>);
 begin
   FSource := ASource;
 end;
 
-function TFluentOfTypeEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoOfTypeEnumerable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentOfTypeEnumerator<T, TResult>.Create(FSource.GetEnumerator);
+  Result := TLQColligoOfTypeEnumerator<T, TResult>.Create(FSource.GetEnumerator);
 end;
 
-{ TFluentOfTypeEnumerator<T, TResult> }
+{ TLQColligoOfTypeEnumerator<T, TResult> }
 
-constructor TFluentOfTypeEnumerator<T, TResult>.Create(const ASource: IFluentEnumerator<T>);
+constructor TLQColligoOfTypeEnumerator<T, TResult>.Create(const ASource: ILQColligoEnumerator<T>);
 begin
   FSource := ASource;
 end;
 
-class function TFluentOfTypeEnumerator<T, TResult>.TryConvert(const AItem: T;
+class function TLQColligoOfTypeEnumerator<T, TResult>.TryConvert(const AItem: T;
   out AResult: TResult): Boolean;
 var
   LValue: TValue;
@@ -126,12 +126,12 @@ begin
   end;
 end;
 
-function TFluentOfTypeEnumerator<T, TResult>.GetCurrent: TResult;
+function TLQColligoOfTypeEnumerator<T, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentOfTypeEnumerator<T, TResult>.MoveNext: Boolean;
+function TLQColligoOfTypeEnumerator<T, TResult>.MoveNext: Boolean;
 var
   LConverted: TResult;
 begin
@@ -147,17 +147,17 @@ begin
   Result := False;
 end;
 
-procedure TFluentOfTypeEnumerator<T, TResult>.Reset;
+procedure TLQColligoOfTypeEnumerator<T, TResult>.Reset;
 begin
   FSource.Reset;
   FCurrent := Default(TResult);
 end;
 
 //{$IFDEF QUERYABLE}
-//{ TFluentOfTypeQueryable<T, TResult> }
+//{ TLQColligoOfTypeQueryable<T, TResult> }
 //
-//constructor TFluentOfTypeQueryable<T, TResult>.Create(
-//  const ASource: IFluentQueryableBase<T>;
+//constructor TLQColligoOfTypeQueryable<T, TResult>.Create(
+//  const ASource: ILQColligoQueryableBase<T>;
 //  const AIsType: TFunc<T, Boolean>;
 //  const AConverter: TFunc<T, TResult>);
 //begin
@@ -166,22 +166,22 @@ end;
 //  FConverter := AConverter;
 //end;
 //
-//function TFluentOfTypeQueryable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+//function TLQColligoOfTypeQueryable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 //begin
-//  Result := TFluentOfTypeQueryableEnumerator<T, TResult>.Create(
+//  Result := TLQColligoOfTypeQueryableEnumerator<T, TResult>.Create(
 //    FSource.GetEnumerator, FIsType, FConverter);
 //end;
 //
-//function TFluentOfTypeQueryable<T, TResult>.BuildQuery: string;
+//function TLQColligoOfTypeQueryable<T, TResult>.BuildQuery: string;
 //begin
 //  // Placeholder: Traduzir para SQL, ex.: WHERE tipo = <TResult>
 //  Result := FSource.BuildQuery + ' /* OfType<TResult> */';
 //end;
 //
-//{ TFluentOfTypeQueryableEnumerator<T, TResult> }
+//{ TLQColligoOfTypeQueryableEnumerator<T, TResult> }
 //
-//constructor TFluentOfTypeQueryableEnumerator<T, TResult>.Create(
-//  const ASource: IFluentEnumerator<T>;
+//constructor TLQColligoOfTypeQueryableEnumerator<T, TResult>.Create(
+//  const ASource: ILQColligoEnumerator<T>;
 //  const AIsType: TFunc<T, Boolean>;
 //  const AConverter: TFunc<T, TResult>);
 //begin
@@ -190,18 +190,18 @@ end;
 //  FConverter := AConverter;
 //end;
 //
-//destructor TFluentOfTypeQueryableEnumerator<T, TResult>.Destroy;
+//destructor TLQColligoOfTypeQueryableEnumerator<T, TResult>.Destroy;
 //begin
 //  FSourceEnum := nil;
 //  inherited;
 //end;
 //
-//function TFluentOfTypeQueryableEnumerator<T, TResult>.GetCurrent: TResult;
+//function TLQColligoOfTypeQueryableEnumerator<T, TResult>.GetCurrent: TResult;
 //begin
 //  Result := FCurrent;
 //end;
 //
-//function TFluentOfTypeQueryableEnumerator<T, TResult>.MoveNext: Boolean;
+//function TLQColligoOfTypeQueryableEnumerator<T, TResult>.MoveNext: Boolean;
 //var
 //  LItem: T;
 //begin
@@ -218,7 +218,7 @@ end;
 //  Result := False;
 //end;
 //
-//procedure TFluentOfTypeQueryableEnumerator<T, TResult>.Reset;
+//procedure TLQColligoOfTypeQueryableEnumerator<T, TResult>.Reset;
 //begin
 //  FSourceEnum.Reset;
 //  FCurrent := Default(TResult);

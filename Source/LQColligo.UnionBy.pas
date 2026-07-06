@@ -31,29 +31,29 @@ type
   // key across the first sequence then the second, in read order. The seen-keys
   // set grows as items are pulled; nothing runs until enumeration. Key equality
   // uses AComparer (nil => default).
-  TFluentUnionByEnumerable<T, TKey> = class(TFluentEnumerableBase<T>)
+  TLQColligoUnionByEnumerable<T, TKey> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSecond: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSecond: ILQColligoEnumerableBase<T>;
     FKeySelector: TFunc<T, TKey>;
     FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ASecond: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ASecond: ILQColligoEnumerableBase<T>;
       const AKeySelector: TFunc<T, TKey>; const AComparer: IEqualityComparer<TKey> = nil);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentUnionByEnumerator<T, TKey> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoUnionByEnumerator<T, TKey> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
-    FSecond: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
+    FSecond: ILQColligoEnumerator<T>;
     FKeySelector: TFunc<T, TKey>;
     FSeen: TDictionary<TKey, Byte>;
     FCurrent: T;
     FOnSecond: Boolean;
-    function TryNext(const AEnum: IFluentEnumerator<T>): Boolean;
+    function TryNext(const AEnum: ILQColligoEnumerator<T>): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>;
       const AKeySelector: TFunc<T, TKey>; const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -64,10 +64,10 @@ type
 
 implementation
 
-{ TFluentUnionByEnumerable<T, TKey> }
+{ TLQColligoUnionByEnumerable<T, TKey> }
 
-constructor TFluentUnionByEnumerable<T, TKey>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecond: IFluentEnumerableBase<T>; const AKeySelector: TFunc<T, TKey>;
+constructor TLQColligoUnionByEnumerable<T, TKey>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const ASecond: ILQColligoEnumerableBase<T>; const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
@@ -76,16 +76,16 @@ begin
   FComparer := AComparer;
 end;
 
-function TFluentUnionByEnumerable<T, TKey>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoUnionByEnumerable<T, TKey>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentUnionByEnumerator<T, TKey>.Create(FSource.GetEnumerator, FSecond.GetEnumerator,
+  Result := TLQColligoUnionByEnumerator<T, TKey>.Create(FSource.GetEnumerator, FSecond.GetEnumerator,
     FKeySelector, FComparer);
 end;
 
-{ TFluentUnionByEnumerator<T, TKey> }
+{ TLQColligoUnionByEnumerator<T, TKey> }
 
-constructor TFluentUnionByEnumerator<T, TKey>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AKeySelector: TFunc<T, TKey>;
+constructor TLQColligoUnionByEnumerator<T, TKey>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>; const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
@@ -95,18 +95,18 @@ begin
   FOnSecond := False;
 end;
 
-destructor TFluentUnionByEnumerator<T, TKey>.Destroy;
+destructor TLQColligoUnionByEnumerator<T, TKey>.Destroy;
 begin
   FSeen.Free;
   inherited;
 end;
 
-function TFluentUnionByEnumerator<T, TKey>.GetCurrent: T;
+function TLQColligoUnionByEnumerator<T, TKey>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentUnionByEnumerator<T, TKey>.TryNext(const AEnum: IFluentEnumerator<T>): Boolean;
+function TLQColligoUnionByEnumerator<T, TKey>.TryNext(const AEnum: ILQColligoEnumerator<T>): Boolean;
 var
   LItem: T;
   LKey: TKey;
@@ -126,7 +126,7 @@ begin
   Result := False;
 end;
 
-function TFluentUnionByEnumerator<T, TKey>.MoveNext: Boolean;
+function TLQColligoUnionByEnumerator<T, TKey>.MoveNext: Boolean;
 begin
   if not FOnSecond then
   begin
@@ -140,7 +140,7 @@ begin
   Result := TryNext(FSecond);
 end;
 
-procedure TFluentUnionByEnumerator<T, TKey>.Reset;
+procedure TLQColligoUnionByEnumerator<T, TKey>.Reset;
 begin
   FSource.Reset;
   FSecond.Reset;

@@ -27,25 +27,25 @@ uses
   LQColligo;
 
 type
-  TFluentDistinctEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoDistinctEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentDistinctEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoDistinctEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSet: TDictionary<T, Byte>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     function Contains(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -55,26 +55,26 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentDistinctQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoDistinctQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FSource: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   end;
 
-  TFluentDistinctQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoDistinctQueryableEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSet: TDictionary<T, Byte>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     function Contains(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -86,10 +86,10 @@ type
 
 implementation
 
-{ TFluentDistinctEnumerable<T> }
+{ TLQColligoDistinctEnumerable<T> }
 
-constructor TFluentDistinctEnumerable<T>.Create(
-  const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoDistinctEnumerable<T>.Create(
+  const ASource: ILQColligoEnumerableBase<T>;
   const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
@@ -99,15 +99,15 @@ begin
     FComparer := AComparer;
 end;
 
-function TFluentDistinctEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoDistinctEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentDistinctEnumerator<T>.Create(FSource.GetEnumerator, FComparer);
+  Result := TLQColligoDistinctEnumerator<T>.Create(FSource.GetEnumerator, FComparer);
 end;
 
-{ TFluentDistinctEnumerator<T> }
+{ TLQColligoDistinctEnumerator<T> }
 
-constructor TFluentDistinctEnumerator<T>.Create(
-  const ASource: IFluentEnumerator<T>;
+constructor TLQColligoDistinctEnumerator<T>.Create(
+  const ASource: ILQColligoEnumerator<T>;
   const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
@@ -115,24 +115,24 @@ begin
   FSet := TDictionary<T, Byte>.Create(FComparer);
 end;
 
-destructor TFluentDistinctEnumerator<T>.Destroy;
+destructor TLQColligoDistinctEnumerator<T>.Destroy;
 begin
   FSet.Free;
   inherited;
 end;
 
-function TFluentDistinctEnumerator<T>.Contains(const AValue: T): Boolean;
+function TLQColligoDistinctEnumerator<T>.Contains(const AValue: T): Boolean;
 begin
   // O(1) hash lookup instead of an O(n) linear scan.
   Result := FSet.ContainsKey(AValue);
 end;
 
-function TFluentDistinctEnumerator<T>.GetCurrent: T;
+function TLQColligoDistinctEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentDistinctEnumerator<T>.MoveNext: Boolean;
+function TLQColligoDistinctEnumerator<T>.MoveNext: Boolean;
 begin
   while FSource.MoveNext do
   begin
@@ -147,17 +147,17 @@ begin
   Result := False;
 end;
 
-procedure TFluentDistinctEnumerator<T>.Reset;
+procedure TLQColligoDistinctEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSet.Clear;
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentDistinctQueryable<T> }
+{ TLQColligoDistinctQueryable<T> }
 
-constructor TFluentDistinctQueryable<T>.Create(
-  const ASource: IFluentQueryableBase<T>;
+constructor TLQColligoDistinctQueryable<T>.Create(
+  const ASource: ILQColligoQueryableBase<T>;
   const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
@@ -167,20 +167,20 @@ begin
     FComparer := AComparer;
 end;
 
-function TFluentDistinctQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoDistinctQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentDistinctQueryableEnumerator<T>.Create(FSource.GetEnumerator, FComparer);
+  Result := TLQColligoDistinctQueryableEnumerator<T>.Create(FSource.GetEnumerator, FComparer);
 end;
 
-function TFluentDistinctQueryable<T>.BuildQuery: string;
+function TLQColligoDistinctQueryable<T>.BuildQuery: string;
 begin
   Result := 'SELECT DISTINCT * FROM (' + FSource.BuildQuery + ') AS Temp';
 end;
 
-{ TFluentDistinctQueryableEnumerator<T> }
+{ TLQColligoDistinctQueryableEnumerator<T> }
 
-constructor TFluentDistinctQueryableEnumerator<T>.Create(
-  const ASource: IFluentEnumerator<T>;
+constructor TLQColligoDistinctQueryableEnumerator<T>.Create(
+  const ASource: ILQColligoEnumerator<T>;
   const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
@@ -188,24 +188,24 @@ begin
   FSet := TDictionary<T, Byte>.Create(FComparer);
 end;
 
-destructor TFluentDistinctQueryableEnumerator<T>.Destroy;
+destructor TLQColligoDistinctQueryableEnumerator<T>.Destroy;
 begin
   FSet.Free;
   inherited;
 end;
 
-function TFluentDistinctQueryableEnumerator<T>.Contains(const AValue: T): Boolean;
+function TLQColligoDistinctQueryableEnumerator<T>.Contains(const AValue: T): Boolean;
 begin
   // O(1) hash lookup instead of an O(n) linear scan.
   Result := FSet.ContainsKey(AValue);
 end;
 
-function TFluentDistinctQueryableEnumerator<T>.GetCurrent: T;
+function TLQColligoDistinctQueryableEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentDistinctQueryableEnumerator<T>.MoveNext: Boolean;
+function TLQColligoDistinctQueryableEnumerator<T>.MoveNext: Boolean;
 begin
   while FSource.MoveNext do
   begin
@@ -220,7 +220,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentDistinctQueryableEnumerator<T>.Reset;
+procedure TLQColligoDistinctQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSet.Clear;

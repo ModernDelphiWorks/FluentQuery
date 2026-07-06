@@ -40,7 +40,7 @@ type
   [TestFixture]
   TTestFluentSQLFirebird = class
   private
-    FQueryable: IFluentQueryable<String>;
+    FQueryable: ILQColligoQueryable<String>;
     FFDConnection: TFDConnection;
     FConnection: IDBConnection;
     function GetSQL: string;
@@ -171,7 +171,7 @@ begin
 
   FConnection := TFactoryFireDAC.Create(FFDConnection, TDriverName.dnFirebird);
 
-  FQueryable := IFluentQueryable<String>.CreateForDatabase(
+  FQueryable := ILQColligoQueryable<String>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -195,11 +195,11 @@ procedure TTestFluentSQLFirebird.TestSelectWhereNome;
 var
   LCliente: TCliente;
   FoundAna, FoundBruno, FoundClara: Boolean;
-  LQueryable: IFluentQueryable<TCliente>;
-  LResults: IFluentList<TCliente>;
+  LQueryable: ILQColligoQueryable<TCliente>;
+  LResults: ILQColligoList<TCliente>;
   LClient: TCliente;
 begin
-  LQueryable := IFluentQueryable<TCliente>.CreateForDatabase(
+  LQueryable := ILQColligoQueryable<TCliente>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -243,10 +243,10 @@ end;
 
 procedure TTestFluentSQLFirebird.TestMinValue;
 var
-  LQueryable: IFluentQueryable<Integer>;
+  LQueryable: ILQColligoQueryable<Integer>;
   LResult: String;
 begin
-  LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
+  LQueryable := ILQColligoQueryable<Integer>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -260,9 +260,9 @@ end;
 
 procedure TTestFluentSQLFirebird.TestMaxValue;
 var
-  ProviderInt: IFluentQueryable<Integer>;
+  ProviderInt: ILQColligoQueryable<Integer>;
 begin
-  ProviderInt := IFluentQueryable<Integer>.CreateForDatabase(
+  ProviderInt := ILQColligoQueryable<Integer>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -275,9 +275,9 @@ end;
 
 procedure TTestFluentSQLFirebird.TestCountValue;
 var
-  LQueryable: IFluentQueryable<Integer>;
+  LQueryable: ILQColligoQueryable<Integer>;
 begin
-  LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
+  LQueryable := ILQColligoQueryable<Integer>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -407,10 +407,10 @@ procedure TTestFluentSQLFirebird.TestSelectWhereNomeForTuple;
 var
   LTuple: TTuple<string>;
   FoundAna, FoundBruno, FoundClara: Boolean;
-  LProvider: IFluentQueryable<TTuple<string>>;
-  LResults: IFluentList<TTuple<string>>;
+  LProvider: ILQColligoQueryable<TTuple<string>>;
+  LResults: ILQColligoList<TTuple<string>>;
 begin
-  LProvider := IFluentQueryable<TTuple<string>>.CreateForDatabase(
+  LProvider := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -449,10 +449,10 @@ end;
 
 procedure TTestFluentSQLFirebird.TestSelectSingleFieldInvalidType;
 var
-  LQueryable: IFluentQueryable<Integer>;
-  LResults: IFluentList<Integer>;
+  LQueryable: ILQColligoQueryable<Integer>;
+  LResults: ILQColligoList<Integer>;
 begin
-  LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
+  LQueryable := ILQColligoQueryable<Integer>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -473,12 +473,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestSelectSingleFieldString;
 var
-  LQueryable: IFluentQueryable<string>;
-  LResults: IFluentList<string>;
+  LQueryable: ILQColligoQueryable<string>;
+  LResults: ILQColligoList<string>;
   FoundBruno, FoundClara: Boolean;
   LItem: string;
 begin
-  LQueryable := IFluentQueryable<string>.CreateForDatabase(
+  LQueryable := ILQColligoQueryable<string>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -508,10 +508,10 @@ end;
 
 procedure TTestFluentSQLFirebird.TestSelectMultipleFieldsInvalidType;
 var
-  LQueryable: IFluentQueryable<Integer>;
-  LResults: IFluentList<Integer>;
+  LQueryable: ILQColligoQueryable<Integer>;
+  LResults: ILQColligoList<Integer>;
 begin
-  LQueryable := IFluentQueryable<Integer>.CreateForDatabase(
+  LQueryable := ILQColligoQueryable<Integer>.CreateForDatabase(
     procedure(var ADatabase: TDriverName; var AConnection: IDBConnection)
     begin
       ADatabase := TDriverName.dnFirebird;
@@ -551,17 +551,17 @@ type
   end;
 
 var
-  LQuery: IFluentQueryable<TCustomer>;
-  LInnerQuery: IFluentQueryable<TOrder>;
-  LResult: IFluentQueryable<TTuple<string>>;
-  LOuterKeyExpr, LInnerKeyExpr, LCustomerIdExpr, LCustomerNameExpr, LOrderDateExpr: IFluentQueryExpression;
-  LList: IFluentList<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TCustomer>;
+  LInnerQuery: ILQColligoQueryable<TOrder>;
+  LResult: ILQColligoQueryable<TTuple<string>>;
+  LOuterKeyExpr, LInnerKeyExpr, LCustomerIdExpr, LCustomerNameExpr, LOrderDateExpr: ILQColligoQueryExpression;
+  LList: ILQColligoList<TTuple<string>>;
   LItem: TTuple<string>;
 begin
   // Inicializar consultas fluentes
-  LQuery := IFluentQueryable<TCustomer>.CreateForDatabase(dnFirebird, FConnection);
+  LQuery := ILQColligoQueryable<TCustomer>.CreateForDatabase(dnFirebird, FConnection);
 
-  LInnerQuery := IFluentQueryable<TOrder>.CreateForDatabase(dnFirebird, FConnection);
+  LInnerQuery := ILQColligoQueryable<TOrder>.CreateForDatabase(dnFirebird, FConnection);
   // Configurar a tabela de junção
   LInnerQuery := LInnerQuery.From('PEDIDOS', 'P');
 
@@ -600,13 +600,13 @@ end;
 
 procedure TTestFluentSQLFirebird.TestGroupBySimple;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
-  LTempList: IFluentList<TTuple<string>>;
-  LGroups: IFluentEnumerable<IGrouping<Integer, TTuple<string>>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
+  LTempList: ILQColligoList<TTuple<string>>;
+  LGroups: ILQColligoEnumerable<IGrouping<Integer, TTuple<string>>>;
   LGroup: IGrouping<Integer, TTuple<string>>;
 begin
   // Configura a consulta para agrupar pedidos por ID_CLIENTE e contar o total
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('COUNT(*) AS TOTAL, ID_CLIENTE')
     .From('PEDIDOS')
     .GroupBy('ID_CLIENTE');
@@ -651,15 +651,15 @@ end;
 
 //procedure TTestFluentSQLFirebird.TestGroupByOrdersByCustomerId;
 //var
-//  LQuery: IFluentQueryable<TTuple<string>>;
-//  LGroups: IFluentList<IGrouping<Integer, TTuple<string>>>;
+//  LQuery: ILQColligoQueryable<TTuple<string>>;
+//  LGroups: ILQColligoList<IGrouping<Integer, TTuple<string>>>;
 //  LGroup: IGrouping<Integer, TTuple<string>>;
 //  LFirstTuple: TTuple<string>;
 //  Total: Integer;
 //  IdCliente: Integer;
 //begin
 //  // Configura a consulta para agrupar pedidos por ID_CLIENTE e contar o total
-//  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+//  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
 //    .Select('COUNT(*) AS TOTAL, ID_CLIENTE')
 //    .From('PEDIDOS')
 //    .GroupBy('ID_CLIENTE');
@@ -711,12 +711,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestCountWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LCount: Integer;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta para contar usuários com Age > 18 e NAME = 'John'
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -748,12 +748,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestAllWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LResult: Boolean;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta para verificar usuários com IDADE > 25 e NOME = 'Bruno'
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -783,7 +783,7 @@ begin
   Assert.IsFalse(LResult, 'Resultado incorreto. Esperado: False, pois nem todos os registros têm IDADE > 25 e NOME = ''Bruno''');
 
   // Cenário 2: Verifica se TODOS os registros têm IDADE > 0 (esperado: True)
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -805,12 +805,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestFirstWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LResult: TTuple<string>;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta base
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -843,12 +843,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestFirstOrDefaultWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LResult: TTuple<string>;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta base
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -880,7 +880,7 @@ begin
   Assert.IsTrue(LResult['IDADE'].AsInteger > 25, 'Resultado incorreto. Esperado: IDADE > 25');
 
   // Cenário 2: Busca o primeiro registro com IDADE > 100 (esperado: Default(T))
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -899,12 +899,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestTakeWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
-  LResult: IFluentList<TTuple<string>>;
-  LExpr: IFluentQueryExpression;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
+  LResult: ILQColligoList<TTuple<string>>;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta base
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -936,12 +936,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestLastWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LResult: TTuple<string>;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta base
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -974,12 +974,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestLastOrDefaultWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LResult: TTuple<string>;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta base
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -1011,7 +1011,7 @@ begin
   Assert.IsTrue(LResult['IDADE'].AsInteger > 25, 'Resultado incorreto. Esperado: IDADE > 25');
 
   // Cenário 2: Busca o último registro com IDADE > 100
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -1030,12 +1030,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestSingleWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LResult: TTuple<string>;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Cenário 1: Busca o único registro com IDADE > 25 e NOME = 'Bruno'
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -1058,7 +1058,7 @@ begin
   Assert.IsTrue(LResult['IDADE'].AsInteger > 25, 'Resultado incorreto. Esperado: IDADE > 25');
 
   // Cenário 2: Busca com condição que retorna múltiplos registros (esperado: exceção)
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -1075,7 +1075,7 @@ begin
   );
 
   // Cenário 3: Busca com condição que retorna zero registros (esperado: exceção)
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -1094,12 +1094,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestLongCountWithLambdaExpression;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LCount: Int64;
-  LExpr: IFluentQueryExpression;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Cenário 1: Conta registros com IDADE > 25 e NOME = 'Bruno'
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -1128,7 +1128,7 @@ begin
   Assert.AreEqual(Int64(1), LCount, 'Contagem incorreta. Esperado: 1 registro com IDADE > 25 e NOME = ''Bruno''');
 
   // Cenário 2: Conta registros com IDADE > 100 (esperado: 0)
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE')
     .From('CLIENTES');
 
@@ -1150,13 +1150,13 @@ end;
 
 procedure TTestFluentSQLFirebird.TestGroupByWithSelect;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
-  LResult: IFluentList<IGrouping<Integer, TTuple<string>>>;
-  LKeyExpr, LCountExpr: IFluentQueryExpression;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
+  LResult: ILQColligoList<IGrouping<Integer, TTuple<string>>>;
+  LKeyExpr, LCountExpr: ILQColligoQueryExpression;
   LGroup: IGrouping<Integer, TTuple<string>>;
   LItem: TTuple<string>;
 begin
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('IDADE, COUNT(*) AS CNT').From('CLIENTES');
 
   LKeyExpr := TQE.New<TTuple<string>>(TFluentSQLDriver.dbnFirebird).Field('IDADE');
@@ -1171,12 +1171,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestOrderByDescWithTQE;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
-  LResult: IFluentList<TTuple<string>>;
-  LExpr: IFluentQueryExpression;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
+  LResult: ILQColligoList<TTuple<string>>;
+  LExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE').From('CLIENTES');
 
   // Aplica OrderByDesc
@@ -1193,12 +1193,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestThenByWithTQE;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
-  LResult: IFluentList<TTuple<string>>;
-  LNameExpr, LAgeExpr: IFluentQueryExpression;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
+  LResult: ILQColligoList<TTuple<string>>;
+  LNameExpr, LAgeExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE').From('CLIENTES');
 
   // Aplica OrderByDesc seguido de ThenBy
@@ -1223,12 +1223,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestThenByDescendingWithTQE;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
-  LResult: IFluentList<TTuple<string>>;
-  LNameExpr, LAgeExpr: IFluentQueryExpression;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
+  LResult: ILQColligoList<TTuple<string>>;
+  LNameExpr, LAgeExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .Select('ID, NOME, IDADE').From('CLIENTES');
 
   // Aplica OrderByDesc seguido de ThenByDescending
@@ -1253,12 +1253,12 @@ end;
 
 procedure TTestFluentSQLFirebird.TestSelectWithTQE;
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
-  LResult: IFluentList<TTuple<string>>;
-  LNameExpr, LAgeExpr: IFluentQueryExpression;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
+  LResult: ILQColligoList<TTuple<string>>;
+  LNameExpr, LAgeExpr: ILQColligoQueryExpression;
 begin
   // Configura a consulta
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES');
 
   // Aplica Select com múltiplas colunas
@@ -1286,11 +1286,11 @@ type
   end;
 
 var
-  LQuery: IFluentQueryable<TCustomer>;
+  LQuery: ILQColligoQueryable<TCustomer>;
   LMinAge: Integer;
 begin
   // Inicializar consulta fluente
-  LQuery := IFluentQueryable<TCustomer>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TCustomer>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME, IDADE');
 
   // Teste 1: Min com um único campo (IDADE)
@@ -1327,11 +1327,11 @@ type
   end;
 
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LYoungestCustomer: TTuple<string>;
 begin
   // Inicializar consulta fluente
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME, IDADE');
 
   // Teste 1: MinBy com campo IDADE
@@ -1361,7 +1361,7 @@ begin
   end;
 
   // Teste 4: MinBy com campo existente no banco, mas não no SELECT
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME');
   try
     LQuery.MinBy('IDADE');
@@ -1381,12 +1381,12 @@ type
   end;
 
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LTotalAgeInt: Integer;
   LTotalAgeDouble: Double;
 begin
   // Inicializar consulta fluente
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME, IDADE');
 
   // Teste 1: Sum com campo IDADE (Integer)
@@ -1394,7 +1394,7 @@ begin
   Assert.AreEqual('SELECT SUM(IDADE) AS SumValue FROM CLIENTES', LQuery.AsString);
   Assert.AreEqual(83, LTotalAgeInt, 'TotalAge deve ser 83');
 
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME, IDADE');
 
   // Teste 2: Sum com campo IDADE (Double)
@@ -1421,7 +1421,7 @@ begin
   end;
 
   // Teste 5: Sum com campo existente no banco, mas não no SELECT
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME');
   try
     LQuery.Sum<Integer>('IDADE');
@@ -1450,12 +1450,12 @@ type
   end;
 
 var
-  LQuery: IFluentQueryable<TTuple<string>>;
+  LQuery: ILQColligoQueryable<TTuple<string>>;
   LAvgAgeDouble: Double;
   LAvgAgeInt: Integer;
 begin
   // Inicializar consulta fluente
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME, IDADE');
 
   // Teste 1: Average com campo IDADE (Double)
@@ -1463,7 +1463,7 @@ begin
   Assert.AreEqual('SELECT AVG(IDADE) AS AvgValue FROM CLIENTES', LQuery.AsString);
   Assert.AreEqual(27, LAvgAgeDouble, 0.0001, 'AvgAge deve ser aproximadamente 27.666...');
 
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME, IDADE');
 
   // Teste 2: Average com campo IDADE (Integer)
@@ -1490,7 +1490,7 @@ begin
   end;
 
   // Teste 5: Average com campo existente no banco, mas não no SELECT
-  LQuery := IFluentQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
+  LQuery := ILQColligoQueryable<TTuple<string>>.CreateForDatabase(dnFirebird, FConnection)
     .From('CLIENTES').Select('ID, NOME');
   try
     LQuery.Average<Double>('IDADE', 'AvgValue');

@@ -29,21 +29,21 @@ type
   // LINQ Cast<TResult>(): deferred/streaming. Converts every element to
   // TResult and raises EInvalidCast (per element, during enumeration) when an
   // element is not of that type. Contrast with OfType, which filters silently.
-  TFluentCastEnumerable<T, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoCastEnumerable<T, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentCastEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoCastEnumerator<T, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCurrent: TResult;
     function Convert(const AItem: T): TResult;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
     procedure Reset;
@@ -52,26 +52,26 @@ type
 
 implementation
 
-{ TFluentCastEnumerable<T, TResult> }
+{ TLQColligoCastEnumerable<T, TResult> }
 
-constructor TFluentCastEnumerable<T, TResult>.Create(const ASource: IFluentEnumerableBase<T>);
+constructor TLQColligoCastEnumerable<T, TResult>.Create(const ASource: ILQColligoEnumerableBase<T>);
 begin
   FSource := ASource;
 end;
 
-function TFluentCastEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoCastEnumerable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentCastEnumerator<T, TResult>.Create(FSource.GetEnumerator);
+  Result := TLQColligoCastEnumerator<T, TResult>.Create(FSource.GetEnumerator);
 end;
 
-{ TFluentCastEnumerator<T, TResult> }
+{ TLQColligoCastEnumerator<T, TResult> }
 
-constructor TFluentCastEnumerator<T, TResult>.Create(const ASource: IFluentEnumerator<T>);
+constructor TLQColligoCastEnumerator<T, TResult>.Create(const ASource: ILQColligoEnumerator<T>);
 begin
   FSource := ASource;
 end;
 
-function TFluentCastEnumerator<T, TResult>.Convert(const AItem: T): TResult;
+function TLQColligoCastEnumerator<T, TResult>.Convert(const AItem: T): TResult;
 var
   LValue: TValue;
 begin
@@ -94,19 +94,19 @@ begin
   end;
 end;
 
-function TFluentCastEnumerator<T, TResult>.GetCurrent: TResult;
+function TLQColligoCastEnumerator<T, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentCastEnumerator<T, TResult>.MoveNext: Boolean;
+function TLQColligoCastEnumerator<T, TResult>.MoveNext: Boolean;
 begin
   Result := FSource.MoveNext;
   if Result then
     FCurrent := Convert(FSource.Current);
 end;
 
-procedure TFluentCastEnumerator<T, TResult>.Reset;
+procedure TLQColligoCastEnumerator<T, TResult>.Reset;
 begin
   FSource.Reset;
   FCurrent := Default(TResult);

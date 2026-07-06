@@ -27,39 +27,39 @@ uses
   LQColligo.Core;
 
 type
-  TFluentArray<T> = class(TInterfacedObject, IFluentArray<T>)
+  TLQColligoArray<T> = class(TInterfacedObject, ILQColligoArray<T>)
   private
     FArray: TArray<T>;
     FOwnsArray: Boolean;
     function GetItem(AIndex: NativeInt): T;
     procedure SetItem(AIndex: NativeInt; const AValue: T);
-    function GetEnumerable: IFluentEnumerable<T>;
+    function GetEnumerable: ILQColligoEnumerable<T>;
     function _GetArray: TArray<T>;
   public
     constructor Create(const AArray: TArray<T>; AOwnsArray: Boolean = False);
     destructor Destroy; override;
-    class function From(const AArray: TArray<T>): IFluentEnumerable<T>; overload; static;
-    class function From(const AList: TList<T>): IFluentEnumerable<T>; overload; static;
+    class function From(const AArray: TArray<T>): ILQColligoEnumerable<T>; overload; static;
+    class function From(const AList: TList<T>): ILQColligoEnumerable<T>; overload; static;
     procedure SetItems(const AItems: TArray<T>);
-    function AsEnumerable: IFluentEnumerable<T>;
-    function GetEnumerator: IFluentEnumerator<T>;
+    function AsEnumerable: ILQColligoEnumerable<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
     function Length: Integer;
   end;
 
-  TFluentArray = record
+  TLQColligoArray = record
   public
     class procedure FreeValues<T>(const AValues: array of T); overload; static;
     class procedure FreeValues<T>(var AValues: TArray<T>); overload; static;
     class procedure Sort<T>(var AValues: array of T); overload; static;
     class procedure Sort<T>(var AValues: array of T; const AComparer: IComparer<T>); overload; static;
     class procedure Sort<T>(var AValues: array of T; const AComparer: IComparer<T>; AIndex, Count: NativeInt); overload; static;
-    class function From<T>(const AArray: array of T): IFluentEnumerable<T>; static;
+    class function From<T>(const AArray: array of T): ILQColligoEnumerable<T>; static;
     class function BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>; AIndex, Count: NativeInt): Boolean; overload; static;
     class function BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>): Boolean; overload; static;
     class function BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt): Boolean; overload; static;
     class procedure Copy<T>(const Source: array of T; var Destination: array of T; SourceIndex, DestIndex, Count: NativeInt); overload; static;
     class procedure Copy<T>(const Source: array of T; var Destination: array of T; Count: NativeInt); overload; static;
-    class function Concat<T>(const Args: array of TArray<T>): IFluentArray<T>; static;
+    class function Concat<T>(const Args: array of TArray<T>): ILQColligoArray<T>; static;
     class function IndexOf<T>(const AValues: array of T; const AItem: T): NativeInt; overload; static;
     class function IndexOf<T>(const AValues: array of T; const AItem: T; AIndex: NativeInt): NativeInt; overload; static;
     class function IndexOf<T>(const AValues: array of T; const AItem: T; const AComparer: IComparer<T>; AIndex, Count: NativeInt): NativeInt; overload; static;
@@ -72,19 +72,19 @@ type
     class function ToString<T>(const AValues: array of T; const ASeparator: string = ','; const ADelim1: string = ''; const ADelim2: string = ''): string; reintroduce; overload; static;
   end;
 
-  TFluentList<T> = class(TInterfacedObject, IFluentList<T>)
+  TLQColligoList<T> = class(TInterfacedObject, ILQColligoList<T>)
   private
     FList: TList<T>;
     FOwnsList: Boolean;
     FOwnerships: Boolean;
     FIsValueObject: Boolean;
     FOnNotify: TCollectionNotifyEvent<T>;
-    function GetEnumerable: IFluentEnumerable<T>;
+    function GetEnumerable: ILQColligoEnumerable<T>;
     function GetCapacity: NativeInt;
     procedure SetCapacity(const AValue: NativeInt);
     function GetItem(AIndex: NativeInt): T;
     procedure SetItem(AIndex: NativeInt; const AValue: T);
-    function GetList: IFluentArray<T>;
+    function GetList: ILQColligoArray<T>;
     function GetComparer: IComparer<T>;
     procedure SetOnNotify(const AValue: TCollectionNotifyEvent<T>);
     function GetOnNotify: TCollectionNotifyEvent<T>;
@@ -93,8 +93,8 @@ type
     type
       TEmptyFunc = reference to function (const L, R: T): Boolean;
   public
-    class function From(const AList: TList<T>): IFluentEnumerable<T>; overload; static;
-    class function From(const AArray: TArray<T>): IFluentEnumerable<T>; overload; static;
+    class function From(const AList: TList<T>): ILQColligoEnumerable<T>; overload; static;
+    class function From(const AArray: TArray<T>): ILQColligoEnumerable<T>; overload; static;
     class procedure Error(const AMsg: string; Data: NativeInt); overload; virtual;
     {$IFNDEF NEXTGEN}
     class procedure Error(const AMsg: PResStringRec; const Data: NativeInt); overload;
@@ -136,7 +136,7 @@ type
     function ExtractAt(AIndex: NativeInt): T;
     function First: T;
     function Last: T;
-    function Expand: IFluentList<T>;
+    function Expand: ILQColligoList<T>;
     function IndexOf(const AValue: T): NativeInt;
     function IndexOfItem(const AValue: T; Direction: TDirection): NativeInt;
     function LastIndexOf(const AValue: T): NativeInt;
@@ -144,17 +144,17 @@ type
     function BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>): Boolean; overload;
     function BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>; AIndex, Count: NativeInt): Boolean; overload;
     function IsEmpty: Boolean;
-    function ToArray: IFluentArray<T>;
-    function AsEnumerable: IFluentEnumerable<T>;
-    function GetEnumerator: IFluentEnumerator<T>;
+    function ToArray: ILQColligoArray<T>;
+    function AsEnumerable: ILQColligoEnumerable<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
   end;
 
-  TFluentDictionary<K, V> = class(TInterfacedObject, IFluentDictionary<K, V>)
+  TLQColligoDictionary<K, V> = class(TInterfacedObject, ILQColligoDictionary<K, V>)
   private
     FDict: TDictionary<K, V>;
     FOnKeyNotify: TCollectionNotifyEvent<K>;
     FOnValueNotify: TCollectionNotifyEvent<V>;
-    function GetEnumerable: IFluentEnumerable<TPair<K, V>>;
+    function GetEnumerable: ILQColligoEnumerable<TPair<K, V>>;
     function GetCapacity: NativeInt;
     function GetItem(const AKey: K): V;
     function GetGrowThreshold: NativeInt;
@@ -195,10 +195,10 @@ type
     function TryAdd(const AKey: K; const AValue: V): Boolean;
     function ContainsKey(const AKey: K): Boolean;
     function ContainsValue(const AValue: V): Boolean;
-    function ToArray: IFluentArray<TPair<K, V>>;
+    function ToArray: ILQColligoArray<TPair<K, V>>;
     function IsEmpty: Boolean;
-    function AsEnumerable: IFluentEnumerable<TPair<K, V>>;
-    function GetEnumerator: IFluentEnumerator<TPair<K, V>>;
+    function AsEnumerable: ILQColligoEnumerable<TPair<K, V>>;
+    function GetEnumerator: ILQColligoEnumerator<TPair<K, V>>;
   end;
 
 implementation
@@ -206,201 +206,201 @@ implementation
 uses
   LQColligo.Adapters;
 
-{ TFluentArray<T> }
+{ TLQColligoArray<T> }
 
-function TFluentArray<T>.AsEnumerable: IFluentEnumerable<T>;
+function TLQColligoArray<T>.AsEnumerable: ILQColligoEnumerable<T>;
 begin
   Result := GetEnumerable;
 end;
 
-constructor TFluentArray<T>.Create(const AArray: TArray<T>; AOwnsArray: Boolean);
+constructor TLQColligoArray<T>.Create(const AArray: TArray<T>; AOwnsArray: Boolean);
 begin
   FArray := AArray;
   FOwnsArray := AOwnsArray;
 end;
 
-destructor TFluentArray<T>.Destroy;
+destructor TLQColligoArray<T>.Destroy;
 begin
   if FOwnsArray then
     SetLength(FArray, 0);
   inherited;
 end;
 
-function TFluentArray<T>.GetEnumerable: IFluentEnumerable<T>;
+function TLQColligoArray<T>.GetEnumerable: ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(TArrayAdapter<T>.Create(FArray));
+  Result := ILQColligoEnumerable<T>.Create(TArrayAdapter<T>.Create(FArray));
 end;
 
-function TFluentArray<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoArray<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
   Result := AsEnumerable.GetEnumerator;
 end;
 
-function TFluentArray<T>.GetItem(AIndex: NativeInt): T;
+function TLQColligoArray<T>.GetItem(AIndex: NativeInt): T;
 begin
   Result := FArray[AIndex];
 end;
 
-function TFluentArray<T>.Length: Integer;
+function TLQColligoArray<T>.Length: Integer;
 begin
   Result := System.Length(FArray);
 end;
 
-procedure TFluentArray<T>.SetItem(AIndex: NativeInt; const AValue: T);
+procedure TLQColligoArray<T>.SetItem(AIndex: NativeInt; const AValue: T);
 begin
   FArray[AIndex] := AValue;
 end;
 
-procedure TFluentArray<T>.SetItems(const AItems: TArray<T>);
+procedure TLQColligoArray<T>.SetItems(const AItems: TArray<T>);
 begin
   FArray := Copy(AItems, 0, System.Length(AItems));
 end;
 
-function TFluentArray<T>._GetArray: TArray<T>;
+function TLQColligoArray<T>._GetArray: TArray<T>;
 begin
   Result := FArray;
 end;
 
-class function TFluentArray<T>.From(const AArray: TArray<T>): IFluentEnumerable<T>;
+class function TLQColligoArray<T>.From(const AArray: TArray<T>): ILQColligoEnumerable<T>;
 var
-  LWrapper: IFluentArray<T>;
+  LWrapper: ILQColligoArray<T>;
 begin
   // Hold the wrapper in an interface variable so ARC frees it. Without this the
-  // TFluentArray instance is never assigned to an interface (refcount 0) and
+  // TLQColligoArray instance is never assigned to an interface (refcount 0) and
   // leaks. GetEnumerable's adapter keeps its own copy of the data, so the
   // returned enumerable stays valid after the wrapper is released.
-  LWrapper := TFluentArray<T>.Create(AArray);
+  LWrapper := TLQColligoArray<T>.Create(AArray);
   Result := LWrapper.AsEnumerable;
 end;
 
-class function TFluentArray<T>.From(const AList: TList<T>): IFluentEnumerable<T>;
+class function TLQColligoArray<T>.From(const AList: TList<T>): ILQColligoEnumerable<T>;
 var
   LArray: TArray<T>;
-  LWrapper: IFluentArray<T>;
+  LWrapper: ILQColligoArray<T>;
 begin
   if AList = nil then
     raise EArgumentNilException.Create('AList cannot be nil');
   LArray := AList.ToArray;
-  LWrapper := TFluentArray<T>.Create(LArray, True);
+  LWrapper := TLQColligoArray<T>.Create(LArray, True);
   Result := LWrapper.AsEnumerable;
 end;
 
-class function TFluentArray.From<T>(const AArray: array of T): IFluentEnumerable<T>;
+class function TLQColligoArray.From<T>(const AArray: array of T): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(TNonGenericArrayAdapter<T>.Create(AArray));
+  Result := ILQColligoEnumerable<T>.Create(TNonGenericArrayAdapter<T>.Create(AArray));
 end;
 
-class procedure TFluentArray.Sort<T>(var AValues: array of T);
+class procedure TLQColligoArray.Sort<T>(var AValues: array of T);
 begin
   TArray.Sort<T>(AValues);
 end;
 
-class procedure TFluentArray.Sort<T>(var AValues: array of T; const AComparer: IComparer<T>);
+class procedure TLQColligoArray.Sort<T>(var AValues: array of T; const AComparer: IComparer<T>);
 begin
   TArray.Sort<T>(AValues, AComparer);
 end;
 
-class procedure TFluentArray.Sort<T>(var AValues: array of T; const AComparer: IComparer<T>; AIndex, Count: NativeInt);
+class procedure TLQColligoArray.Sort<T>(var AValues: array of T; const AComparer: IComparer<T>; AIndex, Count: NativeInt);
 begin
   TArray.Sort<T>(AValues, AComparer, AIndex, Count);
 end;
 
-class function TFluentArray.BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>; AIndex, Count: NativeInt): Boolean;
+class function TLQColligoArray.BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>; AIndex, Count: NativeInt): Boolean;
 begin
   Result := TArray.BinarySearch<T>(AValues, AItem, FoundIndex, AComparer, AIndex, Count);
 end;
 
-class function TFluentArray.BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>): Boolean;
+class function TLQColligoArray.BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>): Boolean;
 begin
   Result := TArray.BinarySearch<T>(AValues, AItem, FoundIndex, AComparer);
 end;
 
-class function TFluentArray.BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt): Boolean;
+class function TLQColligoArray.BinarySearch<T>(const AValues: array of T; const AItem: T; out FoundIndex: NativeInt): Boolean;
 begin
   Result := TArray.BinarySearch<T>(AValues, AItem, FoundIndex);
 end;
 
-class procedure TFluentArray.Copy<T>(const Source: array of T; var Destination: array of T; SourceIndex, DestIndex, Count: NativeInt);
+class procedure TLQColligoArray.Copy<T>(const Source: array of T; var Destination: array of T; SourceIndex, DestIndex, Count: NativeInt);
 begin
   TArray.Copy<T>(Source, Destination, SourceIndex, DestIndex, Count);
 end;
 
-class procedure TFluentArray.Copy<T>(const Source: array of T; var Destination: array of T; Count: NativeInt);
+class procedure TLQColligoArray.Copy<T>(const Source: array of T; var Destination: array of T; Count: NativeInt);
 begin
   TArray.Copy<T>(Source, Destination, Count);
 end;
 
-class function TFluentArray.Concat<T>(const Args: array of TArray<T>): IFluentArray<T>;
+class function TLQColligoArray.Concat<T>(const Args: array of TArray<T>): ILQColligoArray<T>;
 var
   LArray: TArray<T>;
 begin
   LArray := TArray.Concat<T>(Args);
-  Result := TFluentArray<T>.Create(LArray);
+  Result := TLQColligoArray<T>.Create(LArray);
 end;
 
-class function TFluentArray.IndexOf<T>(const AValues: array of T; const AItem: T): NativeInt;
+class function TLQColligoArray.IndexOf<T>(const AValues: array of T; const AItem: T): NativeInt;
 begin
   Result := TArray.IndexOf<T>(AValues, AItem);
 end;
 
-class function TFluentArray.IndexOf<T>(const AValues: array of T; const AItem: T; AIndex: NativeInt): NativeInt;
+class function TLQColligoArray.IndexOf<T>(const AValues: array of T; const AItem: T; AIndex: NativeInt): NativeInt;
 begin
   Result := TArray.IndexOf<T>(AValues, AItem, AIndex);
 end;
 
-class function TFluentArray.IndexOf<T>(const AValues: array of T; const AItem: T; const AComparer: IComparer<T>; AIndex, Count: NativeInt): NativeInt;
+class function TLQColligoArray.IndexOf<T>(const AValues: array of T; const AItem: T; const AComparer: IComparer<T>; AIndex, Count: NativeInt): NativeInt;
 begin
   Result := TArray.IndexOf<T>(AValues, AItem, AComparer, AIndex, Count);
 end;
 
-class function TFluentArray.LastIndexOf<T>(const AValues: array of T; const AItem: T): NativeInt;
+class function TLQColligoArray.LastIndexOf<T>(const AValues: array of T; const AItem: T): NativeInt;
 begin
   Result := TArray.LastIndexOf<T>(AValues, AItem);
 end;
 
-class function TFluentArray.LastIndexOf<T>(const AValues: array of T; const AItem: T; AIndex: NativeInt): NativeInt;
+class function TLQColligoArray.LastIndexOf<T>(const AValues: array of T; const AItem: T; AIndex: NativeInt): NativeInt;
 begin
   Result := TArray.LastIndexOf<T>(AValues, AItem, AIndex);
 end;
 
-class function TFluentArray.LastIndexOf<T>(const AValues: array of T; const AItem: T; const AComparer: IComparer<T>; AIndex, Count: NativeInt): NativeInt;
+class function TLQColligoArray.LastIndexOf<T>(const AValues: array of T; const AItem: T; const AComparer: IComparer<T>; AIndex, Count: NativeInt): NativeInt;
 begin
   Result := TArray.LastIndexOf<T>(AValues, AItem, AComparer, AIndex, Count);
 end;
 
-class function TFluentArray.Contains<T>(const AValues: array of T; const AItem: T): Boolean;
+class function TLQColligoArray.Contains<T>(const AValues: array of T; const AItem: T): Boolean;
 begin
   Result := TArray.Contains<T>(AValues, AItem);
 end;
 
-class function TFluentArray.Contains<T>(const AValues: array of T; const AItem: T; const AComparer: IComparer<T>): Boolean;
+class function TLQColligoArray.Contains<T>(const AValues: array of T; const AItem: T; const AComparer: IComparer<T>): Boolean;
 begin
   Result := TArray.Contains<T>(AValues, AItem, AComparer);
 end;
 
-class procedure TFluentArray.FreeValues<T>(const AValues: array of T);
+class procedure TLQColligoArray.FreeValues<T>(const AValues: array of T);
 begin
   TArray.FreeValues<T>(AValues);
 end;
 
-class procedure TFluentArray.FreeValues<T>(var AValues: TArray<T>);
+class procedure TLQColligoArray.FreeValues<T>(var AValues: TArray<T>);
 begin
   TArray.FreeValues<T>(AValues);
 end;
 
-class function TFluentArray.ToString<T>(const AValues: array of T; const AFormatSettings: TFormatSettings; const ASeparator: string = ','; const ADelim1: string = ''; const ADelim2: string = ''): string;
+class function TLQColligoArray.ToString<T>(const AValues: array of T; const AFormatSettings: TFormatSettings; const ASeparator: string = ','; const ADelim1: string = ''; const ADelim2: string = ''): string;
 begin
   Result := TArray.ToString<T>(AValues, AFormatSettings, ASeparator, ADelim1, ADelim2);
 end;
 
-class function TFluentArray.ToString<T>(const AValues: array of T; const ASeparator: string = ','; const ADelim1: string = ''; const ADelim2: string = ''): string;
+class function TLQColligoArray.ToString<T>(const AValues: array of T; const ASeparator: string = ','; const ADelim1: string = ''; const ADelim2: string = ''): string;
 begin
   Result := TArray.ToString<T>(AValues, ASeparator, ADelim1, ADelim2);
 end;
 
-{ TFluentList<T> }
+{ TLQColligoList<T> }
 
-constructor TFluentList<T>.Create(const AOwnerships: Boolean);
+constructor TLQColligoList<T>.Create(const AOwnerships: Boolean);
 begin
   FList := TList<T>.Create;
   FOwnsList := True;
@@ -408,7 +408,7 @@ begin
   FIsValueObject := PTypeInfo(TypeInfo(T))^.Kind = tkClass;
 end;
 
-constructor TFluentList<T>.Create(const AComparer: IComparer<T>; const AOwnerships: Boolean);
+constructor TLQColligoList<T>.Create(const AComparer: IComparer<T>; const AOwnerships: Boolean);
 begin
   FList := TList<T>.Create(AComparer);
   FOwnsList := True;
@@ -416,7 +416,7 @@ begin
   FIsValueObject := PTypeInfo(TypeInfo(T))^.Kind = tkClass;
 end;
 
-constructor TFluentList<T>.Create(const ACollection: TEnumerable<T>; const AOwnerships: Boolean);
+constructor TLQColligoList<T>.Create(const ACollection: TEnumerable<T>; const AOwnerships: Boolean);
 begin
   FList := TList<T>.Create(ACollection);
   FOwnsList := True;
@@ -424,7 +424,7 @@ begin
   FIsValueObject := PTypeInfo(TypeInfo(T))^.Kind = tkClass;
 end;
 
-constructor TFluentList<T>.Create(const ACollection: IEnumerable<T>; const AOwnerships: Boolean);
+constructor TLQColligoList<T>.Create(const ACollection: IEnumerable<T>; const AOwnerships: Boolean);
 begin
   FList := TList<T>.Create(ACollection);
   FOwnsList := True;
@@ -432,7 +432,7 @@ begin
   FIsValueObject := PTypeInfo(TypeInfo(T))^.Kind = tkClass;
 end;
 
-constructor TFluentList<T>.Create(const AValues: array of T; const AOwnerships: Boolean);
+constructor TLQColligoList<T>.Create(const AValues: array of T; const AOwnerships: Boolean);
 begin
   FList := TList<T>.Create;
   FOwnsList := True;
@@ -441,7 +441,7 @@ begin
   AddRange(AValues);
 end;
 
-constructor TFluentList<T>.Create(const AList: TList<T>; const AOwnsList: Boolean; const AOwnerships: Boolean);
+constructor TLQColligoList<T>.Create(const AList: TList<T>; const AOwnsList: Boolean; const AOwnerships: Boolean);
 begin
   if AList = nil then
     raise EArgumentNilException.Create('AList cannot be nil');
@@ -451,7 +451,7 @@ begin
   FIsValueObject := PTypeInfo(TypeInfo(T))^.Kind = tkClass;
 end;
 
-destructor TFluentList<T>.Destroy;
+destructor TLQColligoList<T>.Destroy;
 var
   LValue: T;
 begin
@@ -467,74 +467,74 @@ begin
   inherited;
 end;
 
-class procedure TFluentList<T>.Error(const AMsg: string; Data: NativeInt);
+class procedure TLQColligoList<T>.Error(const AMsg: string; Data: NativeInt);
 begin
   TList<T>.Error(AMsg, Data);
 end;
 
 {$IFNDEF NEXTGEN}
-class procedure TFluentList<T>.Error(const AMsg: PResStringRec; const Data: NativeInt);
+class procedure TLQColligoList<T>.Error(const AMsg: PResStringRec; const Data: NativeInt);
 begin
   TList<T>.Error(AMsg, Data);
 end;
 {$ENDIF}
 
-procedure TFluentList<T>.Add(const AValue: T);
+procedure TLQColligoList<T>.Add(const AValue: T);
 begin
   FList.Add(AValue);
 end;
 
-procedure TFluentList<T>.AddRange(const AValues: array of T);
+procedure TLQColligoList<T>.AddRange(const AValues: array of T);
 begin
   FList.AddRange(AValues);
 end;
 
-procedure TFluentList<T>.AddRange(const ACollection: IEnumerable<T>);
+procedure TLQColligoList<T>.AddRange(const ACollection: IEnumerable<T>);
 begin
   FList.AddRange(ACollection);
 end;
 
-procedure TFluentList<T>.AddRange(const ACollection: TEnumerable<T>);
+procedure TLQColligoList<T>.AddRange(const ACollection: TEnumerable<T>);
 begin
   FList.AddRange(ACollection);
 end;
 
-procedure TFluentList<T>.Insert(const AIndex: NativeInt; const AValue: T);
+procedure TLQColligoList<T>.Insert(const AIndex: NativeInt; const AValue: T);
 begin
   FList.Insert(AIndex, AValue);
 end;
 
-procedure TFluentList<T>.InsertRange(const AIndex: NativeInt; const AValues: array of T; ACount: NativeInt);
+procedure TLQColligoList<T>.InsertRange(const AIndex: NativeInt; const AValues: array of T; ACount: NativeInt);
 begin
   FList.InsertRange(AIndex, AValues, ACount);
 end;
 
-procedure TFluentList<T>.InsertRange(const AIndex: NativeInt; const AValues: array of T);
+procedure TLQColligoList<T>.InsertRange(const AIndex: NativeInt; const AValues: array of T);
 begin
   FList.InsertRange(AIndex, AValues);
 end;
 
-procedure TFluentList<T>.InsertRange(const AIndex: NativeInt; const ACollection: IEnumerable<T>);
+procedure TLQColligoList<T>.InsertRange(const AIndex: NativeInt; const ACollection: IEnumerable<T>);
 begin
   FList.InsertRange(AIndex, ACollection);
 end;
 
-procedure TFluentList<T>.InsertRange(const AIndex: NativeInt; const ACollection: TEnumerable<T>);
+procedure TLQColligoList<T>.InsertRange(const AIndex: NativeInt; const ACollection: TEnumerable<T>);
 begin
   FList.InsertRange(AIndex, ACollection);
 end;
 
-function TFluentList<T>.IsEmpty: Boolean;
+function TLQColligoList<T>.IsEmpty: Boolean;
 begin
   Result := FList.IsEmpty;
 end;
 
-procedure TFluentList<T>.Pack;
+procedure TLQColligoList<T>.Pack;
 begin
   FList.Pack;
 end;
 
-function TFluentList<T>.Remove(const AValue: T): Boolean;
+function TLQColligoList<T>.Remove(const AValue: T): Boolean;
 var
   LIndex: NativeInt;
 begin
@@ -549,7 +549,7 @@ begin
     Result := False;
 end;
 
-function TFluentList<T>.RemoveItem(const AValue: T; Direction: TDirection): NativeInt;
+function TLQColligoList<T>.RemoveItem(const AValue: T; Direction: TDirection): NativeInt;
 var
   LIndex: NativeInt;
 begin
@@ -562,7 +562,7 @@ begin
   Result := LIndex;
 end;
 
-procedure TFluentList<T>.Delete(const AIndex: NativeInt);
+procedure TLQColligoList<T>.Delete(const AIndex: NativeInt);
 begin
   if (AIndex >= 0) and (AIndex < FList.Count) then
   begin
@@ -573,7 +573,7 @@ begin
     raise EArgumentOutOfRangeException.Create('Index out of range');
 end;
 
-procedure TFluentList<T>.DeleteRange(const AIndex, ACount: NativeInt);
+procedure TLQColligoList<T>.DeleteRange(const AIndex, ACount: NativeInt);
 var
   LFor: NativeInt;
 begin
@@ -585,42 +585,42 @@ begin
   FList.DeleteRange(AIndex, ACount);
 end;
 
-function TFluentList<T>.ExtractItem(const AValue: T; Direction: TDirection): T;
+function TLQColligoList<T>.ExtractItem(const AValue: T; Direction: TDirection): T;
 begin
   Result := FList.ExtractItem(AValue, Direction);
 end;
 
-function TFluentList<T>.Extract(const AValue: T): T;
+function TLQColligoList<T>.Extract(const AValue: T): T;
 begin
   Result := FList.Extract(AValue);
 end;
 
-function TFluentList<T>.ExtractAt(AIndex: NativeInt): T;
+function TLQColligoList<T>.ExtractAt(AIndex: NativeInt): T;
 begin
   Result := FList.ExtractAt(AIndex);
 end;
 
-procedure TFluentList<T>.Exchange(const AIndex1, AIndex2: NativeInt);
+procedure TLQColligoList<T>.Exchange(const AIndex1, AIndex2: NativeInt);
 begin
   FList.Exchange(AIndex1, AIndex2);
 end;
 
-procedure TFluentList<T>.Move(const ACurIndex, ANewIndex: NativeInt);
+procedure TLQColligoList<T>.Move(const ACurIndex, ANewIndex: NativeInt);
 begin
   FList.Move(ACurIndex, ANewIndex);
 end;
 
-function TFluentList<T>.First: T;
+function TLQColligoList<T>.First: T;
 begin
   Result := FList.First;
 end;
 
-function TFluentList<T>.Last: T;
+function TLQColligoList<T>.Last: T;
 begin
   Result := FList.Last;
 end;
 
-procedure TFluentList<T>.Clear;
+procedure TLQColligoList<T>.Clear;
 var
   LValue: T;
 begin
@@ -632,18 +632,18 @@ begin
   FList.Clear;
 end;
 
-function TFluentList<T>.Expand: IFluentList<T>;
+function TLQColligoList<T>.Expand: ILQColligoList<T>;
 begin
   FList.Expand;
   Result := Self;
 end;
 
-function TFluentList<T>.Contains(const AValue: T): Boolean;
+function TLQColligoList<T>.Contains(const AValue: T): Boolean;
 begin
   Result := FList.Contains(AValue);
 end;
 
-procedure TFluentList<T>.CopyTo(AArray: array of T; AIndex: Integer);
+procedure TLQColligoList<T>.CopyTo(AArray: array of T; AIndex: Integer);
 var
   LFor: Integer;
 begin
@@ -658,67 +658,67 @@ begin
     AArray[AIndex + LFor] := FList[LFor];
 end;
 
-function TFluentList<T>.Count: NativeInt;
+function TLQColligoList<T>.Count: NativeInt;
 begin
   Result := FList.Count;
 end;
 
-function TFluentList<T>.IndexOf(const AValue: T): NativeInt;
+function TLQColligoList<T>.IndexOf(const AValue: T): NativeInt;
 begin
   Result := FList.IndexOf(AValue);
 end;
 
-function TFluentList<T>.IndexOfItem(const AValue: T; Direction: TDirection): NativeInt;
+function TLQColligoList<T>.IndexOfItem(const AValue: T; Direction: TDirection): NativeInt;
 begin
   Result := FList.IndexOfItem(AValue, Direction);
 end;
 
-function TFluentList<T>.LastIndexOf(const AValue: T): NativeInt;
+function TLQColligoList<T>.LastIndexOf(const AValue: T): NativeInt;
 begin
   Result := FList.LastIndexOf(AValue);
 end;
 
-procedure TFluentList<T>.Reverse;
+procedure TLQColligoList<T>.Reverse;
 begin
   FList.Reverse;
 end;
 
-procedure TFluentList<T>.Sort;
+procedure TLQColligoList<T>.Sort;
 begin
   FList.Sort;
 end;
 
-procedure TFluentList<T>.Sort(const AComparer: IComparer<T>);
+procedure TLQColligoList<T>.Sort(const AComparer: IComparer<T>);
 begin
   FList.Sort(AComparer);
 end;
 
-procedure TFluentList<T>.Sort(const AComparer: IComparer<T>; AIndex, Count: NativeInt);
+procedure TLQColligoList<T>.Sort(const AComparer: IComparer<T>; AIndex, Count: NativeInt);
 begin
   FList.Sort(AComparer, AIndex, Count);
 end;
 
-function TFluentList<T>.BinarySearch(const AItem: T; out FoundIndex: NativeInt): Boolean;
+function TLQColligoList<T>.BinarySearch(const AItem: T; out FoundIndex: NativeInt): Boolean;
 begin
   Result := FList.BinarySearch(AItem, FoundIndex);
 end;
 
-function TFluentList<T>.BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>): Boolean;
+function TLQColligoList<T>.BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>): Boolean;
 begin
   Result := FList.BinarySearch(AItem, FoundIndex, AComparer);
 end;
 
-function TFluentList<T>.BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>; AIndex, Count: NativeInt): Boolean;
+function TLQColligoList<T>.BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>; AIndex, Count: NativeInt): Boolean;
 begin
   Result := FList.BinarySearch(AItem, FoundIndex, AComparer, AIndex, Count);
 end;
 
-procedure TFluentList<T>.TrimExcess;
+procedure TLQColligoList<T>.TrimExcess;
 begin
   FList.TrimExcess;
 end;
 
-procedure TFluentList<T>._FreeItem(const AItem: T);
+procedure TLQColligoList<T>._FreeItem(const AItem: T);
 var
   LPointer: Pointer;
 begin
@@ -730,73 +730,73 @@ begin
   end;
 end;
 
-function TFluentList<T>.ToArray: IFluentArray<T>;
+function TLQColligoList<T>.ToArray: ILQColligoArray<T>;
 var
   LArray: TArray<T>;
 begin
   // Non-destructive, like LINQ's ToArray: copy the elements, leave the source
   // list intact so the same list can be queried again.
   LArray := Copy(FList.List, 0, FList.Count);
-  Result := TFluentArray<T>.Create(LArray, True);
+  Result := TLQColligoArray<T>.Create(LArray, True);
 end;
 
-function TFluentList<T>.AsEnumerable: IFluentEnumerable<T>;
+function TLQColligoList<T>.AsEnumerable: ILQColligoEnumerable<T>;
 begin
   Result := GetEnumerable;
 end;
 
-function TFluentList<T>.GetEnumerable: IFluentEnumerable<T>;
+function TLQColligoList<T>.GetEnumerable: ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
+  Result := ILQColligoEnumerable<T>.Create(
     TListAdapter<T>.Create(FList, False),
     ftList,
     TEqualityComparer<T>.Default
   );
 end;
 
-function TFluentList<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoList<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
   Result := TListAdapterEnumerator<T>.Create(FList.GetEnumerator);
 end;
 
-class function TFluentList<T>.From(const AList: TList<T>): IFluentEnumerable<T>;
+class function TLQColligoList<T>.From(const AList: TList<T>): ILQColligoEnumerable<T>;
 var
-  LWrapper: IFluentList<T>;
+  LWrapper: ILQColligoList<T>;
 begin
   // Hold the wrapper in an interface variable so ARC frees it (otherwise the
-  // TFluentList instance leaks with refcount 0). It does not own AList
+  // TLQColligoList instance leaks with refcount 0). It does not own AList
   // (AOwnsList=False), so releasing the wrapper leaves the caller's list — and
   // therefore the adapter that references it — valid.
-  LWrapper := TFluentList<T>.Create(AList);
+  LWrapper := TLQColligoList<T>.Create(AList);
   Result := LWrapper.AsEnumerable;
 end;
 
-class function TFluentList<T>.From(const AArray: TArray<T>): IFluentEnumerable<T>;
+class function TLQColligoList<T>.From(const AArray: TArray<T>): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(TArrayAdapter<T>.Create(AArray));
+  Result := ILQColligoEnumerable<T>.Create(TArrayAdapter<T>.Create(AArray));
 end;
 
-function TFluentList<T>.GetCapacity: NativeInt;
+function TLQColligoList<T>.GetCapacity: NativeInt;
 begin
   Result := FList.Capacity;
 end;
 
-procedure TFluentList<T>.SetCapacity(const AValue: NativeInt);
+procedure TLQColligoList<T>.SetCapacity(const AValue: NativeInt);
 begin
   FList.Capacity := AValue;
 end;
 
-function TFluentList<T>.GetItem(AIndex: NativeInt): T;
+function TLQColligoList<T>.GetItem(AIndex: NativeInt): T;
 begin
   Result := FList.Items[AIndex];
 end;
 
-procedure TFluentList<T>.SetItem(AIndex: NativeInt; const AValue: T);
+procedure TLQColligoList<T>.SetItem(AIndex: NativeInt; const AValue: T);
 begin
   FList.Items[AIndex] := AValue;
 end;
 
-function TFluentList<T>.GetList: IFluentArray<T>;
+function TLQColligoList<T>.GetList: ILQColligoArray<T>;
 var
   LArray: TArray<T>;
 begin
@@ -805,27 +805,27 @@ begin
   // Clear'd the list, so reading GetList emptied the list and could expose
   // uninitialised capacity slots.
   LArray := Copy(FList.List, 0, FList.Count);
-  Result := TFluentArray<T>.Create(LArray, True);
+  Result := TLQColligoArray<T>.Create(LArray, True);
 end;
 
-function TFluentList<T>.GetOnNotify: TCollectionNotifyEvent<T>;
+function TLQColligoList<T>.GetOnNotify: TCollectionNotifyEvent<T>;
 begin
   Result := FOnNotify;
 end;
 
-function TFluentList<T>.GetComparer: IComparer<T>;
+function TLQColligoList<T>.GetComparer: IComparer<T>;
 begin
   Result := FList.Comparer;
 end;
 
-procedure TFluentList<T>.SetOnNotify(const AValue: TCollectionNotifyEvent<T>);
+procedure TLQColligoList<T>.SetOnNotify(const AValue: TCollectionNotifyEvent<T>);
 begin
   FList.OnNotify := AValue;
 end;
 
-{ TFluentDictionary<K, V> }
+{ TLQColligoDictionary<K, V> }
 
-constructor TFluentDictionary<K, V>.Create(const AOwnerships: TDictionaryOwnerships);
+constructor TLQColligoDictionary<K, V>.Create(const AOwnerships: TDictionaryOwnerships);
 begin
   if AOwnerships = [] then
     FDict := TDictionary<K, V>.Create
@@ -833,7 +833,7 @@ begin
     FDict := TObjectDictionary<K, V>.Create(AOwnerships);
 end;
 
-constructor TFluentDictionary<K, V>.Create(const ACapacity: NativeInt;
+constructor TLQColligoDictionary<K, V>.Create(const ACapacity: NativeInt;
   const AOwnerships: TDictionaryOwnerships);
 begin
   if AOwnerships = [] then
@@ -842,7 +842,7 @@ begin
     FDict := TObjectDictionary<K, V>.Create(AOwnerships, ACapacity);
 end;
 
-constructor TFluentDictionary<K, V>.Create(const AComparer: IEqualityComparer<K>;
+constructor TLQColligoDictionary<K, V>.Create(const AComparer: IEqualityComparer<K>;
   const AOwnerships: TDictionaryOwnerships);
 begin
   if AOwnerships = [] then
@@ -851,7 +851,7 @@ begin
     FDict := TObjectDictionary<K, V>.Create(AOwnerships, AComparer);
 end;
 
-constructor TFluentDictionary<K, V>.Create(const ACapacity: NativeInt;
+constructor TLQColligoDictionary<K, V>.Create(const ACapacity: NativeInt;
   const AComparer: IEqualityComparer<K>; const AOwnerships: TDictionaryOwnerships);
 begin
   if AOwnerships = [] then
@@ -860,12 +860,12 @@ begin
     FDict := TObjectDictionary<K, V>.Create(AOwnerships, ACapacity, AComparer);
 end;
 
-constructor TFluentDictionary<K, V>.Create(const ACollection: TEnumerable<TPair<K, V>>);
+constructor TLQColligoDictionary<K, V>.Create(const ACollection: TEnumerable<TPair<K, V>>);
 begin
   FDict := TDictionary<K, V>.Create(ACollection);
 end;
 
-constructor TFluentDictionary<K, V>.Create(const ACollection: TEnumerable<TPair<K, V>>;
+constructor TLQColligoDictionary<K, V>.Create(const ACollection: TEnumerable<TPair<K, V>>;
   const AComparer: IEqualityComparer<K>; const AOwnerships: TDictionaryOwnerships);
 begin
   if AOwnerships = [] then
@@ -874,29 +874,29 @@ begin
     FDict := TObjectDictionary<K, V>.Create(AOwnerships, AComparer);
 end;
 
-constructor TFluentDictionary<K, V>.Create(const AItems: array of TPair<K, V>);
+constructor TLQColligoDictionary<K, V>.Create(const AItems: array of TPair<K, V>);
 begin
   FDict := TDictionary<K, V>.Create(AItems);
 end;
 
-constructor TFluentDictionary<K, V>.Create(const AItems: array of TPair<K, V>;
+constructor TLQColligoDictionary<K, V>.Create(const AItems: array of TPair<K, V>;
   const AComparer: IEqualityComparer<K>);
 begin
   FDict := TDictionary<K, V>.Create(AItems, AComparer);
 end;
 
-destructor TFluentDictionary<K, V>.Destroy;
+destructor TLQColligoDictionary<K, V>.Destroy;
 begin
   FDict.Free;
   inherited;
 end;
 
-procedure TFluentDictionary<K, V>.Add(const AKey: K; const AValue: V);
+procedure TLQColligoDictionary<K, V>.Add(const AKey: K; const AValue: V);
 begin
   FDict.Add(AKey, AValue);
 end;
 
-function TFluentDictionary<K, V>.Remove(const AKey: K): Boolean;
+function TLQColligoDictionary<K, V>.Remove(const AKey: K): Boolean;
 begin
   Result := False;
   if not FDict.ContainsKey(AKey) then
@@ -905,7 +905,7 @@ begin
   Result := True;
 end;
 
-function TFluentDictionary<K, V>.ExtractPair(const AKey: K): TPair<K, V>;
+function TLQColligoDictionary<K, V>.ExtractPair(const AKey: K): TPair<K, V>;
 begin
   Result := TPair<K, V>.Create(Default(K), Default(V));
   if not FDict.ContainsKey(AKey) then
@@ -913,32 +913,32 @@ begin
   Result := FDict.ExtractPair(AKey);
 end;
 
-procedure TFluentDictionary<K, V>.Clear;
+procedure TLQColligoDictionary<K, V>.Clear;
 begin
   FDict.Clear;
 end;
 
-procedure TFluentDictionary<K, V>.TrimExcess;
+procedure TLQColligoDictionary<K, V>.TrimExcess;
 begin
   FDict.TrimExcess;
 end;
 
-function TFluentDictionary<K, V>.TryGetValue(const AKey: K; var AValue: V): Boolean;
+function TLQColligoDictionary<K, V>.TryGetValue(const AKey: K; var AValue: V): Boolean;
 begin
   Result := FDict.TryGetValue(AKey, AValue);
 end;
 
-procedure TFluentDictionary<K, V>.Add(const AItem: TPair<K, V>);
+procedure TLQColligoDictionary<K, V>.Add(const AItem: TPair<K, V>);
 begin
   FDict.Add(Aitem.Key, Aitem.Value);
 end;
 
-procedure TFluentDictionary<K, V>.AddOrSetValue(const AKey: K; const AValue: V);
+procedure TLQColligoDictionary<K, V>.AddOrSetValue(const AKey: K; const AValue: V);
 begin
   FDict.AddOrSetValue(AKey, AValue);
 end;
 
-procedure TFluentDictionary<K, V>.AddRange(const Dictionary: TDictionary<K, V>);
+procedure TLQColligoDictionary<K, V>.AddRange(const Dictionary: TDictionary<K, V>);
 var
   LPair: TPair<K, V>;
 begin
@@ -946,7 +946,7 @@ begin
     Add(LPair.Key, LPair.Value);
 end;
 
-procedure TFluentDictionary<K, V>.AddRange(const AItems: TEnumerable<TPair<K, V>>);
+procedure TLQColligoDictionary<K, V>.AddRange(const AItems: TEnumerable<TPair<K, V>>);
 var
   LPair: TPair<K, V>;
 begin
@@ -954,12 +954,12 @@ begin
     Add(LPair.Key, LPair.Value);
 end;
 
-function TFluentDictionary<K, V>.TryAdd(const AKey: K; const AValue: V): Boolean;
+function TLQColligoDictionary<K, V>.TryAdd(const AKey: K; const AValue: V): Boolean;
 begin
   Result := FDict.TryAdd(AKey, AValue);
 end;
 
-function TFluentDictionary<K, V>.Contains(const AValue: TPair<K, V>): Boolean;
+function TLQColligoDictionary<K, V>.Contains(const AValue: TPair<K, V>): Boolean;
 var
   LValue: V;
 begin
@@ -972,17 +972,17 @@ begin
     Result := False;
 end;
 
-function TFluentDictionary<K, V>.ContainsKey(const AKey: K): Boolean;
+function TLQColligoDictionary<K, V>.ContainsKey(const AKey: K): Boolean;
 begin
   Result := FDict.ContainsKey(AKey);
 end;
 
-function TFluentDictionary<K, V>.ContainsValue(const AValue: V): Boolean;
+function TLQColligoDictionary<K, V>.ContainsValue(const AValue: V): Boolean;
 begin
   Result := FDict.ContainsValue(AValue);
 end;
 
-procedure TFluentDictionary<K, V>.CopyTo(AArray: array of TPair<K, V>; AIndex: Integer);
+procedure TLQColligoDictionary<K, V>.CopyTo(AArray: array of TPair<K, V>; AIndex: Integer);
 var
   LArray: TArray<TPair<K, V>>;
   LFor: Integer;
@@ -999,19 +999,19 @@ begin
     AArray[AIndex + LFor] := LArray[LFor];
 end;
 
-function TFluentDictionary<K, V>.ToArray: IFluentArray<TPair<K, V>>;
+function TLQColligoDictionary<K, V>.ToArray: ILQColligoArray<TPair<K, V>>;
 begin
-  Result := TFluentArray<TPair<K, V>>.Create(FDict.ToArray);
+  Result := TLQColligoArray<TPair<K, V>>.Create(FDict.ToArray);
 end;
 
-function TFluentDictionary<K, V>.AsEnumerable: IFluentEnumerable<TPair<K, V>>;
+function TLQColligoDictionary<K, V>.AsEnumerable: ILQColligoEnumerable<TPair<K, V>>;
 begin
   Result := GetEnumerable;
 end;
 
-function TFluentDictionary<K, V>.GetEnumerable: IFluentEnumerable<TPair<K, V>>;
+function TLQColligoDictionary<K, V>.GetEnumerable: ILQColligoEnumerable<TPair<K, V>>;
 begin
-  Result := IFluentEnumerable<TPair<K, V>>.Create(
+  Result := ILQColligoEnumerable<TPair<K, V>>.Create(
     TDictionaryAdapter<K, V>.Create(FDict),
     ftDictionary,
     TEqualityComparer<TPair<K, V>>.Construct(
@@ -1028,42 +1028,42 @@ begin
   );
 end;
 
-function TFluentDictionary<K, V>.GetEnumerator: IFluentEnumerator<TPair<K, V>>;
+function TLQColligoDictionary<K, V>.GetEnumerator: ILQColligoEnumerator<TPair<K, V>>;
 begin
   Result := TDictionaryAdapterEnumerator<K, V>.Create(FDict.GetEnumerator);
 end;
 
-function TFluentDictionary<K, V>.GetCapacity: NativeInt;
+function TLQColligoDictionary<K, V>.GetCapacity: NativeInt;
 begin
   Result := FDict.Capacity;
 end;
 
-procedure TFluentDictionary<K, V>.SetCapacity(const AValue: NativeInt);
+procedure TLQColligoDictionary<K, V>.SetCapacity(const AValue: NativeInt);
 begin
   FDict.Capacity := AValue;
 end;
 
-function TFluentDictionary<K, V>.GetItem(const AKey: K): V;
+function TLQColligoDictionary<K, V>.GetItem(const AKey: K): V;
 begin
   Result := FDict.Items[AKey];
 end;
 
-procedure TFluentDictionary<K, V>.SetItem(const AKey: K; const AValue: V);
+procedure TLQColligoDictionary<K, V>.SetItem(const AKey: K; const AValue: V);
 begin
   FDict.Items[AKey] := AValue;
 end;
 
-function TFluentDictionary<K, V>.Count: NativeInt;
+function TLQColligoDictionary<K, V>.Count: NativeInt;
 begin
   Result := FDict.Count;
 end;
 
-function TFluentDictionary<K, V>.IsEmpty: Boolean;
+function TLQColligoDictionary<K, V>.IsEmpty: Boolean;
 begin
   Result := FDict.IsEmpty;
 end;
 
-function TFluentDictionary<K, V>.Remove(const AItem: TPair<K, V>): Boolean;
+function TLQColligoDictionary<K, V>.Remove(const AItem: TPair<K, V>): Boolean;
 var
   LValue: V;
 begin
@@ -1079,47 +1079,47 @@ begin
   end;
 end;
 
-function TFluentDictionary<K, V>.GetGrowThreshold: NativeInt;
+function TLQColligoDictionary<K, V>.GetGrowThreshold: NativeInt;
 begin
   Result := FDict.GrowThreshold;
 end;
 
-function TFluentDictionary<K, V>.GetCollisions: NativeInt;
+function TLQColligoDictionary<K, V>.GetCollisions: NativeInt;
 begin
   Result := FDict.Collisions;
 end;
 
-function TFluentDictionary<K, V>.GetKeys: TDictionary<K, V>.TKeyCollection;
+function TLQColligoDictionary<K, V>.GetKeys: TDictionary<K, V>.TKeyCollection;
 begin
   Result := FDict.Keys;
 end;
 
-function TFluentDictionary<K, V>.GetOnKeyNotify: TCollectionNotifyEvent<K>;
+function TLQColligoDictionary<K, V>.GetOnKeyNotify: TCollectionNotifyEvent<K>;
 begin
   Result := FOnKeyNotify;
 end;
 
-function TFluentDictionary<K, V>.GetOnValueNotify: TCollectionNotifyEvent<V>;
+function TLQColligoDictionary<K, V>.GetOnValueNotify: TCollectionNotifyEvent<V>;
 begin
   Result := FOnValueNotify;
 end;
 
-function TFluentDictionary<K, V>.GetValues: TDictionary<K, V>.TValueCollection;
+function TLQColligoDictionary<K, V>.GetValues: TDictionary<K, V>.TValueCollection;
 begin
   Result := FDict.Values;
 end;
 
-function TFluentDictionary<K, V>.GetComparer: IEqualityComparer<K>;
+function TLQColligoDictionary<K, V>.GetComparer: IEqualityComparer<K>;
 begin
   Result := FDict.Comparer;
 end;
 
-procedure TFluentDictionary<K, V>.SetOnKeyNotify(const AValue: TCollectionNotifyEvent<K>);
+procedure TLQColligoDictionary<K, V>.SetOnKeyNotify(const AValue: TCollectionNotifyEvent<K>);
 begin
   FDict.OnKeyNotify := AValue;
 end;
 
-procedure TFluentDictionary<K, V>.SetOnValueNotify(const AValue: TCollectionNotifyEvent<V>);
+procedure TLQColligoDictionary<K, V>.SetOnValueNotify(const AValue: TCollectionNotifyEvent<V>);
 begin
   FDict.OnValueNotify := AValue;
 end;

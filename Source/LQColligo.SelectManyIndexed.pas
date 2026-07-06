@@ -22,26 +22,26 @@ uses
   LQColligo;
 
 type
-  TFluentSelectManyIndexedEnumerable<T, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoSelectManyIndexedEnumerable<T, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSelector: TFunc<T, Integer, IFluentArray<TResult>>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSelector: TFunc<T, Integer, ILQColligoArray<TResult>>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const ASelector: TFunc<T, Integer, IFluentArray<TResult>>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
+      const ASelector: TFunc<T, Integer, ILQColligoArray<TResult>>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentSelectManyIndexedEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoSelectManyIndexedEnumerator<T, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
-    FSelector: TFunc<T, Integer, IFluentArray<TResult>>;
-    FCurrentArray: IFluentArray<TResult>;
+    FSource: ILQColligoEnumerator<T>;
+    FSelector: TFunc<T, Integer, ILQColligoArray<TResult>>;
+    FCurrentArray: ILQColligoArray<TResult>;
     FIndex: Integer;
     FSourceIndex: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
-      const ASelector: TFunc<T, Integer, IFluentArray<TResult>>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
+      const ASelector: TFunc<T, Integer, ILQColligoArray<TResult>>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
     procedure Reset;
@@ -50,26 +50,26 @@ type
 
 implementation
 
-{ TFluentSelectManyIndexedEnumerable<T, TResult> }
+{ TLQColligoSelectManyIndexedEnumerable<T, TResult> }
 
-constructor TFluentSelectManyIndexedEnumerable<T, TResult>.Create(
-  const ASource: IFluentEnumerableBase<T>;
-  const ASelector: TFunc<T, Integer, IFluentArray<TResult>>);
+constructor TLQColligoSelectManyIndexedEnumerable<T, TResult>.Create(
+  const ASource: ILQColligoEnumerableBase<T>;
+  const ASelector: TFunc<T, Integer, ILQColligoArray<TResult>>);
 begin
   FSource := ASource;
   FSelector := ASelector;
 end;
 
-function TFluentSelectManyIndexedEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoSelectManyIndexedEnumerable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentSelectManyIndexedEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
+  Result := TLQColligoSelectManyIndexedEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
 end;
 
-{ TFluentSelectManyIndexedEnumerator<T, TResult> }
+{ TLQColligoSelectManyIndexedEnumerator<T, TResult> }
 
-constructor TFluentSelectManyIndexedEnumerator<T, TResult>.Create(
-  const ASource: IFluentEnumerator<T>;
-  const ASelector: TFunc<T, Integer, IFluentArray<TResult>>);
+constructor TLQColligoSelectManyIndexedEnumerator<T, TResult>.Create(
+  const ASource: ILQColligoEnumerator<T>;
+  const ASelector: TFunc<T, Integer, ILQColligoArray<TResult>>);
 begin
   FSource := ASource;
   FSelector := ASelector;
@@ -77,7 +77,7 @@ begin
   FSourceIndex := -1;
 end;
 
-function TFluentSelectManyIndexedEnumerator<T, TResult>.GetCurrent: TResult;
+function TLQColligoSelectManyIndexedEnumerator<T, TResult>.GetCurrent: TResult;
 begin
   if (FIndex >= 0) and (FIndex < FCurrentArray.Length) then
     Result := FCurrentArray[FIndex]
@@ -85,7 +85,7 @@ begin
     raise ERangeError.Create('Index out of bounds');
 end;
 
-function TFluentSelectManyIndexedEnumerator<T, TResult>.MoveNext: Boolean;
+function TLQColligoSelectManyIndexedEnumerator<T, TResult>.MoveNext: Boolean;
 begin
   while True do
   begin
@@ -111,7 +111,7 @@ begin
   end;
 end;
 
-procedure TFluentSelectManyIndexedEnumerator<T, TResult>.Reset;
+procedure TLQColligoSelectManyIndexedEnumerator<T, TResult>.Reset;
 begin
   FSource.Reset;
   FIndex := -1;

@@ -146,7 +146,7 @@ begin
   LObj2 := TObject.Create;
   LArray[0] := LObj1;
   LArray[1] := LObj2;
-  TFluentArray.FreeValues<TObject>(LArray);
+  TLQColligoArray.FreeValues<TObject>(LArray);
   Assert.IsTrue(LArray[0] = nil, 'First element should be nil after free');
   Assert.IsTrue(LArray[1] = nil, 'Second element should be nil after free');
 end;
@@ -161,17 +161,17 @@ begin
   LObj2 := TObject.Create;
   LArray[0] := LObj1;
   LArray[1] := LObj2;
-  TFluentArray.FreeValues<TObject>(LArray);
+  TLQColligoArray.FreeValues<TObject>(LArray);
   Assert.IsTrue(LArray[0] = nil, 'First element should be nil after free');
   Assert.IsTrue(LArray[1] = nil, 'Second element should be nil after free');
 end;
 
 procedure TArrayStaticTest.TestFrom;
 var
-  LEnum: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LEnum: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LEnum := TFluentArray.From<Integer>([1, 2, 3]);
+  LEnum := TLQColligoArray.From<Integer>([1, 2, 3]);
   LArray := LEnum.ToArray;
   Assert.AreEqual(3, LArray.Length, 'From should create enumerable with 3 elements');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
@@ -183,7 +183,7 @@ var
   LArray: array[0..4] of Integer;
 begin
   LArray[0] := 5; LArray[1] := 2; LArray[2] := 4; LArray[3] := 1; LArray[4] := 3;
-  TFluentArray.Sort<Integer>(LArray);
+  TLQColligoArray.Sort<Integer>(LArray);
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
   Assert.AreEqual(5, LArray[4], 'Last element should be 5');
 end;
@@ -195,7 +195,7 @@ var
 begin
   LArray[0] := 5; LArray[1] := 2; LArray[2] := 4; LArray[3] := 1; LArray[4] := 3;
   LComparer := CreateComparer<Integer>;
-  TFluentArray.Sort<Integer>(LArray, LComparer);
+  TLQColligoArray.Sort<Integer>(LArray, LComparer);
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
   Assert.AreEqual(5, LArray[4], 'Last element should be 5');
 end;
@@ -207,7 +207,7 @@ var
 begin
   LArray[0] := 0; LArray[1] := 5; LArray[2] := 2; LArray[3] := 4; LArray[4] := 1; LArray[5] := 3;
   LComparer := CreateComparer<Integer>;
-  TFluentArray.Sort<Integer>(LArray, LComparer, 1, 4); // Sort from index 1 to 4
+  TLQColligoArray.Sort<Integer>(LArray, LComparer, 1, 4); // Sort from index 1 to 4
   Assert.AreEqual(0, LArray[0], 'Element at index 0 should remain unchanged');
   Assert.AreEqual(1, LArray[1], 'First sorted element should be 1');
   Assert.AreEqual(5, LArray[4], 'Last sorted element should be 5');
@@ -222,7 +222,7 @@ var
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
   LComparer := CreateComparer<Integer>;
-  Assert.IsTrue(TFluentArray.BinarySearch<Integer>(LArray, 3, LFoundIndex, LComparer, 0, 5), 'Should find 3');
+  Assert.IsTrue(TLQColligoArray.BinarySearch<Integer>(LArray, 3, LFoundIndex, LComparer, 0, 5), 'Should find 3');
   Assert.AreEqual(NativeInt(2), LFoundIndex, 'Index of 3 should be 2');
 end;
 
@@ -234,7 +234,7 @@ var
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
   LComparer := CreateComparer<Integer>;
-  Assert.IsTrue(TFluentArray.BinarySearch<Integer>(LArray, 4, LFoundIndex, LComparer), 'Should find 4');
+  Assert.IsTrue(TLQColligoArray.BinarySearch<Integer>(LArray, 4, LFoundIndex, LComparer), 'Should find 4');
   Assert.AreEqual(NativeInt(3), LFoundIndex, 'Index of 4 should be 3');
 end;
 
@@ -244,7 +244,7 @@ var
   LFoundIndex: NativeInt;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
-  Assert.IsTrue(TFluentArray.BinarySearch<Integer>(LArray, 5, LFoundIndex), 'Should find 5');
+  Assert.IsTrue(TLQColligoArray.BinarySearch<Integer>(LArray, 5, LFoundIndex), 'Should find 5');
   Assert.AreEqual(NativeInt(4), LFoundIndex, 'Index of 5 should be 4');
 end;
 
@@ -257,7 +257,7 @@ var
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
   LComparer := CreateComparer<Integer>;
-  Assert.IsTrue(TFluentArray.BinarySearch<Integer>(LArray, 3, LFoundIndex, LComparer, 0, 5), 'Should find 3');
+  Assert.IsTrue(TLQColligoArray.BinarySearch<Integer>(LArray, 3, LFoundIndex, LComparer, 0, 5), 'Should find 3');
   Assert.AreEqual(2, LFoundIndex, 'Index of 3 should be 2');
 end;
 
@@ -269,7 +269,7 @@ var
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
   LComparer := CreateComparer<Integer>;
-  Assert.IsTrue(TFluentArray.BinarySearch<Integer>(LArray, 4, LFoundIndex, LComparer), 'Should find 4');
+  Assert.IsTrue(TLQColligoArray.BinarySearch<Integer>(LArray, 4, LFoundIndex, LComparer), 'Should find 4');
   Assert.AreEqual(3, LFoundIndex, 'Index of 4 should be 3');
 end;
 
@@ -279,7 +279,7 @@ var
   LFoundIndex: Integer;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
-  Assert.IsTrue(TFluentArray.BinarySearch<Integer>(LArray, 5, LFoundIndex), 'Should find 5');
+  Assert.IsTrue(TLQColligoArray.BinarySearch<Integer>(LArray, 5, LFoundIndex), 'Should find 5');
   Assert.AreEqual(4, LFoundIndex, 'Index of 5 should be 4');
 end;
 {$ENDIF CPU64BITS}
@@ -289,10 +289,10 @@ var
   LSource: TArray<Integer>;
   LDest: array[0..5] of Integer;
 begin
-  // Demonstra uso com IFluentArray<T>, simplificando a atribuição, mas funciona.
+  // Demonstra uso com ILQColligoArray<T>, simplificando a atribuição, mas funciona.
   LSource := [1, 2, 3, 4, 5];
   LDest[0] := 0; LDest[1] := 0; LDest[2] := 0; LDest[3] := 0; LDest[4] := 0; LDest[5] := 0;
-  TFluentArray.Copy<Integer>(LSource, LDest, 1, 2, 3);
+  TLQColligoArray.Copy<Integer>(LSource, LDest, 1, 2, 3);
   Assert.AreEqual(0, LDest[0], 'Index 0 should remain 0');
   Assert.AreEqual(0, LDest[1], 'Index 1 should remain 0');
   Assert.AreEqual(2, LDest[2], 'Index 2 should be 2');
@@ -308,7 +308,7 @@ var
 begin
   LSource[0] := 1; LSource[1] := 2; LSource[2] := 3;
   LDest[0] := 0; LDest[1] := 0; LDest[2] := 0;
-  TFluentArray.Copy<Integer>(LSource, LDest, 3);
+  TLQColligoArray.Copy<Integer>(LSource, LDest, 3);
   Assert.AreEqual(1, LDest[0], 'Index 0 should be 1');
   Assert.AreEqual(2, LDest[1], 'Index 1 should be 2');
   Assert.AreEqual(3, LDest[2], 'Index 2 should be 3');
@@ -316,9 +316,9 @@ end;
 
 procedure TArrayStaticTest.TestConcat;
 var
-  LResult: IFluentArray<Integer>;
+  LResult: ILQColligoArray<Integer>;
 begin
-  LResult := TFluentArray.Concat<Integer>([TArray<Integer>.Create(1, 2),
+  LResult := TLQColligoArray.Concat<Integer>([TArray<Integer>.Create(1, 2),
                                            TArray<Integer>.Create(3, 4)]);
   Assert.AreEqual(4, LResult.Length, 'Concat should have 4 elements');
   Assert.AreEqual(1, LResult[0], 'First element should be 1');
@@ -330,8 +330,8 @@ var
   LArray: array[0..4] of Integer;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
-  Assert.AreEqual(NativeInt(2), TFluentArray.IndexOf<Integer>(LArray, 3), 'Index of 3 should be 2');
-  Assert.AreEqual(NativeInt(-1), TFluentArray.IndexOf<Integer>(LArray, 6), 'Index of 6 should be -1');
+  Assert.AreEqual(NativeInt(2), TLQColligoArray.IndexOf<Integer>(LArray, 3), 'Index of 3 should be 2');
+  Assert.AreEqual(NativeInt(-1), TLQColligoArray.IndexOf<Integer>(LArray, 6), 'Index of 6 should be -1');
 end;
 
 procedure TArrayStaticTest.TestIndexOfStart;
@@ -339,7 +339,7 @@ var
   LArray: array[0..4] of Integer;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 2; LArray[4] := 5;
-  Assert.AreEqual(NativeInt(3), TFluentArray.IndexOf<Integer>(LArray, 2, 2), 'Index of 2 starting at 2 should be 3');
+  Assert.AreEqual(NativeInt(3), TLQColligoArray.IndexOf<Integer>(LArray, 2, 2), 'Index of 2 starting at 2 should be 3');
 end;
 
 procedure TArrayStaticTest.TestIndexOfComparer;
@@ -349,7 +349,7 @@ var
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
   LComparer := CreateComparer<Integer>;
-  Assert.AreEqual(NativeInt(4), TFluentArray.IndexOf<Integer>(LArray, 5, LComparer, 0, 5), 'Index of 5 should be 4');
+  Assert.AreEqual(NativeInt(4), TLQColligoArray.IndexOf<Integer>(LArray, 5, LComparer, 0, 5), 'Index of 5 should be 4');
 end;
 
 procedure TArrayStaticTest.TestLastIndexOfSimple;
@@ -357,7 +357,7 @@ var
   LArray: array[0..4] of Integer;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 2; LArray[4] := 5;
-  Assert.AreEqual(NativeInt(3), TFluentArray.LastIndexOf<Integer>(LArray, 2), 'Last index of 2 should be 3');
+  Assert.AreEqual(NativeInt(3), TLQColligoArray.LastIndexOf<Integer>(LArray, 2), 'Last index of 2 should be 3');
 end;
 
 procedure TArrayStaticTest.TestLastIndexOfStart;
@@ -365,7 +365,7 @@ var
   LArray: array[0..4] of Integer;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 2; LArray[4] := 5;
-  Assert.AreEqual(NativeInt(1), TFluentArray.LastIndexOf<Integer>(LArray, 2, 2), 'Last index of 2 up to index 2 should be 1');
+  Assert.AreEqual(NativeInt(1), TLQColligoArray.LastIndexOf<Integer>(LArray, 2, 2), 'Last index of 2 up to index 2 should be 1');
 end;
 
 procedure TArrayStaticTest.TestLastIndexOfComparer;
@@ -375,7 +375,7 @@ var
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 2; LArray[4] := 5;
   LComparer := CreateComparer<Integer>;
-  Assert.AreEqual(NativeInt(3), TFluentArray.LastIndexOf<Integer>(LArray, 2, LComparer, 4, 5), 'Last index of 2 should be 3');
+  Assert.AreEqual(NativeInt(3), TLQColligoArray.LastIndexOf<Integer>(LArray, 2, LComparer, 4, 5), 'Last index of 2 should be 3');
 end;
 
 procedure TArrayStaticTest.TestContainsSimple;
@@ -383,8 +383,8 @@ var
   LArray: array[0..4] of Integer;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
-  Assert.IsTrue(TFluentArray.Contains<Integer>(LArray, 3), 'Should contain 3');
-  Assert.IsFalse(TFluentArray.Contains<Integer>(LArray, 6), 'Should not contain 6');
+  Assert.IsTrue(TLQColligoArray.Contains<Integer>(LArray, 3), 'Should contain 3');
+  Assert.IsFalse(TLQColligoArray.Contains<Integer>(LArray, 6), 'Should not contain 6');
 end;
 
 procedure TArrayStaticTest.TestContainsComparer;
@@ -394,7 +394,7 @@ var
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3; LArray[3] := 4; LArray[4] := 5;
   LComparer := CreateComparer<Integer>;
-  Assert.IsTrue(TFluentArray.Contains<Integer>(LArray, 4, LComparer), 'Should contain 4');
+  Assert.IsTrue(TLQColligoArray.Contains<Integer>(LArray, 4, LComparer), 'Should contain 4');
 end;
 
 procedure TArrayStaticTest.TestToStringSimple;
@@ -402,8 +402,8 @@ var
   LArray: array[0..2] of Integer;
 begin
   LArray[0] := 1; LArray[1] := 2; LArray[2] := 3;
-  Assert.AreEqual('1,2,3', TFluentArray.ToString<Integer>(LArray), 'ToString should be "1,2,3"');
-  Assert.AreEqual('[1] [2] [3]', TFluentArray.ToString<Integer>(LArray, ' ', '[', ']'), 'ToString with delimiters should be "[1] [2] [3]"');
+  Assert.AreEqual('1,2,3', TLQColligoArray.ToString<Integer>(LArray), 'ToString should be "1,2,3"');
+  Assert.AreEqual('[1] [2] [3]', TLQColligoArray.ToString<Integer>(LArray, ' ', '[', ']'), 'ToString with delimiters should be "[1] [2] [3]"');
 end;
 
 procedure TArrayStaticTest.TestToStringWithFormat;
@@ -414,15 +414,15 @@ begin
   LFmt := TFormatSettings.Create;
   LFmt.DecimalSeparator := ',';
   LArray[0] := 1.5; LArray[1] := 2.5; LArray[2] := 3.5;
-  Assert.AreEqual('1,5;2,5;3,5', TFluentArray.ToString<Double>(LArray, LFmt, ';'), 'ToString with format should be "1,5;2,5;3,5"');
+  Assert.AreEqual('1,5;2,5;3,5', TLQColligoArray.ToString<Double>(LArray, LFmt, ';'), 'ToString with format should be "1,5;2,5;3,5"');
 end;
 
 // Testes Lazy
 procedure TArrayStaticTest.TestLazyToArray;
 var
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LArray := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).ToArray;
+  LArray := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).ToArray;
   Assert.AreEqual(5, LArray.Length, 'Array length should be 5');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
   Assert.AreEqual(5, LArray[4], 'Last element should be 5');
@@ -430,9 +430,9 @@ end;
 
 procedure TArrayStaticTest.TestLazyToList;
 var
-  LResult: IFluentList<Integer>;
+  LResult: ILQColligoList<Integer>;
 begin
-  LResult := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).ToList;
+  LResult := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).ToList;
   Assert.AreEqual(5, LResult.Count, 'List count should be 5');
   Assert.AreEqual(1, LResult[0], 'First element should be 1');
   Assert.AreEqual(5, LResult[4], 'Last element should be 5');
@@ -442,7 +442,7 @@ procedure TArrayStaticTest.TestLazyCount;
 var
   LCount: Integer;
 begin
-  LCount := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Count(
+  LCount := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Count(
     function(Value: Integer): Boolean
     begin
       Result := Value > 2;
@@ -454,7 +454,7 @@ procedure TArrayStaticTest.TestLazyAny;
 var
   LHasEven: Boolean;
 begin
-  LHasEven := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Any(
+  LHasEven := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Any(
     function(Value: Integer): Boolean
     begin
       Result := Value mod 2 = 0;
@@ -466,7 +466,7 @@ procedure TArrayStaticTest.TestLazyFirstOrDefault;
 var
   LFirstEven: Integer;
 begin
-  LFirstEven := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).FirstOrDefault(
+  LFirstEven := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).FirstOrDefault(
     function(Value: Integer): Boolean
     begin
       Result := Value mod 2 = 0;
@@ -478,7 +478,7 @@ procedure TArrayStaticTest.TestLazyLastOrDefault;
 var
   LLastEven: Integer;
 begin
-  LLastEven := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).LastOrDefault(
+  LLastEven := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).LastOrDefault(
     function(Value: Integer): Boolean
     begin
       Result := Value mod 2 = 0;
@@ -490,7 +490,7 @@ procedure TArrayStaticTest.TestLazyMin;
 var
   LMin: Integer;
 begin
-  LMin := TFluentArray.From<Integer>([3, 1, 4, 1, 5]).Min;
+  LMin := TLQColligoArray.From<Integer>([3, 1, 4, 1, 5]).Min;
   Assert.AreEqual(1, LMin, 'Minimum value should be 1');
 end;
 
@@ -498,7 +498,7 @@ procedure TArrayStaticTest.TestLazyMax;
 var
   LMax: Integer;
 begin
-  LMax := TFluentArray.From<Integer>([3, 1, 4, 1, 5]).Max;
+  LMax := TLQColligoArray.From<Integer>([3, 1, 4, 1, 5]).Max;
   Assert.AreEqual(5, LMax, 'Maximum value should be 5');
 end;
 
@@ -506,7 +506,7 @@ procedure TArrayStaticTest.TestLazySum;
 var
   LSum: Integer;
 begin
-  LSum := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Sum(
+  LSum := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Sum(
     function(Value: Integer): Integer
     begin
       Result := Value;
@@ -518,7 +518,7 @@ procedure TArrayStaticTest.TestLazyReduce;
 var
   LSum: Integer;
 begin
-  LSum := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Aggregate(
+  LSum := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Aggregate(
     function(Acc, Value: Integer): Integer
     begin
       Result := Acc + Value;
@@ -528,10 +528,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyDistinct;
 var
-  LDistinct: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDistinct: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LDistinct := TFluentArray.From<Integer>([1, 2, 2, 3, 3, 4, 5, 5]).Distinct;
+  LDistinct := TLQColligoArray.From<Integer>([1, 2, 2, 3, 3, 4, 5, 5]).Distinct;
   LArray := LDistinct.ToArray;
   Assert.AreEqual(5, LArray.Length, 'Distinct array should have 5 unique elements');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
@@ -540,10 +540,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyFilter;
 var
-  LFiltered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LFiltered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LFiltered := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Where(
+  LFiltered := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Where(
     function(Value: Integer): Boolean
     begin
       Result := Value > 3;
@@ -556,10 +556,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyTake;
 var
-  LTaken: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LTaken: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LTaken := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Take(3);
+  LTaken := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Take(3);
   LArray := LTaken.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Taken array should have 3 elements');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
@@ -568,10 +568,10 @@ end;
 
 procedure TArrayStaticTest.TestLazySkip;
 var
-  LSkipped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSkipped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LSkipped := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Skip(2);
+  LSkipped := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Skip(2);
   LArray := LSkipped.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Skipped array should have 3 elements');
   Assert.AreEqual(3, LArray[0], 'First element should be 3');
@@ -580,10 +580,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyOrderBy;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LOrdered := TFluentArray.From<Integer>([5, 2, 4, 1, 3]).OrderBy(
+  LOrdered := TLQColligoArray.From<Integer>([5, 2, 4, 1, 3]).OrderBy(
     function(A, B: Integer): Integer
     begin
       Result := A - B;
@@ -598,7 +598,7 @@ procedure TArrayStaticTest.TestLazyLongCount;
 var
   LCount: Int64;
 begin
-  LCount := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).LongCount(
+  LCount := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).LongCount(
     function(Value: Integer): Boolean
     begin
       Result := Value > 2;
@@ -608,10 +608,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyMap;
 var
-  LMapped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LMapped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LMapped := TFluentArray.From<Integer>([1, 2, 3, 4, 5]).Select<Integer>(
+  LMapped := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5]).Select<Integer>(
     function(Value: Integer): Integer
     begin
       Result := Value * 2;
@@ -625,12 +625,12 @@ end;
 procedure TArrayStaticTest.TestLazyGroupBy;
 var
   LGroups: IGroupByEnumerable<Integer, Integer>;
-  LEnum: IFluentEnumerator<IGrouping<Integer, Integer>>;
+  LEnum: ILQColligoEnumerator<IGrouping<Integer, Integer>>;
   LGroup: IGrouping<Integer, Integer>;
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
   LCount: Integer;
 begin
-  LGroups := TFluentArray.From<Integer>([1, 2, 3, 4, 5, 6]).GroupBy<Integer>(
+  LGroups := TLQColligoArray.From<Integer>([1, 2, 3, 4, 5, 6]).GroupBy<Integer>(
     function(Value: Integer): Integer
     begin
       Result := Value mod 2;
@@ -661,11 +661,11 @@ end;
 
 procedure TArrayStaticTest.TestLazyZip;
 var
-  LZipped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LZipped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
-  LZipped := TFluentArray.From<Integer>([1, 2, 3]).Zip<string, string>(
-    TFluentArray.From<string>(['A', 'B', 'C']),
+  LZipped := TLQColligoArray.From<Integer>([1, 2, 3]).Zip<string, string>(
+    TLQColligoArray.From<string>(['A', 'B', 'C']),
     function(Num: Integer; Letter: string): string
     begin
       Result := Num.ToString + Letter;
@@ -679,11 +679,11 @@ end;
 
 procedure TArrayStaticTest.TestLazyJoin;
 var
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
-  LJoined := TFluentArray.From<Integer>([1, 2, 3]).Join<string, Integer, string>(
-    TFluentArray.From<string>(['A1', 'B2', 'C3']),
+  LJoined := TLQColligoArray.From<Integer>([1, 2, 3]).Join<string, Integer, string>(
+    TLQColligoArray.From<string>(['A1', 'B2', 'C3']),
     function(Num: Integer): Integer
     begin
       Result := Num;
@@ -705,10 +705,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyMapLazy;
 var
-  LMapped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LMapped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
-  LMapped := TFluentArray.From<Integer>([1, 2, 3]).Select<string>(
+  LMapped := TLQColligoArray.From<Integer>([1, 2, 3]).Select<string>(
     function(Value: Integer): string
     begin
       Writeln('Mapping: ' + IntToStr(Value));
@@ -724,10 +724,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyOrderByLazy;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LOrdered := TFluentArray.From<Integer>([3, 1, 4, 1, 5]).Where(
+  LOrdered := TLQColligoArray.From<Integer>([3, 1, 4, 1, 5]).Where(
     function(Value: Integer): Boolean
     begin
       Writeln('Filtering: ' + IntToStr(Value));
@@ -748,10 +748,10 @@ end;
 
 procedure TArrayStaticTest.TestLazyDistinctLazy;
 var
-  LDistinct: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDistinct: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LDistinct := TFluentArray.From<Integer>([3, 1, 4, 1, 5, 3]).Where(
+  LDistinct := TLQColligoArray.From<Integer>([3, 1, 4, 1, 5, 3]).Where(
     function(Value: Integer): Boolean
     begin
       Writeln('Filtering: ' + IntToStr(Value));
@@ -767,11 +767,11 @@ end;
 
 procedure TArrayStaticTest.TestLazyZipLazy;
 var
-  LZipped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LZipped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
-  LZipped := TFluentArray.From<Integer>([1, 2, 3]).Zip<string, string>(
-    TFluentArray.From<string>(['A', 'B', 'C']),
+  LZipped := TLQColligoArray.From<Integer>([1, 2, 3]).Zip<string, string>(
+    TLQColligoArray.From<string>(['A', 'B', 'C']),
     function(Num: Integer; Letter: string): string
     begin
       Writeln('Zipping: ' + IntToStr(Num) + ' with ' + Letter);
@@ -787,11 +787,11 @@ end;
 
 procedure TArrayStaticTest.TestLazyJoinLazy;
 var
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
-  LJoined := TFluentArray.From<Integer>([1, 2, 3]).Join<string, Integer, string>(
-    TFluentArray.From<string>(['A1', 'B2', 'C3']),
+  LJoined := TLQColligoArray.From<Integer>([1, 2, 3]).Join<string, Integer, string>(
+    TLQColligoArray.From<string>(['A1', 'B2', 'C3']),
     function(Num: Integer): Integer
     begin
       Result := Num;

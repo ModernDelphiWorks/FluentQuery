@@ -25,23 +25,23 @@ uses
   LQColligo;
 
 type
-  TFluentSkipEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoSkipEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FCount: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; ACount: Integer);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; ACount: Integer);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentSkipEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoSkipEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCount: Integer;
     FSkipped: Integer;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; ACount: Integer);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; ACount: Integer);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -49,26 +49,26 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentSkipQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoSkipQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FSource: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
     FCount: Integer;
-    FProvider: IFluentQueryProvider<T>;
+    FProvider: ILQColligoQueryProvider<T>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const ACount: Integer;
-      const AProvider: IFluentQueryProvider<T> = nil);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const ACount: Integer;
+      const AProvider: ILQColligoQueryProvider<T> = nil);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   end;
 
-  TFluentSkipQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoSkipQueryableEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCount: Integer;
     FSkipped: Integer;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -78,34 +78,34 @@ type
 
 implementation
 
-{ TFluentSkipEnumerable<T> }
+{ TLQColligoSkipEnumerable<T> }
 
-constructor TFluentSkipEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; ACount: Integer);
+constructor TLQColligoSkipEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
 end;
 
-function TFluentSkipEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoSkipEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentSkipEnumerator<T>.Create(FSource.GetEnumerator, FCount);
+  Result := TLQColligoSkipEnumerator<T>.Create(FSource.GetEnumerator, FCount);
 end;
 
-{ TFluentSkipEnumerator<T> }
+{ TLQColligoSkipEnumerator<T> }
 
-constructor TFluentSkipEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; ACount: Integer);
+constructor TLQColligoSkipEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
   FSkipped := 0;
 end;
 
-function TFluentSkipEnumerator<T>.GetCurrent: T;
+function TLQColligoSkipEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSkipEnumerator<T>.MoveNext: Boolean;
+function TLQColligoSkipEnumerator<T>.MoveNext: Boolean;
 begin
   while FSkipped < FCount do
   begin
@@ -119,29 +119,29 @@ begin
     FCurrent := FSource.Current;
 end;
 
-procedure TFluentSkipEnumerator<T>.Reset;
+procedure TLQColligoSkipEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSkipped := 0;
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentSkipQueryable<T> }
+{ TLQColligoSkipQueryable<T> }
 
-constructor TFluentSkipQueryable<T>.Create(const ASource: IFluentQueryableBase<T>;
-  const ACount: Integer; const AProvider: IFluentQueryProvider<T>);
+constructor TLQColligoSkipQueryable<T>.Create(const ASource: ILQColligoQueryableBase<T>;
+  const ACount: Integer; const AProvider: ILQColligoQueryProvider<T>);
 begin
   FSource := ASource;
   FCount := ACount;
   FProvider := AProvider;
 end;
 
-function TFluentSkipQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoSkipQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentSkipQueryableEnumerator<T>.Create(FSource.GetEnumerator, FCount);
+  Result := TLQColligoSkipQueryableEnumerator<T>.Create(FSource.GetEnumerator, FCount);
 end;
 
-function TFluentSkipQueryable<T>.BuildQuery: string;
+function TLQColligoSkipQueryable<T>.BuildQuery: string;
 begin
   // Placeholder: traduzir Skip pra SQL (ex.: OFFSET)
   Result := FSource.BuildQuery + ' OFFSET ' + IntToStr(FCount) + ' ROWS';
@@ -149,9 +149,9 @@ begin
   // Nota: Alguns bancos (ex.: SQL Server < 2012) não suportam OFFSET nativo, pode precisar de ajustes via FProvider
 end;
 
-{ TFluentSkipQueryableEnumerator<T> }
+{ TLQColligoSkipQueryableEnumerator<T> }
 
-constructor TFluentSkipQueryableEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
+constructor TLQColligoSkipQueryableEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
   const ACount: Integer);
 begin
   FSource := ASource;
@@ -159,12 +159,12 @@ begin
   FSkipped := 0;
 end;
 
-function TFluentSkipQueryableEnumerator<T>.GetCurrent: T;
+function TLQColligoSkipQueryableEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSkipQueryableEnumerator<T>.MoveNext: Boolean;
+function TLQColligoSkipQueryableEnumerator<T>.MoveNext: Boolean;
 begin
   while FSkipped < FCount do
   begin
@@ -178,7 +178,7 @@ begin
     FCurrent := FSource.Current;
 end;
 
-procedure TFluentSkipQueryableEnumerator<T>.Reset;
+procedure TLQColligoSkipQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSkipped := 0;

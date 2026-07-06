@@ -28,24 +28,24 @@ uses
 type
   // LINQ Reverse: deferred, non-streaming — buffers the whole source on the
   // FIRST MoveNext (not at construction), then yields the elements in reverse.
-  TFluentReverseEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoReverseEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentReverseEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoReverseEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FBuffer: TList<T>;
     FIndex: Integer;
     FBuffered: Boolean;
     FCurrent: T;
     procedure EnsureBuffered;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>);
     destructor Destroy; override;
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -55,34 +55,34 @@ type
 
 implementation
 
-{ TFluentReverseEnumerable<T> }
+{ TLQColligoReverseEnumerable<T> }
 
-constructor TFluentReverseEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>);
+constructor TLQColligoReverseEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>);
 begin
   FSource := ASource;
 end;
 
-function TFluentReverseEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoReverseEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentReverseEnumerator<T>.Create(FSource.GetEnumerator);
+  Result := TLQColligoReverseEnumerator<T>.Create(FSource.GetEnumerator);
 end;
 
-{ TFluentReverseEnumerator<T> }
+{ TLQColligoReverseEnumerator<T> }
 
-constructor TFluentReverseEnumerator<T>.Create(const ASource: IFluentEnumerator<T>);
+constructor TLQColligoReverseEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>);
 begin
   FSource := ASource;
   FBuffer := TList<T>.Create;
   FBuffered := False;
 end;
 
-destructor TFluentReverseEnumerator<T>.Destroy;
+destructor TLQColligoReverseEnumerator<T>.Destroy;
 begin
   FBuffer.Free;
   inherited;
 end;
 
-procedure TFluentReverseEnumerator<T>.EnsureBuffered;
+procedure TLQColligoReverseEnumerator<T>.EnsureBuffered;
 begin
   if FBuffered then
     Exit;
@@ -92,12 +92,12 @@ begin
   FBuffered := True;
 end;
 
-function TFluentReverseEnumerator<T>.GetCurrent: T;
+function TLQColligoReverseEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentReverseEnumerator<T>.MoveNext: Boolean;
+function TLQColligoReverseEnumerator<T>.MoveNext: Boolean;
 begin
   EnsureBuffered;
   Dec(FIndex);
@@ -106,7 +106,7 @@ begin
     FCurrent := FBuffer[FIndex];
 end;
 
-procedure TFluentReverseEnumerator<T>.Reset;
+procedure TLQColligoReverseEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FBuffer.Clear;

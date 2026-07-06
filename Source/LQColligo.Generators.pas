@@ -24,16 +24,16 @@ uses
 type
   // LINQ Enumerable.Range: deferred/streaming — yields ACount consecutive
   // integers starting at AStart (AStart .. AStart+ACount-1). ACount=0 -> empty.
-  TFluentRangeEnumerable = class(TFluentEnumerableBase<Integer>)
+  TLQColligoRangeEnumerable = class(TLQColligoEnumerableBase<Integer>)
   private
     FStart: Integer;
     FCount: Integer;
   public
     constructor Create(const AStart, ACount: Integer);
-    function GetEnumerator: IFluentEnumerator<Integer>; override;
+    function GetEnumerator: ILQColligoEnumerator<Integer>; override;
   end;
 
-  TFluentRangeEnumerator = class(TInterfacedObject, IFluentEnumerator<Integer>)
+  TLQColligoRangeEnumerator = class(TInterfacedObject, ILQColligoEnumerator<Integer>)
   private
     FStart: Integer;
     FCount: Integer;
@@ -49,16 +49,16 @@ type
 
   // LINQ Enumerable.Repeat: deferred/streaming — yields the same element ACount
   // times. ACount=0 -> empty.
-  TFluentRepeatEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoRepeatEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
     FElement: T;
     FCount: Integer;
   public
     constructor Create(const AElement: T; const ACount: Integer);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentRepeatEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoRepeatEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
     FElement: T;
     FCount: Integer;
@@ -73,12 +73,12 @@ type
   end;
 
   // LINQ Enumerable.Empty: an empty sequence.
-  TFluentEmptyEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoEmptyEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   public
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentEmptyEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoEmptyEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
     FCurrent: T;
   public
@@ -90,74 +90,74 @@ type
 
 implementation
 
-{ TFluentRangeEnumerable }
+{ TLQColligoRangeEnumerable }
 
-constructor TFluentRangeEnumerable.Create(const AStart, ACount: Integer);
+constructor TLQColligoRangeEnumerable.Create(const AStart, ACount: Integer);
 begin
   FStart := AStart;
   FCount := ACount;
 end;
 
-function TFluentRangeEnumerable.GetEnumerator: IFluentEnumerator<Integer>;
+function TLQColligoRangeEnumerable.GetEnumerator: ILQColligoEnumerator<Integer>;
 begin
-  Result := TFluentRangeEnumerator.Create(FStart, FCount);
+  Result := TLQColligoRangeEnumerator.Create(FStart, FCount);
 end;
 
-{ TFluentRangeEnumerator }
+{ TLQColligoRangeEnumerator }
 
-constructor TFluentRangeEnumerator.Create(const AStart, ACount: Integer);
+constructor TLQColligoRangeEnumerator.Create(const AStart, ACount: Integer);
 begin
   FStart := AStart;
   FCount := ACount;
   FIndex := -1;
 end;
 
-function TFluentRangeEnumerator.GetCurrent: Integer;
+function TLQColligoRangeEnumerator.GetCurrent: Integer;
 begin
   Result := FCurrent;
 end;
 
-function TFluentRangeEnumerator.MoveNext: Boolean;
+function TLQColligoRangeEnumerator.MoveNext: Boolean;
 begin
   Inc(FIndex);
   Result := FIndex < FCount;
   if Result then
-    FCurrent := FStart + FIndex; // in range: validated by TFluentQuery.Range
+    FCurrent := FStart + FIndex; // in range: validated by TLQColligo.Range
 end;
 
-procedure TFluentRangeEnumerator.Reset;
+procedure TLQColligoRangeEnumerator.Reset;
 begin
   FIndex := -1;
 end;
 
-{ TFluentRepeatEnumerable<T> }
+{ TLQColligoRepeatEnumerable<T> }
 
-constructor TFluentRepeatEnumerable<T>.Create(const AElement: T; const ACount: Integer);
+constructor TLQColligoRepeatEnumerable<T>.Create(const AElement: T; const ACount: Integer);
 begin
   FElement := AElement;
   FCount := ACount;
 end;
 
-function TFluentRepeatEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoRepeatEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentRepeatEnumerator<T>.Create(FElement, FCount);
+  Result := TLQColligoRepeatEnumerator<T>.Create(FElement, FCount);
 end;
 
-{ TFluentRepeatEnumerator<T> }
+{ TLQColligoRepeatEnumerator<T> }
 
-constructor TFluentRepeatEnumerator<T>.Create(const AElement: T; const ACount: Integer);
+constructor TLQColligoRepeatEnumerator<T>.Create(const AElement: T; const ACount: Integer);
 begin
   FElement := AElement;
   FCount := ACount;
   FIndex := -1;
 end;
 
-function TFluentRepeatEnumerator<T>.GetCurrent: T;
+function TLQColligoRepeatEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentRepeatEnumerator<T>.MoveNext: Boolean;
+function TLQColligoRepeatEnumerator<T>.MoveNext: Boolean;
 begin
   Inc(FIndex);
   Result := FIndex < FCount;
@@ -165,31 +165,31 @@ begin
     FCurrent := FElement;
 end;
 
-procedure TFluentRepeatEnumerator<T>.Reset;
+procedure TLQColligoRepeatEnumerator<T>.Reset;
 begin
   FIndex := -1;
 end;
 
-{ TFluentEmptyEnumerable<T> }
+{ TLQColligoEmptyEnumerable<T> }
 
-function TFluentEmptyEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoEmptyEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentEmptyEnumerator<T>.Create;
+  Result := TLQColligoEmptyEnumerator<T>.Create;
 end;
 
-{ TFluentEmptyEnumerator<T> }
+{ TLQColligoEmptyEnumerator<T> }
 
-function TFluentEmptyEnumerator<T>.GetCurrent: T;
+function TLQColligoEmptyEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentEmptyEnumerator<T>.MoveNext: Boolean;
+function TLQColligoEmptyEnumerator<T>.MoveNext: Boolean;
 begin
   Result := False;
 end;
 
-procedure TFluentEmptyEnumerator<T>.Reset;
+procedure TLQColligoEmptyEnumerator<T>.Reset;
 begin
   // nothing to reset
 end;

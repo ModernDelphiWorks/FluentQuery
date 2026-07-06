@@ -23,24 +23,24 @@ uses
 
 type
   // Ordered enumerable carrying the full chain of comparison criteria (primary
-  // first). Implements IFluentOrderedEnumerable<T> so ThenBy can append a
+  // first). Implements ILQColligoOrderedEnumerable<T> so ThenBy can append a
   // subordinate criterion producing a new ordered enumerable over the SAME
   // source. Serves OrderBy/OrderByDescending/Order/OrderDescending.
-  TFluentOrderByEnumerable<T> = class(TFluentEnumerableBase<T>, IFluentOrderedEnumerable<T>)
+  TLQColligoOrderByEnumerable<T> = class(TLQColligoEnumerableBase<T>, ILQColligoOrderedEnumerable<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FComparers: TArray<TFunc<T, T, Integer>>;
-    constructor CreateChain(const ASource: IFluentEnumerableBase<T>;
+    constructor CreateChain(const ASource: ILQColligoEnumerableBase<T>;
       const AComparers: TArray<TFunc<T, T, Integer>>);
   public
     // Primary ordering: a single comparison criterion. ThenByAppend extends the chain.
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
       const AComparer: TFunc<T, T, Integer>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
-    function ThenByAppend(const AComparer: TFunc<T, T, Integer>): IFluentOrderedEnumerable<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
+    function ThenByAppend(const AComparer: TFunc<T, T, Integer>): ILQColligoOrderedEnumerable<T>;
   end;
 
-  TFluentOrderByEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoOrderByEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private type
     TIndexedItem = record
       Value: T;
@@ -50,7 +50,7 @@ type
     FItems: TArray<T>;
     FIndex: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
       const AComparers: TArray<TFunc<T, T, Integer>>);
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -64,9 +64,9 @@ uses
   Generics.Collections,
   Generics.Defaults;
 
-{ TFluentOrderByEnumerable<T> }
+{ TLQColligoOrderByEnumerable<T> }
 
-constructor TFluentOrderByEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoOrderByEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>;
   const AComparer: TFunc<T, T, Integer>);
 begin
   FSource := ASource;
@@ -74,20 +74,20 @@ begin
   FComparers[0] := AComparer;
 end;
 
-constructor TFluentOrderByEnumerable<T>.CreateChain(const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoOrderByEnumerable<T>.CreateChain(const ASource: ILQColligoEnumerableBase<T>;
   const AComparers: TArray<TFunc<T, T, Integer>>);
 begin
   FSource := ASource;
   FComparers := AComparers;
 end;
 
-function TFluentOrderByEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoOrderByEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentOrderByEnumerator<T>.Create(FSource.GetEnumerator, FComparers);
+  Result := TLQColligoOrderByEnumerator<T>.Create(FSource.GetEnumerator, FComparers);
 end;
 
-function TFluentOrderByEnumerable<T>.ThenByAppend(
-  const AComparer: TFunc<T, T, Integer>): IFluentOrderedEnumerable<T>;
+function TLQColligoOrderByEnumerable<T>.ThenByAppend(
+  const AComparer: TFunc<T, T, Integer>): ILQColligoOrderedEnumerable<T>;
 var
   LNew: TArray<TFunc<T, T, Integer>>;
   LFor: Integer;
@@ -96,12 +96,12 @@ begin
   for LFor := 0 to High(FComparers) do
     LNew[LFor] := FComparers[LFor];
   LNew[High(LNew)] := AComparer;
-  Result := TFluentOrderByEnumerable<T>.CreateChain(FSource, LNew);
+  Result := TLQColligoOrderByEnumerable<T>.CreateChain(FSource, LNew);
 end;
 
-{ TFluentOrderByEnumerator<T> }
+{ TLQColligoOrderByEnumerator<T> }
 
-constructor TFluentOrderByEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
+constructor TLQColligoOrderByEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
   const AComparers: TArray<TFunc<T, T, Integer>>);
 var
   LList: TList<TIndexedItem>;
@@ -150,18 +150,18 @@ begin
   FIndex := -1;
 end;
 
-function TFluentOrderByEnumerator<T>.GetCurrent: T;
+function TLQColligoOrderByEnumerator<T>.GetCurrent: T;
 begin
   Result := FItems[FIndex];
 end;
 
-function TFluentOrderByEnumerator<T>.MoveNext: Boolean;
+function TLQColligoOrderByEnumerator<T>.MoveNext: Boolean;
 begin
   Inc(FIndex);
   Result := FIndex < Length(FItems);
 end;
 
-procedure TFluentOrderByEnumerator<T>.Reset;
+procedure TLQColligoOrderByEnumerator<T>.Reset;
 begin
   FIndex := -1;
 end;

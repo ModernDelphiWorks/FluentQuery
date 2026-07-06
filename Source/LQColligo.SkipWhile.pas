@@ -22,23 +22,23 @@ uses
   LQColligo;
 
 type
-  TFluentSkipWhileEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoSkipWhileEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FPredicate: TFunc<T, Boolean>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentSkipWhileEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoSkipWhileEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FPredicate: TFunc<T, Boolean>;
     FSkipped: Boolean;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const APredicate: TFunc<T, Boolean>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const APredicate: TFunc<T, Boolean>);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -47,23 +47,23 @@ type
 
 implementation
 
-{ TFluentSkipWhileEnumerable<T> }
+{ TLQColligoSkipWhileEnumerable<T> }
 
-constructor TFluentSkipWhileEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoSkipWhileEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>;
   const APredicate: TFunc<T, Boolean>);
 begin
   FSource := ASource;
   FPredicate := APredicate;
 end;
 
-function TFluentSkipWhileEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoSkipWhileEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentSkipWhileEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
+  Result := TLQColligoSkipWhileEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
 end;
 
-{ TFluentSkipWhileEnumerator<T> }
+{ TLQColligoSkipWhileEnumerator<T> }
 
-constructor TFluentSkipWhileEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
+constructor TLQColligoSkipWhileEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
   const APredicate: TFunc<T, Boolean>);
 begin
   FSource := ASource;
@@ -71,12 +71,12 @@ begin
   FSkipped := False;
 end;
 
-function TFluentSkipWhileEnumerator<T>.GetCurrent: T;
+function TLQColligoSkipWhileEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSkipWhileEnumerator<T>.MoveNext: Boolean;
+function TLQColligoSkipWhileEnumerator<T>.MoveNext: Boolean;
 begin
   if not FSkipped then
   begin
@@ -97,7 +97,7 @@ begin
     FCurrent := FSource.Current;
 end;
 
-procedure TFluentSkipWhileEnumerator<T>.Reset;
+procedure TLQColligoSkipWhileEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSkipped := False;
