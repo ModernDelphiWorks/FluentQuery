@@ -453,6 +453,9 @@ uses
   FluentQuery.Union,
   FluentQuery.Intersect,
   FluentQuery.Concat,
+  FluentQuery.Append,
+  FluentQuery.Prepend,
+  FluentQuery.DefaultIfEmpty,
   FluentQuery.Order,
 //  Fluent.Chunk,
   FluentQuery.Cast,
@@ -2382,22 +2385,13 @@ begin
 end;
 
 function IFluentEnumerable<T>.Append(const AElement: T): IFluentEnumerable<T>;
-var
-  LList: TList<T>;
-  LEnum: IFluentEnumerator<T>;
 begin
-  Result := Default(IFluentEnumerable<T>);
-  LList := TList<T>.Create;
-  try
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-      LList.Add(LEnum.Current);
-    LList.Add(AElement);
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred/streaming: nothing is enumerated until the result is iterated.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentAppendEnumerable<T>.Create(FEnumerator, AElement),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.Cast<TResult>: IFluentEnumerable<TResult>;
@@ -2419,51 +2413,18 @@ end;
 //end;
 
 function IFluentEnumerable<T>.DefaultIfEmpty: IFluentEnumerable<T>;
-var
-  LList: TList<T>;
-  LEnum: IFluentEnumerator<T>;
 begin
-  Result := Default(IFluentEnumerable<T>);
-  LList := TList<T>.Create;
-  try
-    LEnum := GetEnumerator;
-    if LEnum.MoveNext then
-    begin
-      repeat
-        LList.Add(LEnum.Current);
-      until not LEnum.MoveNext;
-    end
-    else
-      LList.Add(Default(T));
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  Result := DefaultIfEmpty(Default(T));
 end;
 
 function IFluentEnumerable<T>.DefaultIfEmpty(const ADefaultValue: T): IFluentEnumerable<T>;
-var
-  LList: TList<T>;
-  LEnum: IFluentEnumerator<T>;
 begin
-  Result := Default(IFluentEnumerable<T>);
-  LList := TList<T>.Create;
-  try
-    LEnum := GetEnumerator;
-    if LEnum.MoveNext then
-    begin
-      repeat
-        LList.Add(LEnum.Current);
-      until not LEnum.MoveNext;
-    end
-    else
-      LList.Add(ADefaultValue);
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred/streaming: nothing is enumerated until the result is iterated.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentDefaultIfEmptyEnumerable<T>.Create(FEnumerator, ADefaultValue),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
@@ -2540,22 +2501,13 @@ begin
 end;
 
 function IFluentEnumerable<T>.Prepend(const AElement: T): IFluentEnumerable<T>;
-var
-  LList: TList<T>;
-  LEnum: IFluentEnumerator<T>;
 begin
-  Result := Default(IFluentEnumerable<T>);
-  LList := TList<T>.Create;
-  try
-    LList.Add(AElement);
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-      LList.Add(LEnum.Current);
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred/streaming: nothing is enumerated until the result is iterated.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentPrependEnumerable<T>.Create(FEnumerator, AElement),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.Reverse: IFluentEnumerable<T>;
