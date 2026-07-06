@@ -15,7 +15,7 @@ uses
   DUnitX.Loggers.Xml.NUnit,
   {$ENDIF }
   DUnitX.TestFramework,
-  UTestFluentQuery.CQL in 'UTestFluentQuery.CQL.pas',
+  UTestFluentQuery.FluentSQL in 'UTestFluentQuery.FluentSQL.pas',
   FluentQuery.Adapters in '..\Source\FluentQuery.Adapters.pas',
   FluentQuery.Collections in '..\Source\FluentQuery.Collections.pas',
   FluentQuery.Core in '..\Source\FluentQuery.Core.pas',

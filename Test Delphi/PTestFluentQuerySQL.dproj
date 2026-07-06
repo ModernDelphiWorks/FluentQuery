@@ -101,7 +101,7 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="UTestFluentQuery.CQL.pas"/>
+        <DCCReference Include="UTestFluentQuery.FluentSQL.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Adapters.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Collections.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Core.pas"/>

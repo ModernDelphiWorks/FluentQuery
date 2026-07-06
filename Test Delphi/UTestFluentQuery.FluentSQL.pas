@@ -1,4 +1,4 @@
-﻿unit UTestFluentQuery.CQL;
+﻿unit UTestFluentQuery.FluentSQL;
 
 interface
 
@@ -38,7 +38,7 @@ type
   end;
 
   [TestFixture]
-  TTestFluentCQLFirebird = class
+  TTestFluentSQLFirebird = class
   private
     FQueryable: IFluentQueryable<String>;
     FFDConnection: TFDConnection;
@@ -151,12 +151,12 @@ uses
   FluentQuery.Collections,
   FluentQuery.Expression;
 
-function TTestFluentCQLFirebird.GetSQL: string;
+function TTestFluentSQLFirebird.GetSQL: string;
 begin
   Result := FQueryable.AsString;
 end;
 
-procedure TTestFluentCQLFirebird.Setup;
+procedure TTestFluentSQLFirebird.Setup;
 begin
   FFDConnection := TFDConnection.Create(nil);
   FFDConnection.DriverName := 'FB';
@@ -179,19 +179,19 @@ begin
     end);
 end;
 
-procedure TTestFluentCQLFirebird.TearDown;
+procedure TTestFluentSQLFirebird.TearDown;
 begin
   FFDConnection.Close;
   FFDConnection.Free;
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectAllFromClientes;
+procedure TTestFluentSQLFirebird.TestSelectAllFromClientes;
 begin
   FQueryable.Select('*').From('CLIENTES');
   Assert.AreEqual('SELECT * FROM CLIENTES', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectWhereNome;
+procedure TTestFluentSQLFirebird.TestSelectWhereNome;
 var
   LCliente: TCliente;
   FoundAna, FoundBruno, FoundClara: Boolean;
@@ -241,7 +241,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestMinValue;
+procedure TTestFluentSQLFirebird.TestMinValue;
 var
   LQueryable: IFluentQueryable<Integer>;
   LResult: String;
@@ -258,7 +258,7 @@ begin
   Assert.AreEqual('SELECT MIN(ID) FROM CLIENTES', LResult, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestMaxValue;
+procedure TTestFluentSQLFirebird.TestMaxValue;
 var
   ProviderInt: IFluentQueryable<Integer>;
 begin
@@ -273,7 +273,7 @@ begin
   Assert.AreEqual('SELECT MAX(IDADE) FROM CLIENTES', ProviderInt.AsString, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestCountValue;
+procedure TTestFluentSQLFirebird.TestCountValue;
 var
   LQueryable: IFluentQueryable<Integer>;
 begin
@@ -288,69 +288,69 @@ begin
   Assert.AreEqual('SELECT COUNT(ID) FROM CLIENTES', LQueryable.AsString, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestFromBeforeSelect;
+procedure TTestFluentSQLFirebird.TestFromBeforeSelect;
 begin
   FQueryable.From('CLIENTES').Select('*');
 
   Assert.AreEqual('SELECT * FROM CLIENTES', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectBeforeWhere;
+procedure TTestFluentSQLFirebird.TestSelectBeforeWhere;
 begin
   FQueryable.Select('*').Where('NOME = ''Ana''').From('CLIENTES');
 
   Assert.AreEqual('SELECT * FROM CLIENTES WHERE NOME = ''Ana''', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestInnerJoin;
+procedure TTestFluentSQLFirebird.TestInnerJoin;
 begin
   FQueryable.Select('*').From('CLIENTES').InnerJoin('PEDIDOS', 'P').OnCond('CLIENTES.ID = P.ID_CLIENTE');
 
   Assert.AreEqual('SELECT * FROM CLIENTES INNER JOIN PEDIDOS AS P ON CLIENTES.ID = P.ID_CLIENTE', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestGroupBy;
+procedure TTestFluentSQLFirebird.TestGroupBy;
 begin
   FQueryable.Select('COUNT(*)').From('PEDIDOS').GroupBy('CLIENTE_ID');
 
   Assert.AreEqual('SELECT COUNT(*) FROM PEDIDOS GROUP BY CLIENTE_ID', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestOrderBy;
+procedure TTestFluentSQLFirebird.TestOrderBy;
 begin
   FQueryable.From('CLIENTES').Select('*').OrderBy('NOME');
 
   Assert.AreEqual('SELECT * FROM CLIENTES ORDER BY NOME ASC', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestWhereJoinSelect;
+procedure TTestFluentSQLFirebird.TestWhereJoinSelect;
 begin
   FQueryable.Where('NOME > ''B''').InnerJoin('PEDIDOS', 'P').OnCond('CLIENTES.ID = P.ID_CLIENTE').Select('*').From('CLIENTES');
 
   Assert.AreEqual('SELECT * FROM CLIENTES INNER JOIN PEDIDOS AS P ON CLIENTES.ID = P.ID_CLIENTE WHERE NOME > ''B''', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestWhereCompositeConditions;
+procedure TTestFluentSQLFirebird.TestWhereCompositeConditions;
 begin
   FQueryable.Select('*').From('CLIENTES').Where('ID > 10 AND NOME < ''Z''');
   Assert.AreEqual('SELECT * FROM CLIENTES WHERE ID > 10 AND NOME < ''Z''', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectSpecificColumns;
+procedure TTestFluentSQLFirebird.TestSelectSpecificColumns;
 begin
   FQueryable.Select('NOME, IDADE').From('CLIENTES');
 
   Assert.AreEqual('SELECT NOME, IDADE FROM CLIENTES', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestTableAlias;
+procedure TTestFluentSQLFirebird.TestTableAlias;
 begin
   FQueryable.Select('*').From('CLIENTES', 'C');
 
   Assert.AreEqual('SELECT * FROM CLIENTES AS C', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestMultipleJoins;
+procedure TTestFluentSQLFirebird.TestMultipleJoins;
 begin
   FQueryable.Select('*').From('CLIENTES')
     .InnerJoin('PEDIDOS', 'P').OnCond('CLIENTES.ID = P.ID_CLIENTE')
@@ -359,14 +359,14 @@ begin
   Assert.AreEqual('SELECT * FROM CLIENTES INNER JOIN PEDIDOS AS P ON CLIENTES.ID = P.ID_CLIENTE INNER JOIN ITENS AS I ON P.ID = I.ID_PEDIDO', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestWhereWithLike;
+procedure TTestFluentSQLFirebird.TestWhereWithLike;
 begin
   FQueryable.Select('*').From('CLIENTES').Where('NOME LIKE ''A%''');
 
   Assert.AreEqual('SELECT * FROM CLIENTES WHERE NOME LIKE ''A%''', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestWhereWithOrAndParentheses;
+procedure TTestFluentSQLFirebird.TestWhereWithOrAndParentheses;
 begin
   FQueryable.Select('*').From('CLIENTES')
     .Where('NOME > ''A'' OR (IDADE < 30 AND STATUS = ''ATIVO'')');
@@ -374,14 +374,14 @@ begin
   Assert.AreEqual('SELECT * FROM CLIENTES WHERE NOME > ''A'' OR (IDADE < 30 AND STATUS = ''ATIVO'')', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectWithAliasColumns;
+procedure TTestFluentSQLFirebird.TestSelectWithAliasColumns;
 begin
   FQueryable.Select('NOME AS NomeCliente, IDADE AS IdadeCliente').From('CLIENTES');
 
   Assert.AreEqual('SELECT NOME AS NomeCliente, IDADE AS IdadeCliente FROM CLIENTES', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestJoinWithMultipleConditions;
+procedure TTestFluentSQLFirebird.TestJoinWithMultipleConditions;
 begin
   FQueryable.Select('*').From('CLIENTES')
     .InnerJoin('PEDIDOS', 'P').OnCond('CLIENTES.ID = P.ID_CLIENTE AND CLIENTES.STATUS = P.STATUS');
@@ -389,21 +389,21 @@ begin
   Assert.AreEqual('SELECT * FROM CLIENTES INNER JOIN PEDIDOS AS P ON CLIENTES.ID = P.ID_CLIENTE AND CLIENTES.STATUS = P.STATUS', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestEmptyWhereClause;
+procedure TTestFluentSQLFirebird.TestEmptyWhereClause;
 begin
   FQueryable.Select('*').From('CLIENTES').Where('');
 
   Assert.AreEqual('SELECT * FROM CLIENTES', GetSQL, 'SQL gerado incorreto (WHERE vazio deve ser ignorado)');
 end;
 
-procedure TTestFluentCQLFirebird.TestOrderByMultipleColumns;
+procedure TTestFluentSQLFirebird.TestOrderByMultipleColumns;
 begin
   FQueryable.Select.From('PEDIDOS').OrderBy('DATA, VALOR');
 
   Assert.AreEqual('SELECT * FROM PEDIDOS ORDER BY DATA, VALOR ASC', GetSQL, 'SQL gerado incorreto');
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectWhereNomeForTuple;
+procedure TTestFluentSQLFirebird.TestSelectWhereNomeForTuple;
 var
   LTuple: TTuple<string>;
   FoundAna, FoundBruno, FoundClara: Boolean;
@@ -447,7 +447,7 @@ begin
   Assert.AreEqual(30, LTuple.Get<Integer>('IDADE'), 'Idade incorrect');
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectSingleFieldInvalidType;
+procedure TTestFluentSQLFirebird.TestSelectSingleFieldInvalidType;
 var
   LQueryable: IFluentQueryable<Integer>;
   LResults: IFluentList<Integer>;
@@ -471,7 +471,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectSingleFieldString;
+procedure TTestFluentSQLFirebird.TestSelectSingleFieldString;
 var
   LQueryable: IFluentQueryable<string>;
   LResults: IFluentList<string>;
@@ -506,7 +506,7 @@ begin
   Assert.IsTrue(FoundClara, 'Nome ''Clara'' not found');
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectMultipleFieldsInvalidType;
+procedure TTestFluentSQLFirebird.TestSelectMultipleFieldsInvalidType;
 var
   LQueryable: IFluentQueryable<Integer>;
   LResults: IFluentList<Integer>;
@@ -531,7 +531,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestJoinSimple;
+procedure TTestFluentSQLFirebird.TestJoinSimple;
 type
   TCustomer = record
     ID: Integer;
@@ -598,7 +598,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestGroupBySimple;
+procedure TTestFluentSQLFirebird.TestGroupBySimple;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LTempList: IFluentList<TTuple<string>>;
@@ -649,7 +649,7 @@ begin
   Assert.AreEqual(1, LGroup.Items.First.Get<Integer>('ID_CLIENTE'), 'ID_CLIENTE inválido. Esperado: 1');
 end;
 
-//procedure TTestFluentCQLFirebird.TestGroupByOrdersByCustomerId;
+//procedure TTestFluentSQLFirebird.TestGroupByOrdersByCustomerId;
 //var
 //  LQuery: IFluentQueryable<TTuple<string>>;
 //  LGroups: IFluentList<IGrouping<Integer, TTuple<string>>>;
@@ -709,7 +709,7 @@ end;
 //  end;
 //end;
 
-procedure TTestFluentCQLFirebird.TestCountWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestCountWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LCount: Integer;
@@ -746,7 +746,7 @@ begin
   Assert.AreEqual(1, LCount, 'Contagem incorreta. Esperado: 1 usuários com IDADE > 25 e NOME = ''Bruno''');
 end;
 
-procedure TTestFluentCQLFirebird.TestAllWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestAllWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: Boolean;
@@ -803,7 +803,7 @@ begin
   Assert.IsTrue(LResult, 'Resultado incorreto. Esperado: True, pois todos os registros têm IDADE > 0');
 end;
 
-procedure TTestFluentCQLFirebird.TestFirstWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestFirstWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: TTuple<string>;
@@ -841,7 +841,7 @@ begin
   Assert.IsTrue(LResult['IDADE'].AsInteger > 25, 'Resultado incorreto. Esperado: IDADE > 25');
 end;
 
-procedure TTestFluentCQLFirebird.TestFirstOrDefaultWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestFirstOrDefaultWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: TTuple<string>;
@@ -897,7 +897,7 @@ begin
   );
 end;
 
-procedure TTestFluentCQLFirebird.TestTakeWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestTakeWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: IFluentList<TTuple<string>>;
@@ -934,7 +934,7 @@ begin
     Assert.IsTrue(LItem['IDADE'].AsInteger > 20, 'Resultado incorreto. Esperado: IDADE > 20');
 end;
 
-procedure TTestFluentCQLFirebird.TestLastWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestLastWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: TTuple<string>;
@@ -972,7 +972,7 @@ begin
   Assert.IsTrue(LResult['IDADE'].AsInteger > 25, 'Resultado incorreto. Esperado: IDADE > 25');
 end;
 
-procedure TTestFluentCQLFirebird.TestLastOrDefaultWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestLastOrDefaultWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: TTuple<string>;
@@ -1028,7 +1028,7 @@ begin
   );
 end;
 
-procedure TTestFluentCQLFirebird.TestSingleWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestSingleWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: TTuple<string>;
@@ -1092,7 +1092,7 @@ begin
   );
 end;
 
-procedure TTestFluentCQLFirebird.TestLongCountWithLambdaExpression;
+procedure TTestFluentSQLFirebird.TestLongCountWithLambdaExpression;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LCount: Int64;
@@ -1148,7 +1148,7 @@ begin
   Assert.AreEqual(Int64(0), LCount, 'Contagem incorreta. Esperado: 0 registros com IDADE > 100');
 end;
 
-procedure TTestFluentCQLFirebird.TestGroupByWithSelect;
+procedure TTestFluentSQLFirebird.TestGroupByWithSelect;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: IFluentList<IGrouping<Integer, TTuple<string>>>;
@@ -1169,7 +1169,7 @@ begin
       Assert.IsTrue(LItem['CNT'].AsInteger >= 0, 'Contagem CNT deve ser não-negativa');
 end;
 
-procedure TTestFluentCQLFirebird.TestOrderByDescWithTQE;
+procedure TTestFluentSQLFirebird.TestOrderByDescWithTQE;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: IFluentList<TTuple<string>>;
@@ -1191,7 +1191,7 @@ begin
     Assert.IsTrue(LResult[I-1]['NOME'].AsString >= LResult[I]['NOME'].AsString, 'Resultados não ordenados por NOME DESC');
 end;
 
-procedure TTestFluentCQLFirebird.TestThenByWithTQE;
+procedure TTestFluentSQLFirebird.TestThenByWithTQE;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: IFluentList<TTuple<string>>;
@@ -1221,7 +1221,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestThenByDescendingWithTQE;
+procedure TTestFluentSQLFirebird.TestThenByDescendingWithTQE;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: IFluentList<TTuple<string>>;
@@ -1251,7 +1251,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestSelectWithTQE;
+procedure TTestFluentSQLFirebird.TestSelectWithTQE;
 var
   LQuery: IFluentQueryable<TTuple<string>>;
   LResult: IFluentList<TTuple<string>>;
@@ -1277,7 +1277,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestMinFirebird;
+procedure TTestFluentSQLFirebird.TestMinFirebird;
 type
   TCustomer = record
     ID: Integer;
@@ -1318,7 +1318,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestMinByFirebird;
+procedure TTestFluentSQLFirebird.TestMinByFirebird;
 type
   TCustomer = record
     ID: Integer;
@@ -1372,7 +1372,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestSumFirebird;
+procedure TTestFluentSQLFirebird.TestSumFirebird;
 type
   TCustomer = record
     ID: Integer;
@@ -1441,7 +1441,7 @@ begin
   end;
 end;
 
-procedure TTestFluentCQLFirebird.TestAverageFirebird;
+procedure TTestFluentSQLFirebird.TestAverageFirebird;
 type
   TCustomer = record
     ID: Integer;
@@ -1511,6 +1511,6 @@ begin
 end;
 
 initialization
-  TDUnitX.RegisterTestFixture(TTestFluentCQLFirebird);
+  TDUnitX.RegisterTestFixture(TTestFluentSQLFirebird);
 
 end.
