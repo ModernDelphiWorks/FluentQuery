@@ -531,7 +531,7 @@ begin
       Writeln('Mapping: ' + IntToStr(Value));
       Result := Value.ToString + 'x';
     end);
-  Writeln('Map chamado, mas ainda não iterado');
+  Writeln('Map chamado, mas ainda nï¿½o iterado');
   LArray := LMapped.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Mapped array should have 3 elements');
   Assert.AreEqual('1x', LArray[0], 'First element should be "1x"');
@@ -556,7 +556,7 @@ begin
       Writeln('Ordering: ' + IntToStr(A) + ' vs ' + IntToStr(B));
       Result := A - B;
     end);
-  Writeln('OrderBy chamado, mas ainda não iterado');
+  Writeln('OrderBy chamado, mas ainda nï¿½o iterado');
   LArray := LOrdered.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Ordered array should have 3 elements');
   Assert.AreEqual(3, LArray[0], 'First element should be 3');
@@ -576,7 +576,7 @@ begin
       Writeln('Filtering: ' + IntToStr(Value));
       Result := Value > 2;
     end).Distinct;
-  Writeln('Distinct chamado, mas ainda não iterado');
+  Writeln('Distinct chamado, mas ainda nï¿½o iterado');
   LArray := LDistinct.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Distinct array should have 3 elements');
   Assert.AreEqual(3, LArray[0], 'First element should be 3');
@@ -599,7 +599,7 @@ begin
       Writeln('Zipping: ' + IntToStr(Num) + ' with ' + Letter);
       Result := Num.ToString + Letter;
     end);
-  Writeln('Zip chamado, mas ainda não iterado');
+  Writeln('Zip chamado, mas ainda nï¿½o iterado');
   LArray := LZipped.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Zipped array should have 3 elements');
   Assert.AreEqual('1A', LArray[0], 'First element should be "1A"');
@@ -630,7 +630,7 @@ begin
       Writeln('Joining: ' + IntToStr(Num) + ' with ' + Str);
       Result := Str + '-' + Num.ToString;
     end);
-  Writeln('Join chamado, mas ainda não iterado');
+  Writeln('Join chamado, mas ainda nï¿½o iterado');
   LArray := LJoined.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Joined array should have 3 elements');
   Assert.AreEqual('A1-1', LArray[0], 'First element should be "A1-1"');
@@ -645,15 +645,8 @@ var
   LArray: IFluentArray<Integer>;
 begin
   LArrayVar := TFluentArray<Variant>.Create([1, 'two', 3, 'four', 5]);
-  LFiltered := LArrayVar.AsEnumerable.OfType<Integer>(
-    function(Value: Variant): Boolean
-    begin
-      Result := VarIsNumeric(Value);
-    end,
-    function(Value: Variant): Integer
-    begin
-      Result := Integer(Value);
-    end);
+  // OfType<Integer>() with no arguments filters by runtime type.
+  LFiltered := LArrayVar.AsEnumerable.OfType<Integer>;
   LArray := LFiltered.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Filtered array should have 3 integers');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');

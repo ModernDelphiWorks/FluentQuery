@@ -248,7 +248,7 @@ begin
         Result := Pair.Value;
       end);
 
-    Assert.AreEqual(3, LResult.Count, 'Deveria ter 3 elementos após o Map');
+    Assert.AreEqual(3, LResult.Count, 'Deveria ter 3 elementos apï¿½s o Map');
     Assert.AreEqual('OneMapped', LResult[1], 'Deveria ter mapeado "One" para "OneMapped"');
     Assert.AreEqual('TwoMapped', LResult[2], 'Deveria ter mapeado "Two" para "TwoMapped"');
     Assert.AreEqual('ThreeMapped', LResult[3], 'Deveria ter mapeado "Three" para "ThreeMapped"');
@@ -286,11 +286,11 @@ begin
         Result := Pair.Value;
       end);
 
-    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos após o Filter');
+    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos apï¿½s o Filter');
     Assert.IsTrue(LResult.ContainsKey(1), 'Deveria conter a chave 1 (One)');
     Assert.IsTrue(LResult.ContainsKey(2), 'Deveria conter a chave 2 (Two)');
-    Assert.IsFalse(LResult.ContainsKey(3), 'Não deveria conter a chave 3 (Three)');
-    Assert.IsFalse(LResult.ContainsKey(4), 'Não deveria conter a chave 4 (Four)');
+    Assert.IsFalse(LResult.ContainsKey(3), 'Nï¿½o deveria conter a chave 3 (Three)');
+    Assert.IsFalse(LResult.ContainsKey(4), 'Nï¿½o deveria conter a chave 4 (Four)');
   finally
     LDictionary.Free;
     LResult.Free;
@@ -356,11 +356,11 @@ begin
         Result := Pair.Value;
       end);
 
-    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos após o Take');
+    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos apï¿½s o Take');
     Assert.IsTrue(LResult.ContainsKey(1), 'Deveria conter a chave 1 (One)');
     Assert.IsTrue(LResult.ContainsKey(2), 'Deveria conter a chave 2 (Two)');
-    Assert.IsFalse(LResult.ContainsKey(3), 'Não deveria conter a chave 3');
-    Assert.IsFalse(LResult.ContainsKey(4), 'Não deveria conter a chave 4');
+    Assert.IsFalse(LResult.ContainsKey(3), 'Nï¿½o deveria conter a chave 3');
+    Assert.IsFalse(LResult.ContainsKey(4), 'Nï¿½o deveria conter a chave 4');
   finally
     LDictionary.Free;
     LResult.Free;
@@ -427,9 +427,9 @@ begin
         Result := Pair.Value;
       end);
 
-    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos após o Skip');
-    Assert.IsFalse(LResult.ContainsKey(1), 'Não deveria conter a chave 1');
-    Assert.IsFalse(LResult.ContainsKey(2), 'Não deveria conter a chave 2');
+    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos apï¿½s o Skip');
+    Assert.IsFalse(LResult.ContainsKey(1), 'Nï¿½o deveria conter a chave 1');
+    Assert.IsFalse(LResult.ContainsKey(2), 'Nï¿½o deveria conter a chave 2');
     Assert.IsTrue(LResult.ContainsKey(3), 'Deveria conter a chave 3 (Three)');
     Assert.IsTrue(LResult.ContainsKey(4), 'Deveria conter a chave 4 (Four)');
   finally
@@ -473,7 +473,7 @@ begin
         Result := Pair.Value;
       end);
 
-    Assert.AreEqual(3, LResult.Count, 'Deveria ter 3 elementos após o Zip');
+    Assert.AreEqual(3, LResult.Count, 'Deveria ter 3 elementos apï¿½s o Zip');
     Assert.AreEqual('One | Uno', LResult[1], 'Deveria combinar "One | Uno"');
     Assert.AreEqual('Two | Dos', LResult[2], 'Deveria combinar "Two | Dos"');
     Assert.AreEqual('Three | Tres', LResult[3], 'Deveria combinar "Three | Tres"');
@@ -525,7 +525,7 @@ begin
         Result := Pair.Value;
       end);
 
-    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos após o Join');
+    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos apï¿½s o Join');
     Assert.AreEqual('One | Uno', LResult[1], 'Deveria combinar "One | Uno"');
     Assert.AreEqual('Two | Dos', LResult[2], 'Deveria combinar "Two | Dos"');
   finally
@@ -549,7 +549,7 @@ begin
 
     LTargetDict.AddRange(LSourceDict);
 
-    Assert.AreEqual(3, LTargetDict.Count, 'Deveria conter 3 elementos após AddRange');
+    Assert.AreEqual(3, LTargetDict.Count, 'Deveria conter 3 elementos apï¿½s AddRange');
     Assert.AreEqual('One', LTargetDict[1], 'Deveria conter o valor "One" para a chave 1');
     Assert.AreEqual('Two', LTargetDict[2], 'Deveria conter o valor "Two" para a chave 2');
     Assert.AreEqual('Three', LTargetDict[3], 'Deveria conter o valor "Three" para a chave 3');
@@ -587,7 +587,7 @@ begin
         Result := Pair.Value;
       end);
 
-    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos após o Distinct');
+    Assert.AreEqual(2, LResult.Count, 'Deveria ter 2 elementos apï¿½s o Distinct');
     Assert.IsTrue(LResult.ContainsValue('One'), 'Deveria conter "One"');
     Assert.IsTrue(LResult.ContainsValue('Two'), 'Deveria conter "Two"');
   finally
@@ -604,7 +604,7 @@ begin
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
-  Assert.AreEqual(2, LDictionary.Count, 'Deveria ter 2 elementos após Add');
+  Assert.AreEqual(2, LDictionary.Count, 'Deveria ter 2 elementos apï¿½s Add');
   Assert.AreEqual('One', LDictionary[1], 'Deveria conter "One" para chave 1');
   Assert.AreEqual('Two', LDictionary[2], 'Deveria conter "Two" para chave 2');
 end;
@@ -622,7 +622,7 @@ begin
 
     LTargetDict.AddRange(LSource);
 
-    Assert.AreEqual(2, LTargetDict.Count, 'Deveria conter 2 elementos após AddRange');
+    Assert.AreEqual(2, LTargetDict.Count, 'Deveria conter 2 elementos apï¿½s AddRange');
     Assert.AreEqual('One', LTargetDict[1], 'Deveria conter "One" para chave 1');
     Assert.AreEqual('Two', LTargetDict[2], 'Deveria conter "Two" para chave 2');
   finally
@@ -640,8 +640,8 @@ begin
 
   LDictionary.Remove(1);
 
-  Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento após Remove');
-  Assert.IsFalse(LDictionary.ContainsKey(1), 'Não deveria conter a chave 1');
+  Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento apï¿½s Remove');
+  Assert.IsFalse(LDictionary.ContainsKey(1), 'Nï¿½o deveria conter a chave 1');
   Assert.AreEqual('Two', LDictionary[2], 'Deveria conter "Two" para chave 2');
 end;
 
@@ -656,7 +656,7 @@ begin
 
     LDictionary.Clear;
 
-    Assert.AreEqual(0, LDictionary.Count, 'Deveria estar vazio após Clear');
+    Assert.AreEqual(0, LDictionary.Count, 'Deveria estar vazio apï¿½s Clear');
     Assert.IsTrue(LDictionary.IsEmpty, 'Deveria estar vazio');
   finally
     LDictionary.Free;
@@ -689,8 +689,8 @@ begin
   LDictionary.AddOrSetValue(1, 'One');
   LDictionary.AddOrSetValue(1, 'Uno');
 
-  Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento após AddOrSetValue');
-  Assert.AreEqual('Uno', LDictionary[1], 'Deveria ter substituído "One" por "Uno"');
+  Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento apï¿½s AddOrSetValue');
+  Assert.AreEqual('Uno', LDictionary[1], 'Deveria ter substituï¿½do "One" por "Uno"');
 end;
 
 procedure TDictionaryHelperTest.TestExtractPair;
@@ -704,9 +704,9 @@ begin
 
     LPair := LDictionary.ExtractPair(1);
 
-    Assert.AreEqual(0, LDictionary.Count, 'Deveria estar vazio após ExtractPair');
-    Assert.AreEqual(1, LPair.Key, 'Chave extraída deveria ser 1');
-    Assert.AreEqual('One', LPair.Value, 'Valor extraído deveria ser "One"');
+    Assert.AreEqual(0, LDictionary.Count, 'Deveria estar vazio apï¿½s ExtractPair');
+    Assert.AreEqual(1, LPair.Key, 'Chave extraï¿½da deveria ser 1');
+    Assert.AreEqual('One', LPair.Value, 'Valor extraï¿½do deveria ser "One"');
   finally
     LDictionary.Free;
   end;
@@ -723,7 +723,7 @@ begin
 
     Assert.IsTrue(LDictionary.TryGetValue(1, LValue), 'Deveria encontrar a chave 1');
     Assert.AreEqual('One', LValue, 'Valor deveria ser "One"');
-    Assert.IsFalse(LDictionary.TryGetValue(2, LValue), 'Não deveria encontrar a chave 2');
+    Assert.IsFalse(LDictionary.TryGetValue(2, LValue), 'Nï¿½o deveria encontrar a chave 2');
   finally
     LDictionary.Free;
   end;
@@ -735,7 +735,7 @@ var
 begin
   LDictionary := TFluentDictionary<Integer, String>.Create;
   Assert.IsTrue(LDictionary.TryAdd(1, 'One'), 'Deveria adicionar a chave 1');
-  Assert.IsFalse(LDictionary.TryAdd(1, 'Uno'), 'Não deveria adicionar a chave 1 novamente');
+  Assert.IsFalse(LDictionary.TryAdd(1, 'Uno'), 'Nï¿½o deveria adicionar a chave 1 novamente');
   Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento');
   Assert.AreEqual('One', LDictionary[1], 'Valor deveria ser "One"');
 end;
@@ -749,7 +749,7 @@ begin
     LDictionary.Add(1, 'One');
 
     Assert.IsTrue(LDictionary.ContainsKey(1), 'Deveria conter a chave 1');
-    Assert.IsFalse(LDictionary.ContainsKey(2), 'Não deveria conter a chave 2');
+    Assert.IsFalse(LDictionary.ContainsKey(2), 'Nï¿½o deveria conter a chave 2');
   finally
     LDictionary.Free;
   end;
@@ -764,7 +764,7 @@ begin
     LDictionary.Add(1, 'One');
 
     Assert.IsTrue(LDictionary.ContainsValue('One'), 'Deveria conter o valor "One"');
-    Assert.IsFalse(LDictionary.ContainsValue('Two'), 'Não deveria conter o valor "Two"');
+    Assert.IsFalse(LDictionary.ContainsValue('Two'), 'Nï¿½o deveria conter o valor "Two"');
   finally
     LDictionary.Free;
   end;
@@ -799,12 +799,12 @@ var
 begin
   LDictionary := TFluentDictionary<Integer, String>.Create(10);
   Assert.IsTrue(LDictionary.Capacity >= 10, 'Capacidade inicial deveria ser pelo menos 10, mas foi ' + IntToStr(LDictionary.Capacity));
-  Assert.IsTrue(LDictionary.Capacity <= 32, 'Capacidade inicial não deveria exceder o mínimo padrão de 32, mas foi ' + IntToStr(LDictionary.Capacity));
+  Assert.IsTrue(LDictionary.Capacity <= 32, 'Capacidade inicial nï¿½o deveria exceder o mï¿½nimo padrï¿½o de 32, mas foi ' + IntToStr(LDictionary.Capacity));
   LInitialCapacity := LDictionary.Capacity;
 
   LDictionary.Capacity := 5;
   Assert.IsTrue(LDictionary.Capacity >= 5, 'Capacidade deveria ser ajustada para pelo menos 5, mas foi ' + IntToStr(LDictionary.Capacity));
-  Assert.IsTrue(LDictionary.Capacity <= LInitialCapacity, 'Capacidade ajustada não deveria exceder a inicial, mas foi ' + IntToStr(LDictionary.Capacity));
+  Assert.IsTrue(LDictionary.Capacity <= LInitialCapacity, 'Capacidade ajustada nï¿½o deveria exceder a inicial, mas foi ' + IntToStr(LDictionary.Capacity));
 end;
 
 procedure TDictionaryHelperTest.TestCount;
@@ -816,7 +816,7 @@ begin
     Assert.AreEqual(0, LDictionary.Count, 'Count inicial deveria ser 0');
 
     LDictionary.Add(1, 'One');
-    Assert.AreEqual(1, LDictionary.Count, 'Count deveria ser 1 após adicionar');
+    Assert.AreEqual(1, LDictionary.Count, 'Count deveria ser 1 apï¿½s adicionar');
   finally
     LDictionary.Free;
   end;
@@ -831,7 +831,7 @@ begin
     Assert.IsTrue(LDictionary.IsEmpty, 'Deveria estar vazio inicialmente');
 
     LDictionary.Add(1, 'One');
-    Assert.IsFalse(LDictionary.IsEmpty, 'Não deveria estar vazio após adicionar');
+    Assert.IsFalse(LDictionary.IsEmpty, 'Nï¿½o deveria estar vazio apï¿½s adicionar');
   finally
     LDictionary.Free;
   end;
@@ -843,7 +843,7 @@ var
 begin
   LDictionary := TFluentDictionary<Integer, String>.Create(10);
   Assert.IsTrue(LDictionary.GrowThreshold > 0, 'GrowThreshold deveria ser maior que 0');
-  Assert.IsTrue(LDictionary.GrowThreshold <= LDictionary.Capacity, 'GrowThreshold deveria ser menor ou igual à capacidade');
+  Assert.IsTrue(LDictionary.GrowThreshold <= LDictionary.Capacity, 'GrowThreshold deveria ser menor ou igual ï¿½ capacidade');
 end;
 
 procedure TDictionaryHelperTest.TestCollisions;
@@ -855,7 +855,7 @@ begin
 
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
-  Assert.IsTrue(LDictionary.Collisions >= 0, 'Collisions deveria ser não-negativo após adicionar');
+  Assert.IsTrue(LDictionary.Collisions >= 0, 'Collisions deveria ser nï¿½o-negativo apï¿½s adicionar');
 end;
 
 procedure TDictionaryHelperTest.TestKeys;
@@ -902,9 +902,9 @@ begin
   LDictionary := TFluentDictionary<Integer, String>.Create;
   LComparer := LDictionary.Comparer;
 
-  Assert.IsNotNull(LComparer, 'Comparer não deveria ser nulo');
+  Assert.IsNotNull(LComparer, 'Comparer nï¿½o deveria ser nulo');
   Assert.IsTrue(LComparer.Equals(1, 1), 'Comparer deveria considerar 1 igual a 1');
-  Assert.IsFalse(LComparer.Equals(1, 2), 'Comparer não deveria considerar 1 igual a 2');
+  Assert.IsFalse(LComparer.Equals(1, 2), 'Comparer nï¿½o deveria considerar 1 igual a 2');
 end;
 
 procedure TDictionaryHelperTest.TestItemsGet;
@@ -1166,8 +1166,8 @@ begin
         Result := A.Key - B.Key;
       end).ElementAt(1);
 
-    Assert.AreEqual(2, LElement.Key, 'Elemento no índice 1 deveria ter chave 2');
-    Assert.AreEqual('Two', LElement.Value, 'Elemento no índice 1 deveria ser "Two"');
+    Assert.AreEqual(2, LElement.Key, 'Elemento no ï¿½ndice 1 deveria ter chave 2');
+    Assert.AreEqual('Two', LElement.Value, 'Elemento no ï¿½ndice 1 deveria ser "Two"');
   finally
     LDictionary.Free;
   end;
@@ -1184,8 +1184,8 @@ begin
 
     LElement := LDictionary.AsEnumerable.ElementAtOrDefault(1);
 
-    Assert.AreEqual(0, LElement.Key, 'Elemento fora do índice deveria ter chave default 0');
-    Assert.AreEqual('', LElement.Value, 'Elemento fora do índice deveria ter valor default vazio');
+    Assert.AreEqual(0, LElement.Key, 'Elemento fora do ï¿½ndice deveria ter chave default 0');
+    Assert.AreEqual('', LElement.Value, 'Elemento fora do ï¿½ndice deveria ter valor default vazio');
   finally
     LDictionary.Free;
   end;
@@ -1211,7 +1211,7 @@ begin
       Result := Pair.Key < 3;
     end).ToArray;
 
-  Assert.AreEqual(2, LResult.Length, 'Deveria pegar 2 elementos até chave < 3');
+  Assert.AreEqual(2, LResult.Length, 'Deveria pegar 2 elementos atï¿½ chave < 3');
   Assert.AreEqual('One', LResult[0].Value, 'Deveria conter "One"');
   Assert.AreEqual('Two', LResult[1].Value, 'Deveria conter "Two"');
 end;
@@ -1236,8 +1236,8 @@ begin
       Result := Pair.Key < 2;
     end).ToArray;
 
-  Assert.AreEqual(2, LResult.Length, 'Deveria pular até chave >= 2');
-  Assert.AreEqual('Two', LResult[0].Value, 'Deveria começar com "Two"');
+  Assert.AreEqual(2, LResult.Length, 'Deveria pular atï¿½ chave >= 2');
+  Assert.AreEqual('Two', LResult[0].Value, 'Deveria comeï¿½ar com "Two"');
   Assert.AreEqual('Three', LResult[1].Value, 'Deveria conter "Three"');
 end;
 
@@ -1276,8 +1276,8 @@ begin
       Result := Pair.Key = 1;
     end);
 
-  Assert.AreEqual(0, LFirst.Key, 'Primeiro elemento de dicionário vazio deveria ter chave default 0');
-  Assert.AreEqual('', LFirst.Value, 'Primeiro elemento de dicionário vazio deveria ter valor default vazio');
+  Assert.AreEqual(0, LFirst.Key, 'Primeiro elemento de dicionï¿½rio vazio deveria ter chave default 0');
+  Assert.AreEqual('', LFirst.Value, 'Primeiro elemento de dicionï¿½rio vazio deveria ter valor default vazio');
 
   LDictionary.Add(1, 'One');
   LFirst := LDictionary.AsEnumerable.FirstOrDefault(
@@ -1306,11 +1306,11 @@ begin
     end).Last(
     function(Pair: TPair<Integer, String>): Boolean
     begin
-      Result := Pair.Key > 0; // Pega o último com chave > 0
+      Result := Pair.Key > 0; // Pega o ï¿½ltimo com chave > 0
     end);
 
-  Assert.AreEqual(2, LLast.Key, 'Último elemento deveria ter chave 2');
-  Assert.AreEqual('Two', LLast.Value, 'Último elemento deveria ser "Two"');
+  Assert.AreEqual(2, LLast.Key, 'ï¿½ltimo elemento deveria ter chave 2');
+  Assert.AreEqual('Two', LLast.Value, 'ï¿½ltimo elemento deveria ser "Two"');
 end;
 
 procedure TDictionaryHelperTest.TestLastOrDefault;
@@ -1325,8 +1325,8 @@ begin
       Result := Pair.Key = 2;
     end);
 
-  Assert.AreEqual(0, LLast.Key, 'Último elemento de dicionário vazio deveria ter chave default 0');
-  Assert.AreEqual('', LLast.Value, 'Último elemento de dicionário vazio deveria ter valor default vazio');
+  Assert.AreEqual(0, LLast.Key, 'ï¿½ltimo elemento de dicionï¿½rio vazio deveria ter chave default 0');
+  Assert.AreEqual('', LLast.Value, 'ï¿½ltimo elemento de dicionï¿½rio vazio deveria ter valor default vazio');
 
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
@@ -1336,8 +1336,8 @@ begin
       Result := Pair.Key = 2;
     end);
 
-  Assert.AreEqual(2, LLast.Key, 'Último elemento deveria ter chave 2');
-  Assert.AreEqual('Two', LLast.Value, 'Último elemento deveria ser "Two"');
+  Assert.AreEqual(2, LLast.Key, 'ï¿½ltimo elemento deveria ter chave 2');
+  Assert.AreEqual('Two', LLast.Value, 'ï¿½ltimo elemento deveria ser "Two"');
 end;
 
 procedure TDictionaryHelperTest.TestSingle;
@@ -1354,8 +1354,8 @@ begin
       Result := Pair.Key = 1;
     end);
 
-  Assert.AreEqual(1, LSingle.Key, 'Elemento único deveria ter chave 1');
-  Assert.AreEqual('One', LSingle.Value, 'Elemento único deveria ser "One"');
+  Assert.AreEqual(1, LSingle.Key, 'Elemento ï¿½nico deveria ter chave 1');
+  Assert.AreEqual('One', LSingle.Value, 'Elemento ï¿½nico deveria ser "One"');
 end;
 
 procedure TDictionaryHelperTest.TestSingleOrDefault;
@@ -1370,8 +1370,8 @@ begin
       Result := Pair.Key = 1;
     end);
 
-  Assert.AreEqual(0, LSingle.Key, 'Elemento único de dicionário vazio deveria ter chave default 0');
-  Assert.AreEqual('', LSingle.Value, 'Elemento único de dicionário vazio deveria ter valor default vazio');
+  Assert.AreEqual(0, LSingle.Key, 'Elemento ï¿½nico de dicionï¿½rio vazio deveria ter chave default 0');
+  Assert.AreEqual('', LSingle.Value, 'Elemento ï¿½nico de dicionï¿½rio vazio deveria ter valor default vazio');
 
   LDictionary.Add(1, 'One');
   LSingle := LDictionary.AsEnumerable.SingleOrDefault(
@@ -1380,8 +1380,8 @@ begin
       Result := Pair.Key = 1;
     end);
 
-  Assert.AreEqual(1, LSingle.Key, 'Elemento único deveria ter chave 1');
-  Assert.AreEqual('One', LSingle.Value, 'Elemento único deveria ser "One"');
+  Assert.AreEqual(1, LSingle.Key, 'Elemento ï¿½nico deveria ter chave 1');
+  Assert.AreEqual('One', LSingle.Value, 'Elemento ï¿½nico deveria ser "One"');
 end;
 
 procedure TDictionaryHelperTest.TestOfType;
@@ -1393,19 +1393,12 @@ begin
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
-  LResult := LDictionary.AsEnumerable.OfType<TPair<Integer, String>>(
-    function(Pair: TPair<Integer, String>): Boolean
-    begin
-      Result := Pair.Key > 1;
-    end,
-    function(Pair: TPair<Integer, String>): TPair<Integer, String>
-    begin
-      Result := Pair;
-    end).ToArray;
+  // OfType<TPair<Integer,String>>() sobre uma coleÃ§Ã£o jÃ¡ desse tipo mantÃ©m
+  // TODOS os elementos (todos passam no teste de tipo) â€” sem argumentos, sem
+  // filtro por predicado (isso seria Filter/Where).
+  LResult := LDictionary.AsEnumerable.OfType<TPair<Integer, String>>.ToArray;
 
-  Assert.AreEqual(1, LResult.Length, 'Deveria ter 1 elemento do tipo filtrado');
-  Assert.AreEqual(2, LResult[0].Key, 'Deveria conter chave 2');
-  Assert.AreEqual('Two', LResult[0].Value, 'Deveria conter "Two"');
+  Assert.AreEqual(2, LResult.Length, 'OfType do mesmo tipo deveria manter todos os pares');
 end;
 
 procedure TDictionaryHelperTest.TestExclude;
@@ -1478,7 +1471,7 @@ begin
       Result := A.Key - B.Key;
     end).ToArray;
 
-  Assert.AreEqual(3, LResult.Length, 'Deveria ter 3 elementos únicos');
+  Assert.AreEqual(3, LResult.Length, 'Deveria ter 3 elementos ï¿½nicos');
   Assert.AreEqual('One', LResult[0].Value, 'Deveria conter "One"');
   Assert.AreEqual('Two', LResult[1].Value, 'Deveria conter "Two"');
   Assert.AreEqual('Three', LResult[2].Value, 'Deveria conter "Three"');
@@ -1546,7 +1539,7 @@ begin
       function(A, B: TPair<Integer, String>): Integer
       begin
         Result := A.Key - B.Key;
-      end)), 'Não deveria ser igual com valores diferentes');
+      end)), 'Nï¿½o deveria ser igual com valores diferentes');
 end;
 
 procedure TDictionaryHelperTest.TestOrderByDesc;
@@ -1567,7 +1560,7 @@ begin
 
   Assert.AreEqual(3, LResult.Length, 'Deveria ter 3 elementos');
   Assert.AreEqual(3, LResult[0].Key, 'Primeiro deveria ser chave 3');
-  Assert.AreEqual(1, LResult[2].Key, 'Último deveria ser chave 1');
+  Assert.AreEqual(1, LResult[2].Key, 'ï¿½ltimo deveria ser chave 1');
 end;
 
 procedure TDictionaryHelperTest.TestOwnsValuesWithObjects;
@@ -1579,15 +1572,15 @@ begin
   LDict := TFluentDictionary<Integer, TStringList>.Create([doOwnsValues]);
   LDictStr := TFluentDictionary<Integer, String>.Create;
 
-  // Adiciona TStringList ao dicionário
+  // Adiciona TStringList ao dicionï¿½rio
   LStringList1 := TStringList.Create;
   LStringList2 := TStringList.Create;
   try
     LDict.Add(1, LStringList1);
     LDict.Add(2, LStringList2);
-    Assert.AreEqual(2, LDict.Count, 'Dicionário deveria ter 2 itens antes da liberação');
+    Assert.AreEqual(2, LDict.Count, 'Dicionï¿½rio deveria ter 2 itens antes da liberaï¿½ï¿½o');
 
-    // O dicionário assume a posse, então não liberamos manualmente aqui
+    // O dicionï¿½rio assume a posse, entï¿½o nï¿½o liberamos manualmente aqui
   except
     LStringList1.Free;
     LStringList2.Free;
@@ -1601,13 +1594,13 @@ var
 begin
   LDictStr := TFluentDictionary<Integer, String>.Create;
 
-  // Adiciona strings ao dicionário
+  // Adiciona strings ao dicionï¿½rio
   LDictStr.Add(1, 'One');
   LDictStr.Add(2, 'Two');
-  Assert.AreEqual(2, LDictStr.Count, 'Dicionário deveria ter 2 itens');
+  Assert.AreEqual(2, LDictStr.Count, 'Dicionï¿½rio deveria ter 2 itens');
 
-  // O dicionário não deve tentar liberar strings
-  // O teste passa se não houver erro de acesso inválido
+  // O dicionï¿½rio nï¿½o deve tentar liberar strings
+  // O teste passa se nï¿½o houver erro de acesso invï¿½lido
 end;
 
 procedure TDictionaryHelperTest.TestMin;
@@ -1623,8 +1616,8 @@ begin
 
     LMin := LDictionary.AsEnumerable.Min;
 
-    Assert.AreEqual(1, LMin.Key, 'Mínimo deveria ter chave 1');
-    Assert.AreEqual('One', LMin.Value, 'Mínimo deveria ser "One"');
+    Assert.AreEqual(1, LMin.Key, 'Mï¿½nimo deveria ter chave 1');
+    Assert.AreEqual('One', LMin.Value, 'Mï¿½nimo deveria ser "One"');
   finally
     LDictionary.Free;
   end;
@@ -1647,8 +1640,8 @@ begin
         Result := CompareStr(A.Value, B.Value);
       end);
 
-    Assert.AreEqual(2, LMin.Key, 'Mínimo por valor deveria ter chave 2');
-    Assert.AreEqual('One', LMin.Value, 'Mínimo por valor deveria ser "One"');
+    Assert.AreEqual(2, LMin.Key, 'Mï¿½nimo por valor deveria ter chave 2');
+    Assert.AreEqual('One', LMin.Value, 'Mï¿½nimo por valor deveria ser "One"');
   finally
     LDictionary.Free;
   end;
@@ -1667,8 +1660,8 @@ begin
 
     LMax := LDictionary.AsEnumerable.Max;
 
-    Assert.AreEqual(3, LMax.Key, 'Máximo deveria ter chave 3');
-    Assert.AreEqual('Three', LMax.Value, 'Máximo deveria ser "Three"');
+    Assert.AreEqual(3, LMax.Key, 'Mï¿½ximo deveria ter chave 3');
+    Assert.AreEqual('Three', LMax.Value, 'Mï¿½ximo deveria ser "Three"');
   finally
     LDictionary.Free;
   end;
@@ -1691,8 +1684,8 @@ begin
         Result := CompareStr(A.Value, B.Value);
       end);
 
-    Assert.AreEqual(3, LMax.Key, 'Máximo por valor deveria ter chave 2');
-    Assert.AreEqual('Two', LMax.Value, 'Máximo por valor deveria ser "Three"');
+    Assert.AreEqual(3, LMax.Key, 'Mï¿½ximo por valor deveria ter chave 2');
+    Assert.AreEqual('Two', LMax.Value, 'Mï¿½ximo por valor deveria ser "Three"');
   finally
     LDictionary.Free;
   end;
@@ -1719,8 +1712,8 @@ begin
         Result := CompareStr(A, B);
       end);
 
-    Assert.AreEqual(1, LMin.Key, 'Mínimo por valor deveria ter chave 1');
-    Assert.AreEqual('One', LMin.Value, 'Mínimo por valor deveria ser "One"');
+    Assert.AreEqual(1, LMin.Key, 'Mï¿½nimo por valor deveria ter chave 1');
+    Assert.AreEqual('One', LMin.Value, 'Mï¿½nimo por valor deveria ser "One"');
   finally
     LDictionary.Free;
   end;
@@ -1747,8 +1740,8 @@ begin
         Result := CompareStr(A, B);
       end);
 
-    Assert.AreEqual(2, LMax.Key, 'Máximo por valor deveria ter chave 2');
-    Assert.AreEqual('Two', LMax.Value, 'Máximo por valor deveria ser "Two"');
+    Assert.AreEqual(2, LMax.Key, 'Mï¿½ximo por valor deveria ter chave 2');
+    Assert.AreEqual('Two', LMax.Value, 'Mï¿½ximo por valor deveria ser "Two"');
   finally
     LDictionary.Free;
   end;
@@ -1986,7 +1979,7 @@ begin
         Result := Pair.Key;
       end);
 
-    Assert.AreEqual(Double(2.0), LAverage, 'Deveria calcular a média das chaves (1 + 2 + 3) / 3 = 2.0');
+    Assert.AreEqual(Double(2.0), LAverage, 'Deveria calcular a mï¿½dia das chaves (1 + 2 + 3) / 3 = 2.0');
   finally
     LDictionary.Free;
   end;
@@ -2004,19 +1997,19 @@ begin
   LStringList := TStringList.Create;
   try
     LDict.Add(1, LStringList);
-    Assert.AreEqual(1, LDict.Count, 'Count deveria ser 1 após adicionar um item');
+    Assert.AreEqual(1, LDict.Count, 'Count deveria ser 1 apï¿½s adicionar um item');
 
     // Verifica Contains
     LPair := TPair<Integer, TStringList>.Create(1, LStringList);
-    Assert.IsTrue(LDict.Contains(LPair), 'Dicionário deveria conter o par adicionado');
+    Assert.IsTrue(LDict.Contains(LPair), 'Dicionï¿½rio deveria conter o par adicionado');
 
     // Remove o item
     Assert.IsTrue(LDict.Remove(LPair), 'Remove deveria retornar True');
-    Assert.AreEqual(0, LDict.Count, 'Count deveria ser 0 após remover');
-    Assert.IsTrue(LDict.IsEmpty, 'Dicionário deveria estar vazio');
+    Assert.AreEqual(0, LDict.Count, 'Count deveria ser 0 apï¿½s remover');
+    Assert.IsTrue(LDict.IsEmpty, 'Dicionï¿½rio deveria estar vazio');
   finally
 //    if LDict.Count = 0 then
-//      LStringList.Free; // Já foi Liberado auto no Remove()
+//      LStringList.Free; // Jï¿½ foi Liberado auto no Remove()
   end;
 end;
 
@@ -2112,7 +2105,7 @@ begin
     Assert.IsTrue(LContainsOne, 'Deveria conter o par 1:One');
 
     LContainsThree := LDictionary.AsEnumerable.Contains(TPair<Integer, String>.Create(3, 'Three'));
-    Assert.IsFalse(LContainsThree, 'Não deveria conter o par 3:Three');
+    Assert.IsFalse(LContainsThree, 'Nï¿½o deveria conter o par 3:Three');
   finally
     LDictionary.Free;
   end;
