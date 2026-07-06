@@ -97,6 +97,12 @@ type
     [Test]
     procedure TestListJoin;
     [Test]
+    procedure TestListJoinMultipleMatches;
+    [Test]
+    procedure TestListSumIntegerOverflowRaises;
+    [Test]
+    procedure TestListSumInt64NoWrap;
+    [Test]
     procedure TestListMapLazy;
     [Test]
     procedure TestListOrderByLazy;
@@ -654,6 +660,69 @@ begin
   Assert.AreEqual('A1-1', LArray[0], 'First element should be "A1-1"');
   Assert.AreEqual('B2-2', LArray[1], 'Second element should be "B2-2"');
   Assert.AreEqual('C3-3', LArray[2], 'Third element should be "C3-3"');
+end;
+
+procedure TListTest.TestListJoinMultipleMatches;
+var
+  LInner: IFluentList<string>;
+  LJoined: IFluentEnumerable<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Outer key 1 matches two inner rows; the hash join must emit BOTH, in inner
+  // order, and preserve outer order (1 before 2).
+  FList.AddRange([1, 2]);
+  LInner := TFluentList<string>.Create;
+  LInner.AddRange(['A1', 'B1', 'C2']);
+  LJoined := FList.AsEnumerable.Join<string, Integer, string>(
+    LInner.AsEnumerable,
+    function(Num: Integer): Integer
+    begin
+      Result := Num;
+    end,
+    function(Str: string): Integer
+    begin
+      Result := StrToInt(Str[2]);
+    end,
+    function(Num: Integer; Str: string): string
+    begin
+      Result := Num.ToString + ':' + Str;
+    end);
+  LArray := LJoined.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'Should emit one row per matching pair');
+  Assert.AreEqual('1:A1', LArray[0], 'Outer 1, first inner match');
+  Assert.AreEqual('1:B1', LArray[1], 'Outer 1, second inner match (inner order)');
+  Assert.AreEqual('2:C2', LArray[2], 'Outer 2 match after outer 1');
+end;
+
+procedure TListTest.TestListSumIntegerOverflowRaises;
+begin
+  // C#-parity: overflowing an Integer Sum must raise, not silently wrap.
+  FList.AddRange([High(Integer), 1]);
+  Assert.WillRaise(
+    procedure
+    begin
+      FList.AsEnumerable.Sum(
+        function(Value: Integer): Integer
+        begin
+          Result := Value;
+        end);
+    end,
+    EIntOverflow);
+end;
+
+procedure TListTest.TestListSumInt64NoWrap;
+var
+  LSum: Int64;
+begin
+  // Three values that each fit in Integer but whose total exceeds Integer range;
+  // the Int64 Sum overload must return the exact total without wrapping.
+  FList.AddRange([1, 2, 3]);
+  LSum := FList.AsEnumerable.Sum(
+    function(Value: Integer): Int64
+    begin
+      Result := Int64(High(Integer));
+    end);
+  Assert.AreEqual(Int64(3) * High(Integer), LSum, 'Int64 Sum must not wrap at 32 bits');
 end;
 
 procedure TListTest.TestListMapLazy;
