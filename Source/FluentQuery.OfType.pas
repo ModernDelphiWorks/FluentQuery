@@ -22,29 +22,28 @@ uses
   FluentQuery.Queryable,
   {$ENDIF}
   SysUtils,
+  Rtti,
   FluentQuery;
 
 type
+  // LINQ OfType<TResult>(): no arguments. Deferred/streaming filter by runtime
+  // type; elements not convertible to TResult are silently discarded. Never
+  // raises on a type mismatch (contrast with Cast).
   TFluentOfTypeEnumerable<T, TResult> = class(TFluentEnumerableBase<TResult>)
   private
     FSource: IFluentEnumerableBase<T>;
-    FIsType: TFunc<T, Boolean>;
-    FConverter: TFunc<T, TResult>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const AIsType: TFunc<T, Boolean>;
-      const AConverter: TFunc<T, TResult>);
+    constructor Create(const ASource: IFluentEnumerableBase<T>);
     function GetEnumerator: IFluentEnumerator<TResult>; override;
   end;
 
   TFluentOfTypeEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
   private
     FSource: IFluentEnumerator<T>;
-    FIsType: TFunc<T, Boolean>;
-    FConverter: TFunc<T, TResult>;
     FCurrent: TResult;
+    class function TryConvert(const AItem: T; out AResult: TResult): Boolean; static;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const AIsType: TFunc<T, Boolean>;
-      const AConverter: TFunc<T, TResult>);
+    constructor Create(const ASource: IFluentEnumerator<T>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
     procedure Reset;
@@ -87,27 +86,44 @@ implementation
 
 { TFluentOfTypeEnumerable<T, TResult> }
 
-constructor TFluentOfTypeEnumerable<T, TResult>.Create(const ASource: IFluentEnumerableBase<T>;
-  const AIsType: TFunc<T, Boolean>; const AConverter: TFunc<T, TResult>);
+constructor TFluentOfTypeEnumerable<T, TResult>.Create(const ASource: IFluentEnumerableBase<T>);
 begin
   FSource := ASource;
-  FIsType := AIsType;
-  FConverter := AConverter;
 end;
 
 function TFluentOfTypeEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
 begin
-  Result := TFluentOfTypeEnumerator<T, TResult>.Create(FSource.GetEnumerator, FIsType, FConverter);
+  Result := TFluentOfTypeEnumerator<T, TResult>.Create(FSource.GetEnumerator);
 end;
 
 { TFluentOfTypeEnumerator<T, TResult> }
 
-constructor TFluentOfTypeEnumerator<T, TResult>.Create(const ASource: IFluentEnumerator<T>;
-  const AIsType: TFunc<T, Boolean>; const AConverter: TFunc<T, TResult>);
+constructor TFluentOfTypeEnumerator<T, TResult>.Create(const ASource: IFluentEnumerator<T>);
 begin
   FSource := ASource;
-  FIsType := AIsType;
-  FConverter := AConverter;
+end;
+
+class function TFluentOfTypeEnumerator<T, TResult>.TryConvert(const AItem: T;
+  out AResult: TResult): Boolean;
+var
+  LValue: TValue;
+begin
+  LValue := TValue.From<T>(AItem);
+  // Unwrap a variant to its underlying runtime type so a heterogeneous Variant
+  // collection is filtered by the actual element type. Conversion uses TValue's
+  // rules: for classes/interfaces this is an is-a test; for value types it
+  // accepts numeric-compatible values (a Variant integer is treated as Integer).
+  // That coercion is the pragmatic Delphi/Variant reading of "of type", which
+  // is looser than C# boxing for cross-numeric cases (documented deviation).
+  if LValue.Kind = tkVariant then
+    LValue := TValue.FromVariant(LValue.AsVariant);
+  try
+    Result := LValue.TryAsType<TResult>(AResult);
+  except
+    // A conversion that raises (e.g. an incompatible variant coercion) counts
+    // as "not of this type" — OfType filters it out silently, never raising.
+    Result := False;
+  end;
 end;
 
 function TFluentOfTypeEnumerator<T, TResult>.GetCurrent: TResult;
@@ -116,12 +132,14 @@ begin
 end;
 
 function TFluentOfTypeEnumerator<T, TResult>.MoveNext: Boolean;
+var
+  LConverted: TResult;
 begin
   while FSource.MoveNext do
   begin
-    if FIsType(FSource.Current) then
+    if TryConvert(FSource.Current, LConverted) then
     begin
-      FCurrent := FConverter(FSource.Current);
+      FCurrent := LConverted;
       Result := True;
       Exit;
     end;
@@ -132,6 +150,7 @@ end;
 procedure TFluentOfTypeEnumerator<T, TResult>.Reset;
 begin
   FSource.Reset;
+  FCurrent := Default(TResult);
 end;
 
 //{$IFDEF QUERYABLE}

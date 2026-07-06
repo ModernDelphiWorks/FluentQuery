@@ -17,110 +17,100 @@ unit FluentQuery.Cast;
 
 interface
 
-//uses
-//  {$IFDEF QUERYABLE}
-//  System.Fluent.Queryable,
-//  {$ENDIF}
-//  SysUtils,
-//  System.Fluent;
+uses
+  {$IFDEF QUERYABLE}
+  FluentQuery.Queryable,
+  {$ENDIF}
+  SysUtils,
+  Rtti,
+  FluentQuery;
 
-//{$IFDEF QUERYABLE}
-//type
-//  TFluentCastQueryable<T, TResult> = class(TFluentQueryableBase<TResult>, IFluentQueryableBase<TResult>)
-//  private
-//    FSource: IFluentQueryableBase<T>;
-//    FConverter: TFunc<T, TResult>;
-//  public
-//    constructor Create(const ASource: IFluentQueryableBase<T>;
-//      const AConverter: TFunc<T, TResult>);
-//    function GetEnumerator: IFluentEnumerator<TResult>; override;
-//    function BuildQuery: string; override;
-//  end;
-//
-//  TFluentCastQueryableEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
-//  private
-//    FSourceEnum: IFluentEnumerator<T>;
-//    FConverter: TFunc<T, TResult>;
-//    FCurrent: TResult;
-//  public
-//    constructor Create(const ASource: IFluentEnumerator<T>;
-//      const AConverter: TFunc<T, TResult>);
-//    destructor Destroy; override;
-//    function GetCurrent: TResult;
-//    function MoveNext: Boolean;
-//    procedure Reset;
-//    property Current: TResult read GetCurrent;
-//  end;
-//{$ENDIF}
+type
+  // LINQ Cast<TResult>(): deferred/streaming. Converts every element to
+  // TResult and raises EInvalidCast (per element, during enumeration) when an
+  // element is not of that type. Contrast with OfType, which filters silently.
+  TFluentCastEnumerable<T, TResult> = class(TFluentEnumerableBase<TResult>)
+  private
+    FSource: IFluentEnumerableBase<T>;
+  public
+    constructor Create(const ASource: IFluentEnumerableBase<T>);
+    function GetEnumerator: IFluentEnumerator<TResult>; override;
+  end;
+
+  TFluentCastEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  private
+    FSource: IFluentEnumerator<T>;
+    FCurrent: TResult;
+    function Convert(const AItem: T): TResult;
+  public
+    constructor Create(const ASource: IFluentEnumerator<T>);
+    function GetCurrent: TResult;
+    function MoveNext: Boolean;
+    procedure Reset;
+    property Current: TResult read GetCurrent;
+  end;
 
 implementation
 
-//{$IFDEF QUERYABLE}
-//{ TFluentCastQueryable<T, TResult> }
-//
-//constructor TFluentCastQueryable<T, TResult>.Create(
-//  const ASource: IFluentQueryableBase<T>;
-//  const AConverter: TFunc<T, TResult>);
-//begin
-//  FSource := ASource;
-//  FConverter := AConverter;
-//end;
-//
-//function TFluentCastQueryable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
-//begin
-//  Result := TFluentCastQueryableEnumerator<T, TResult>.Create(
-//    FSource.GetEnumerator, FConverter);
-//end;
-//
-//function TFluentCastQueryable<T, TResult>.BuildQuery: string;
-//begin
-//  // Placeholder: Traduzir para SQL, ex.: CAST(<column> AS <TResult>)
-//  Result := FSource.BuildQuery + ' /* Cast<TResult> */';
-//end;
-//
-//{ TFluentCastQueryableEnumerator<T, TResult> }
-//
-//constructor TFluentCastQueryableEnumerator<T, TResult>.Create(
-//  const ASource: IFluentEnumerator<T>;
-//  const AConverter: TFunc<T, TResult>);
-//begin
-//  FSourceEnum := ASource;
-//  FConverter := AConverter;
-//end;
-//
-//destructor TFluentCastQueryableEnumerator<T, TResult>.Destroy;
-//begin
-//  FSourceEnum := nil;
-//  inherited;
-//end;
-//
-//function TFluentCastQueryableEnumerator<T, TResult>.GetCurrent: TResult;
-//begin
-//  Result := FCurrent;
-//end;
-//
-//function TFluentCastQueryableEnumerator<T, TResult>.MoveNext: Boolean;
-//begin
-//  if FSourceEnum.MoveNext then
-//  begin
-//    try
-//      FCurrent := FConverter(FSourceEnum.Current);
-//      Result := True;
-//    except
-//      on E: Exception do
-//        raise EInvalidCast.Create('Cannot cast value: ' + E.Message);
-//    end;
-//  end
-//  else
-//    Result := False;
-//end;
-//
-//procedure TFluentCastQueryableEnumerator<T, TResult>.Reset;
-//begin
-//  FSourceEnum.Reset;
-//  FCurrent := Default(TResult);
-//end;
-//{$ENDIF}
+{ TFluentCastEnumerable<T, TResult> }
+
+constructor TFluentCastEnumerable<T, TResult>.Create(const ASource: IFluentEnumerableBase<T>);
+begin
+  FSource := ASource;
+end;
+
+function TFluentCastEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+begin
+  Result := TFluentCastEnumerator<T, TResult>.Create(FSource.GetEnumerator);
+end;
+
+{ TFluentCastEnumerator<T, TResult> }
+
+constructor TFluentCastEnumerator<T, TResult>.Create(const ASource: IFluentEnumerator<T>);
+begin
+  FSource := ASource;
+end;
+
+function TFluentCastEnumerator<T, TResult>.Convert(const AItem: T): TResult;
+var
+  LValue: TValue;
+begin
+  LValue := TValue.From<T>(AItem);
+  // Unwrap a variant to its underlying runtime type before the cast. Conversion
+  // follows the same TValue rules as OfType (is-a for reference types; numeric-
+  // compatible for value types), but a failure RAISES instead of skipping.
+  if LValue.Kind = tkVariant then
+    LValue := TValue.FromVariant(LValue.AsVariant);
+  try
+    if not LValue.TryAsType<TResult>(Result) then
+      raise EInvalidCast.Create('Cannot cast element to the requested type');
+  except
+    on E: EInvalidCast do
+      raise;
+    on E: Exception do
+      // Normalise any underlying conversion error into EInvalidCast, matching
+      // C# Cast<TResult> which throws InvalidCastException per element.
+      raise EInvalidCast.Create('Cannot cast element to the requested type: ' + E.Message);
+  end;
+end;
+
+function TFluentCastEnumerator<T, TResult>.GetCurrent: TResult;
+begin
+  Result := FCurrent;
+end;
+
+function TFluentCastEnumerator<T, TResult>.MoveNext: Boolean;
+begin
+  Result := FSource.MoveNext;
+  if Result then
+    FCurrent := Convert(FSource.Current);
+end;
+
+procedure TFluentCastEnumerator<T, TResult>.Reset;
+begin
+  FSource.Reset;
+  FCurrent := Default(TResult);
+end;
 
 end.
 

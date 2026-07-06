@@ -138,7 +138,7 @@ type
     function LongCount(const APredicate: TFunc<T, Boolean>): Int64; overload;
     function Zip<TSecond, TResult>(const ASecond: IFluentEnumerable<TSecond>;
       const AResultSelector: TFunc<T, TSecond, TResult>): IFluentEnumerable<TResult>;
-    function OfType<TResult>(const AIsType: TFunc<T, Boolean>; const AConverter: TFunc<T, TResult>): IFluentEnumerable<TResult>;
+    function OfType<TResult>: IFluentEnumerable<TResult>;
     function Exclude(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
     function Intersect(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
     function Union(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
@@ -1607,15 +1607,10 @@ begin
   );
 end;
 
-function IFluentEnumerable<T>.OfType<TResult>(const AIsType: TFunc<T, Boolean>;
-  const AConverter: TFunc<T, TResult>): IFluentEnumerable<TResult>;
+function IFluentEnumerable<T>.OfType<TResult>: IFluentEnumerable<TResult>;
 begin
-  if not Assigned(AIsType) then
-    raise EArgumentNilException.Create('IsType cannot be nil');
-  if not Assigned(AConverter) then
-    raise EArgumentNilException.Create('Converter cannot be nil');
   Result := IFluentEnumerable<TResult>.Create(
-    TFluentOfTypeEnumerable<T, TResult>.Create(FEnumerator, AIsType, AConverter),
+    TFluentOfTypeEnumerable<T, TResult>.Create(FEnumerator),
     FFluentType,
     TEqualityComparer<TResult>.Default
   );
@@ -2361,21 +2356,14 @@ begin
 end;
 
 function IFluentEnumerable<T>.Cast<TResult>: IFluentEnumerable<TResult>;
-var
-  LList: TList<TResult>;
-  LEnum: IFluentEnumerator<T>;
 begin
-  Result := Default(IFluentEnumerable<TResult>);
-  LList := TList<TResult>.Create;
-  try
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-      LList.Add(TValue.From<T>(LEnum.Current).AsType<TResult>);
-    Result := IFluentEnumerable<TResult>.Create(TListAdapter<TResult>.Create(LList, True));
-  finally
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred/streaming: nothing is converted until enumeration; a non-matching
+  // element raises EInvalidCast at the point it is reached (see FluentQuery.Cast).
+  Result := IFluentEnumerable<TResult>.Create(
+    TFluentCastEnumerable<T, TResult>.Create(FEnumerator),
+    FFluentType,
+    TEqualityComparer<TResult>.Default
+  );
 end;
 
 //function IFluentEnumerable<T>.Chunk(const ASize: Integer): IFluentChunkResult<T>;

@@ -115,6 +115,12 @@ type
     [Test]
     procedure TestListOfType;
     [Test]
+    procedure TestListCastSuccess;
+    [Test]
+    procedure TestListCastDeferredRaises;
+    [Test]
+    procedure TestListCastStreamsBeforeRaise;
+    [Test]
     procedure TestListMinBy;
     [Test]
     procedure TestListMaxBy;
@@ -854,20 +860,73 @@ var
 begin
   LList := TFluentList<Variant>.Create;
   LList.AddRange([1, 'two', 3, 'four', 5]);
-  LFiltered := LList.AsEnumerable.OfType<Integer>(
-    function(Value: Variant): Boolean
-    begin
-      Result := VarIsNumeric(Value);
-    end,
-    function(Value: Variant): Integer
-    begin
-      Result := Integer(Value);
-    end);
+  // OfType<Integer>() with no arguments: filters by runtime type, keeping the
+  // integer variants and silently dropping the strings.
+  LFiltered := LList.AsEnumerable.OfType<Integer>;
   LArray := LFiltered.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Filtered list should have 3 integers');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
   Assert.AreEqual(3, LArray[1], 'Second element should be 3');
   Assert.AreEqual(5, LArray[2], 'Third element should be 5');
+end;
+
+procedure TListTest.TestListCastSuccess;
+var
+  LList: IFluentList<Variant>;
+  LArray: IFluentArray<Integer>;
+begin
+  // Every element is convertible: Cast<Integer> converts them all.
+  LList := TFluentList<Variant>.Create;
+  LList.AddRange([10, 20, 30]);
+  LArray := LList.AsEnumerable.Cast<Integer>.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'Cast should convert every element');
+  Assert.AreEqual(10, LArray[0], 'First cast element');
+  Assert.AreEqual(30, LArray[2], 'Last cast element');
+end;
+
+procedure TListTest.TestListCastDeferredRaises;
+var
+  LList: IFluentList<Variant>;
+  LCast: IFluentEnumerable<Integer>;
+  LRaised: Boolean;
+begin
+  LList := TFluentList<Variant>.Create;
+  LList.AddRange([1, 'two', 3]);
+  // Deferred: building the Cast pipeline must NOT raise here (an eager
+  // implementation would throw on this line and fail the test before the try).
+  LCast := LList.AsEnumerable.Cast<Integer>;
+  // The incompatible 'two' raises EInvalidCast only when enumeration reaches it.
+  LRaised := False;
+  try
+    LCast.ToArray;
+  except
+    on E: EInvalidCast do
+      LRaised := True;
+  end;
+  Assert.IsTrue(LRaised, 'Cast must raise EInvalidCast per element during enumeration');
+end;
+
+procedure TListTest.TestListCastStreamsBeforeRaise;
+var
+  LList: IFluentList<Variant>;
+  LEnum: IFluentEnumerator<Integer>;
+  LRaised: Boolean;
+begin
+  // Streaming, not all-or-nothing: the first valid element is yielded before
+  // the incompatible one is reached and raises.
+  LList := TFluentList<Variant>.Create;
+  LList.AddRange([1, 'two', 3]);
+  LEnum := LList.AsEnumerable.Cast<Integer>.GetEnumerator;
+  Assert.IsTrue(LEnum.MoveNext, 'first element should be available');
+  Assert.AreEqual(1, LEnum.Current, 'valid element yielded before the bad one');
+  LRaised := False;
+  try
+    LEnum.MoveNext; // reaches 'two'
+  except
+    on E: EInvalidCast do
+      LRaised := True;
+  end;
+  Assert.IsTrue(LRaised, 'the incompatible element raises when reached');
 end;
 
 procedure TListTest.TestListMinBy;
