@@ -226,6 +226,10 @@ type
     [Test]
     procedure TestFluentQueryGeneratorValidation;
     [Test]
+    procedure TestListChunk;
+    [Test]
+    procedure TestListChunkEdges;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1912,6 +1916,82 @@ begin
     begin
       TFluentQuery.&Repeat<Integer>(7, -1);
     end, EArgumentOutOfRangeException, 'Repeat with negative count raises');
+end;
+
+procedure TListTest.TestListChunk;
+var
+  LCount: Integer;
+  LChunkSource: IFluentEnumerableBase<TArray<Integer>>;
+  LEnum: IFluentEnumerator<TArray<Integer>>;
+  LChunks: TList<TArray<Integer>>;
+begin
+  FList.AddRange([1, 2, 3, 4, 5]);
+  LCount := 0;
+  // Chunk over a side-effecting Select: building the chunk pipeline must not
+  // enumerate the source (deferred).
+  LChunkSource := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).Chunk(2);
+  Assert.AreEqual(0, LCount, 'Chunk must not enumerate the source at construction');
+
+  LChunks := TList<TArray<Integer>>.Create;
+  try
+    LEnum := LChunkSource.GetEnumerator;
+    while LEnum.MoveNext do
+      LChunks.Add(LEnum.Current);
+    Assert.IsTrue(LCount > 0, 'source enumerated on iteration');
+    Assert.AreEqual(3, LChunks.Count, '5 elements in chunks of 2 -> 3 chunks');
+    Assert.AreEqual(2, Length(LChunks[0]), 'first chunk is full');
+    Assert.AreEqual(1, LChunks[0][0], 'first element');
+    Assert.AreEqual(4, LChunks[1][1], 'second chunk second element');
+    Assert.AreEqual(1, Length(LChunks[2]), 'last chunk holds the remainder');
+    Assert.AreEqual(5, LChunks[2][0], 'last element');
+  finally
+    LChunks.Free;
+  end;
+end;
+
+procedure TListTest.TestListChunkEdges;
+var
+  LEnum: IFluentEnumerator<TArray<Integer>>;
+  LCount: Integer;
+begin
+  // Size >= count -> a single chunk with all elements.
+  FList.AddRange([1, 2, 3]);
+  LEnum := FList.AsEnumerable.Chunk(10).GetEnumerator;
+  LCount := 0;
+  while LEnum.MoveNext do
+  begin
+    Inc(LCount);
+    Assert.AreEqual(3, Length(LEnum.Current), 'single chunk holds all elements');
+  end;
+  Assert.AreEqual(1, LCount, 'one chunk when size >= count');
+
+  // Empty source -> zero chunks.
+  FList.Clear;
+  LEnum := FList.AsEnumerable.Chunk(2).GetEnumerator;
+  Assert.IsFalse(LEnum.MoveNext, 'empty source yields no chunks');
+
+  // Exact multiple -> no spurious trailing empty chunk (classic off-by-one).
+  FList.AddRange([1, 2, 3, 4]);
+  LEnum := FList.AsEnumerable.Chunk(2).GetEnumerator;
+  LCount := 0;
+  while LEnum.MoveNext do
+  begin
+    Inc(LCount);
+    Assert.AreEqual(2, Length(LEnum.Current), 'each chunk full on exact multiple');
+  end;
+  Assert.AreEqual(2, LCount, 'exact multiple -> exactly 2 chunks, no trailing empty');
+
+  // Size < 1 raises (eager validation).
+  Assert.WillRaise(
+    procedure
+    begin
+      FList.AsEnumerable.Chunk(0);
+    end, EArgumentOutOfRangeException, 'Chunk(0) raises');
 end;
 
 procedure TListTest.TestListIntersect;
