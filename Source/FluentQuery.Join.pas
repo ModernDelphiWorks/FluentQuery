@@ -48,12 +48,13 @@ type
   TFluentJoinEnumerator<T, TInner, TKey, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
   private
     FSource: IFluentEnumerator<T>;
-    FInner: TList<TInner>;
+    FLookup: TDictionary<TKey, TList<TInner>>;
     FOuterKeySelector: TFunc<T, TKey>;
-    FInnerKeySelector: TFunc<TInner, TKey>;
     FResultSelector: TFunc<T, TInner, TResult>;
     FCurrent: TResult;
-    FInnerEnum: IFluentEnumerator<TInner>;
+    FCurrentOuter: T;
+    FMatches: TList<TInner>;
+    FMatchIndex: Integer;
   public
     constructor Create(const ASource: IFluentEnumerator<T>; const AInner: IFluentEnumerator<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
@@ -105,20 +106,42 @@ end;
 constructor TFluentJoinEnumerator<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerator<T>;
   const AInner: IFluentEnumerator<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
   const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, TInner, TResult>);
+var
+  LItem: TInner;
+  LKey: TKey;
+  LList: TList<TInner>;
 begin
   FSource := ASource;
-  FInner := TList<TInner>.Create;
   FOuterKeySelector := AOuterKeySelector;
-  FInnerKeySelector := AInnerKeySelector;
   FResultSelector := AResultSelector;
+  FMatches := nil;
+  FMatchIndex := -1;
+  // Build a lookup of the inner sequence keyed by the inner key selector:
+  // one pass over inner (O(m)); each outer element then finds its matches in
+  // O(1) average instead of re-scanning all of inner (was O(n*m)). Items are
+  // appended per key in inner-enumeration order, so match order is preserved.
+  FLookup := TDictionary<TKey, TList<TInner>>.Create;
   while AInner.MoveNext do
-    FInner.Add(AInner.Current);
-  FInnerEnum := nil;
+  begin
+    LItem := AInner.Current;
+    LKey := AInnerKeySelector(LItem);
+    if not FLookup.TryGetValue(LKey, LList) then
+    begin
+      LList := TList<TInner>.Create;
+      FLookup.Add(LKey, LList);
+    end;
+    LList.Add(LItem);
+  end;
 end;
 
 destructor TFluentJoinEnumerator<T, TInner, TKey, TResult>.Destroy;
+var
+  LList: TList<TInner>;
 begin
-  FInner.Free;
+  if Assigned(FLookup) then
+    for LList in FLookup.Values do
+      LList.Free;
+  FLookup.Free;
   inherited;
 end;
 
@@ -129,38 +152,40 @@ end;
 
 function TFluentJoinEnumerator<T, TInner, TKey, TResult>.MoveNext: Boolean;
 var
-  LOuterKey: TKey;
-  LInnerItem: TInner;
+  LKey: TKey;
 begin
   while True do
   begin
-    if not Assigned(FInnerEnum) or not FInnerEnum.MoveNext then
+    if FMatches <> nil then
     begin
-      if not FSource.MoveNext then
+      Inc(FMatchIndex);
+      if FMatchIndex < FMatches.Count then
       begin
-        FInnerEnum := nil;
-        Result := False;
+        FCurrent := FResultSelector(FCurrentOuter, FMatches[FMatchIndex]);
+        Result := True;
         Exit;
       end;
-      FInnerEnum := TListAdapterEnumerator<TInner>.Create(FInner.GetEnumerator);
-      if not FInnerEnum.MoveNext then
-        Continue;
+      FMatches := nil;
     end;
-    LOuterKey := FOuterKeySelector(FSource.Current);
-    LInnerItem := FInnerEnum.Current;
-    if TComparer<TKey>.Default.Compare(LOuterKey, FInnerKeySelector(LInnerItem)) = 0 then
+    if not FSource.MoveNext then
     begin
-      FCurrent := FResultSelector(FSource.Current, LInnerItem);
-      Result := True;
+      Result := False;
       Exit;
     end;
+    FCurrentOuter := FSource.Current;
+    LKey := FOuterKeySelector(FCurrentOuter);
+    if FLookup.TryGetValue(LKey, FMatches) then
+      FMatchIndex := -1
+    else
+      FMatches := nil;
   end;
 end;
 
 procedure TFluentJoinEnumerator<T, TInner, TKey, TResult>.Reset;
 begin
   FSource.Reset;
-  FInnerEnum := nil;
+  FMatches := nil;
+  FMatchIndex := -1;
 end;
 
 {$IFDEF QUERYABLE}

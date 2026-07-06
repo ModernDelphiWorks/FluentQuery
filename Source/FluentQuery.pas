@@ -727,15 +727,22 @@ end;
 function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, Integer>): Integer;
 var
   LEnum: IFluentEnumerator<T>;
-  LSum: Integer;
+  LSum: Int64;
 begin
   if not Assigned(ASelector) then
     raise EArgumentNilException.Create('Selector cannot be nil');
   LEnum := GetEnumerator;
+  // Accumulate in Int64 and detect overflow of the Integer running total per
+  // step (matches C# checked int Sum), instead of silently wrapping a 32-bit
+  // accumulator (the source has no {$Q+}).
   LSum := 0;
   while LEnum.MoveNext do
+  begin
     LSum := LSum + ASelector(LEnum.Current);
-  Result := LSum;
+    if (LSum > High(Integer)) or (LSum < Low(Integer)) then
+      raise EIntOverflow.Create('Arithmetic overflow: Sum exceeds Integer range');
+  end;
+  Result := Integer(LSum);
 end;
 
 function IFluentEnumerable<T>.SumCurrency(const ASelector: TFunc<T, Currency>): Currency;
@@ -755,20 +762,6 @@ end;
 function IFluentEnumerable<T>.SumInt32(const ASelector: TFunc<T, Int32>): Int32;
 var
   LEnum: IFluentEnumerator<T>;
-  LSum: Int32;
-begin
-  if not Assigned(ASelector) then
-    raise EArgumentNilException.Create('Selector cannot be nil');
-  LEnum := GetEnumerator;
-  LSum := 0;
-  while LEnum.MoveNext do
-    LSum := LSum + ASelector(LEnum.Current);
-  Result := LSum;
-end;
-
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, Int64>): Int64;
-var
-  LEnum: IFluentEnumerator<T>;
   LSum: Int64;
 begin
   if not Assigned(ASelector) then
@@ -776,7 +769,33 @@ begin
   LEnum := GetEnumerator;
   LSum := 0;
   while LEnum.MoveNext do
+  begin
     LSum := LSum + ASelector(LEnum.Current);
+    if (LSum > High(Int32)) or (LSum < Low(Int32)) then
+      raise EIntOverflow.Create('Arithmetic overflow: Sum exceeds Int32 range');
+  end;
+  Result := Int32(LSum);
+end;
+
+function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, Int64>): Int64;
+var
+  LEnum: IFluentEnumerator<T>;
+  LSum, LValue, LNew: Int64;
+begin
+  if not Assigned(ASelector) then
+    raise EArgumentNilException.Create('Selector cannot be nil');
+  LEnum := GetEnumerator;
+  LSum := 0;
+  while LEnum.MoveNext do
+  begin
+    LValue := ASelector(LEnum.Current);
+    LNew := LSum + LValue;
+    // Signed-overflow detection (no {$Q+}): the sum overflows Int64 when adding
+    // a positive value decreases the total, or adding a negative one increases it.
+    if ((LValue > 0) and (LNew < LSum)) or ((LValue < 0) and (LNew > LSum)) then
+      raise EIntOverflow.Create('Arithmetic overflow: Sum exceeds Int64 range');
+    LSum := LNew;
+  end;
   Result := LSum;
 end;
 
@@ -795,7 +814,7 @@ end;
 function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableInt32>): NullableInt32;
 var
   LEnum: IFluentEnumerator<T>;
-  LSum: Int32;
+  LSum: Int64;
   LValue: NullableInt32;
   LCount: Integer;
 begin
@@ -810,18 +829,20 @@ begin
     if LValue.HasValue then
     begin
       LSum := LSum + LValue.Value;
+      if (LSum > High(Int32)) or (LSum < Low(Int32)) then
+        raise EIntOverflow.Create('Arithmetic overflow: Sum exceeds Int32 range');
       Inc(LCount);
     end;
   end;
   if LCount = 0 then
     raise EInvalidOperation.Create('Empty sequence or no valid values.');
-  Result := NullableInt32.Create(LSum);
+  Result := NullableInt32.Create(Int32(LSum));
 end;
 
 function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableInt64>): NullableInt64;
 var
   LEnum: IFluentEnumerator<T>;
-  LSum: Int64;
+  LSum, LNew: Int64;
   LCount: Integer;
   LValue: NullableInt64;
 begin
@@ -835,7 +856,10 @@ begin
     LValue := ASelector(LEnum.Current);
     if LValue.HasValue then
     begin
-      LSum := LSum + LValue.Value;
+      LNew := LSum + LValue.Value;
+      if ((LValue.Value > 0) and (LNew < LSum)) or ((LValue.Value < 0) and (LNew > LSum)) then
+        raise EIntOverflow.Create('Arithmetic overflow: Sum exceeds Int64 range');
+      LSum := LNew;
       Inc(LCount);
     end;
   end;
