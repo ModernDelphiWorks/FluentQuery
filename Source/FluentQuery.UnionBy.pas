@@ -23,20 +23,23 @@ uses
   {$ENDIF}
   SysUtils,
   Generics.Collections,
+  Generics.Defaults,
   FluentQuery;
 
 type
   // LINQ UnionBy: deferred/streaming — yields the first element for each distinct
   // key across the first sequence then the second, in read order. The seen-keys
-  // set grows as items are pulled; nothing runs until enumeration.
+  // set grows as items are pulled; nothing runs until enumeration. Key equality
+  // uses AComparer (nil => default).
   TFluentUnionByEnumerable<T, TKey> = class(TFluentEnumerableBase<T>)
   private
     FSource: IFluentEnumerableBase<T>;
     FSecond: IFluentEnumerableBase<T>;
     FKeySelector: TFunc<T, TKey>;
+    FComparer: IEqualityComparer<TKey>;
   public
     constructor Create(const ASource: IFluentEnumerableBase<T>; const ASecond: IFluentEnumerableBase<T>;
-      const AKeySelector: TFunc<T, TKey>);
+      const AKeySelector: TFunc<T, TKey>; const AComparer: IEqualityComparer<TKey> = nil);
     function GetEnumerator: IFluentEnumerator<T>; override;
   end;
 
@@ -51,7 +54,7 @@ type
     function TryNext(const AEnum: IFluentEnumerator<T>): Boolean;
   public
     constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
-      const AKeySelector: TFunc<T, TKey>);
+      const AKeySelector: TFunc<T, TKey>; const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -64,27 +67,31 @@ implementation
 { TFluentUnionByEnumerable<T, TKey> }
 
 constructor TFluentUnionByEnumerable<T, TKey>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecond: IFluentEnumerableBase<T>; const AKeySelector: TFunc<T, TKey>);
+  const ASecond: IFluentEnumerableBase<T>; const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FKeySelector := AKeySelector;
+  FComparer := AComparer;
 end;
 
 function TFluentUnionByEnumerable<T, TKey>.GetEnumerator: IFluentEnumerator<T>;
 begin
-  Result := TFluentUnionByEnumerator<T, TKey>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FKeySelector);
+  Result := TFluentUnionByEnumerator<T, TKey>.Create(FSource.GetEnumerator, FSecond.GetEnumerator,
+    FKeySelector, FComparer);
 end;
 
 { TFluentUnionByEnumerator<T, TKey> }
 
 constructor TFluentUnionByEnumerator<T, TKey>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AKeySelector: TFunc<T, TKey>);
+  const ASecond: IFluentEnumerator<T>; const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FKeySelector := AKeySelector;
-  FSeen := TDictionary<TKey, Byte>.Create;
+  FSeen := TDictionary<TKey, Byte>.Create(AComparer);
   FOnSecond := False;
 end;
 

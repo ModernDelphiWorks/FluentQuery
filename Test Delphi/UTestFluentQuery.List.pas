@@ -210,6 +210,14 @@ type
     [Test]
     procedure TestListReverseEmptyAndReEnumerable;
     [Test]
+    procedure TestListDistinctByWithComparer;
+    [Test]
+    procedure TestListUnionByWithComparer;
+    [Test]
+    procedure TestListExcludeByWithComparer;
+    [Test]
+    procedure TestListIntersectByWithComparer;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1761,6 +1769,82 @@ begin
   Assert.AreEqual(3, LSecond.Length, 'second enumeration reproduces the result');
   Assert.AreEqual(3, LSecond[0], 'reversed head on re-enumeration');
   Assert.AreEqual(1, LSecond[2], 'reversed tail on re-enumeration');
+end;
+
+procedure TListTest.TestListDistinctByWithComparer;
+var
+  LWords: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive key: 'a' and 'A' collapse -> ['a','b']. Default -> 3.
+  LWords := TFluentList<string>.Create;
+  LWords.AddRange(['a', 'A', 'b']);
+  LArray := LWords.AsEnumerable.DistinctBy<string>(
+    function(V: string): string
+    begin
+      Result := V;
+    end, TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(2, LArray.Length, 'case-insensitive DistinctBy collapses a/A');
+  Assert.AreEqual('a', LArray[0], 'first occurrence kept');
+  Assert.AreEqual('b', LArray[1], 'second distinct key');
+end;
+
+procedure TListTest.TestListUnionByWithComparer;
+var
+  LFirst, LSecond: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive: 'A' in second is a duplicate of 'a' -> ['a','b']. Default -> 3.
+  LFirst := TFluentList<string>.Create;
+  LFirst.AddRange(['a']);
+  LSecond := TFluentList<string>.Create;
+  LSecond.AddRange(['A', 'b']);
+  LArray := LFirst.AsEnumerable.UnionBy<string>(LSecond.AsEnumerable,
+    function(V: string): string
+    begin
+      Result := V;
+    end, TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(2, LArray.Length, 'case-insensitive UnionBy dedupes A against a');
+  Assert.AreEqual('a', LArray[0], 'first');
+  Assert.AreEqual('b', LArray[1], 'new key from second');
+end;
+
+procedure TListTest.TestListExcludeByWithComparer;
+var
+  LSource, LKeys: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive: key 'A' excludes 'a' -> ['B']. Default -> ['a','B'].
+  LSource := TFluentList<string>.Create;
+  LSource.AddRange(['a', 'B']);
+  LKeys := TFluentList<string>.Create;
+  LKeys.AddRange(['A']);
+  LArray := LSource.AsEnumerable.ExcludeBy<string>(LKeys.AsEnumerable,
+    function(V: string): string
+    begin
+      Result := V;
+    end, TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(1, LArray.Length, 'case-insensitive ExcludeBy removes a via A');
+  Assert.AreEqual('B', LArray[0], 'remaining element');
+end;
+
+procedure TListTest.TestListIntersectByWithComparer;
+var
+  LSource, LKeys: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive: key 'A' matches 'a' -> ['a']. Default -> empty.
+  LSource := TFluentList<string>.Create;
+  LSource.AddRange(['a', 'B']);
+  LKeys := TFluentList<string>.Create;
+  LKeys.AddRange(['A']);
+  LArray := LSource.AsEnumerable.IntersectBy<string>(LKeys.AsEnumerable,
+    function(V: string): string
+    begin
+      Result := V;
+    end, TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(1, LArray.Length, 'case-insensitive IntersectBy matches a via A');
+  Assert.AreEqual('a', LArray[0], 'matched element keeps source casing');
 end;
 
 procedure TListTest.TestListIntersect;

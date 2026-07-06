@@ -23,21 +23,25 @@ uses
   {$ENDIF}
   SysUtils,
   Generics.Collections,
+  Generics.Defaults,
   FluentQuery;
 
 type
   // LINQ ExceptBy: deferred — yields the DISTINCT first-sequence elements whose
   // key is not among the second sequence of keys, in first-appearance order.
   // The second (keys) is buffered when enumeration starts (in the enumerator
-  // constructor, i.e. at GetEnumerator); the source is streamed.
+  // constructor, i.e. at GetEnumerator); the source is streamed. Key equality
+  // uses AComparer (nil => default).
   TFluentExcludeByEnumerable<T, TKey> = class(TFluentEnumerableBase<T>)
   private
     FSource: IFluentEnumerableBase<T>;
     FSecondKeys: IFluentEnumerableBase<TKey>;
     FKeySelector: TFunc<T, TKey>;
+    FComparer: IEqualityComparer<TKey>;
   public
     constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>);
+      const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey> = nil);
     function GetEnumerator: IFluentEnumerator<T>; override;
   end;
 
@@ -50,7 +54,8 @@ type
     FCurrent: T;
   public
     constructor Create(const ASource: IFluentEnumerator<T>;
-      const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>);
+      const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -63,28 +68,31 @@ implementation
 { TFluentExcludeByEnumerable<T, TKey> }
 
 constructor TFluentExcludeByEnumerable<T, TKey>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>);
+  const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FSecondKeys := ASecondKeys;
   FKeySelector := AKeySelector;
+  FComparer := AComparer;
 end;
 
 function TFluentExcludeByEnumerable<T, TKey>.GetEnumerator: IFluentEnumerator<T>;
 begin
   Result := TFluentExcludeByEnumerator<T, TKey>.Create(
-    FSource.GetEnumerator, FSecondKeys.GetEnumerator, FKeySelector);
+    FSource.GetEnumerator, FSecondKeys.GetEnumerator, FKeySelector, FComparer);
 end;
 
 { TFluentExcludeByEnumerator<T, TKey> }
 
 constructor TFluentExcludeByEnumerator<T, TKey>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>);
+  const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FKeySelector := AKeySelector;
-  FExcluded := TDictionary<TKey, Byte>.Create;
-  FEmitted := TDictionary<TKey, Byte>.Create;
+  FExcluded := TDictionary<TKey, Byte>.Create(AComparer);
+  FEmitted := TDictionary<TKey, Byte>.Create(AComparer);
   while ASecondKeys.MoveNext do
     FExcluded.AddOrSetValue(ASecondKeys.Current, 0);
 end;
