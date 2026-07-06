@@ -166,6 +166,8 @@ type
     [Test]
     procedure TestListExcludeReEnumerable;
     [Test]
+    procedure TestListExcludeAllExcludedIsEmpty;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1266,6 +1268,19 @@ begin
   Assert.AreEqual(2, LSecondPass.Length, 'Second enumeration should reproduce [1,3]');
   Assert.AreEqual(1, LSecondPass[0], 'First element on re-enumeration');
   Assert.AreEqual(3, LSecondPass[1], 'Second element on re-enumeration');
+end;
+
+procedure TListTest.TestListExcludeAllExcludedIsEmpty;
+var
+  LSecond: IFluentList<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // Every (distinct) source value is in the second set -> empty result.
+  FList.AddRange([1, 1, 2, 2]);
+  LSecond := TFluentList<Integer>.Create;
+  LSecond.AddRange([1, 2]);
+  LArray := FList.AsEnumerable.Exclude(LSecond.AsEnumerable).ToArray;
+  Assert.AreEqual(0, LArray.Length, 'All values excluded -> empty sequence');
 end;
 
 procedure TListTest.TestListIntersect;
