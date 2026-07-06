@@ -7,8 +7,8 @@ uses
   SysUtils,
   DUnitX.TestFramework,
   Generics.Collections,
-  FluentQuery,
-  FluentQuery.Helpers;
+  LQColligo,
+  LQColligo.Helpers;
 
 type
   TFluentStringTest = class

@@ -7,8 +7,8 @@ uses
   SysUtils,
   DUnitX.TestFramework,
   DataEngine.FactoryFireDac,
-  FluentQuery,
-  FluentQuery.Queryable,
+  LQColligo,
+  LQColligo.Queryable,
   ModernSyntax.Tuple,
   FireDAC.Comp.Client,
   FireDAC.Stan.Intf,
@@ -148,8 +148,8 @@ implementation
 uses
   DataEngine.FactoryInterfaces,
   System.Generics.Collections,
-  FluentQuery.Collections,
-  FluentQuery.Expression;
+  LQColligo.Collections,
+  LQColligo.Expression;
 
 function TTestFluentSQLFirebird.GetSQL: string;
 begin

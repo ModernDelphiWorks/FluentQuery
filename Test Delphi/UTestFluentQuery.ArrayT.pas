@@ -8,8 +8,8 @@ uses
   Variants,
   DUnitX.TestFramework,
   Generics.Collections,
-  FluentQuery,
-  FluentQuery.Collections;
+  LQColligo,
+  LQColligo.Collections;
 
 type
   TProduct = class

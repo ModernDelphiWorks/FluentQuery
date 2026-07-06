@@ -1,4 +1,4 @@
-# FluentQuery — LINQ-style fluent collections & DB query library for Delphi
+# LQ-Colligo — LINQ-style fluent collections & DB query library for Delphi
 
 [![Delphi XE+](https://img.shields.io/badge/Delphi-XE%20or%20superior-blue.svg)]()
 [![Lazarus Compatible](https://img.shields.io/badge/Lazarus-Compatible-orange.svg)]()
@@ -16,7 +16,7 @@
 
 ## 🇬🇧 English
 
-**FluentQuery** is a high-performance functional-programming and collection-manipulation library for Delphi and Lazarus, heavily inspired by **C# LINQ** and the stream-processing APIs found in Java, Kotlin, and Rust. It introduces powerful record-based structures (`IFluentEnumerable<T>` and `IFluentQueryable<T>`) designed to query, filter, map, order, and aggregate in-memory collections and datasets. By employing **Lazy Evaluation** (deferred execution), FluentQuery avoids intermediate object allocations, ensuring exceptional CPU speed and a minimal memory footprint.
+**LQ-Colligo** is a high-performance functional-programming and collection-manipulation library for Delphi and Lazarus, heavily inspired by **C# LINQ** and the stream-processing APIs found in Java, Kotlin, and Rust. It introduces powerful record-based structures (`IFluentEnumerable<T>` and `IFluentQueryable<T>`) designed to query, filter, map, order, and aggregate in-memory collections and datasets. By employing **Lazy Evaluation** (deferred execution), LQ-Colligo avoids intermediate object allocations, ensuring exceptional CPU speed and a minimal memory footprint.
 
 ### 🚀 Key Features
 
@@ -42,7 +42,7 @@
 
 ### 🐧 Cross-Platform Build — Win32 / Win64 / Linux64 (verified)
 
-> **✅ Verified 2026-06-20** in a real production backend: FluentQuery compiles as a dependency on **Win32, Win64 and Linux64** (`dcclinux64`). macOS/iOS/Android follow from the Delphi RTL but are **not build-verified** here yet.
+> **✅ Verified 2026-06-20** in a real production backend: LQ-Colligo compiles as a dependency on **Win32, Win64 and Linux64** (`dcclinux64`). macOS/iOS/Android follow from the Delphi RTL but are **not build-verified** here yet.
 
 The `TFluentString` case operations (`ToLower`/`ToUpper` and their invariants) had a broken Linux fallback calling the undeclared `UCS4LowerCase`/`UCS4UpperCase`. Locale-aware lowering still uses the `USE_LIBICU` path; the fallback now uses the RTL `System.SysUtils.LowerCase`/`UpperCase`. Windows behaviour is unchanged.
 
@@ -53,7 +53,7 @@ The `TFluentString` case operations (`ToLower`/`ToUpper` and their invariants) h
 Install using the [**Boss**](https://github.com/HashLoad/boss) package manager:
 
 ```sh
-boss install FluentQuery
+boss install LQ-Colligo
 ```
 
 Or register the package via [**pubpascal.dev**](https://www.pubpascal.dev/packages/fluentquery) and follow the on-screen instructions.
@@ -67,7 +67,7 @@ Or register the package via [**pubpascal.dev**](https://www.pubpascal.dev/packag
 ```delphi
 uses
   System.SysUtils,
-  FluentQuery;
+  LQ-Colligo;
 
 var
   LNumbers: TArray<Integer>;
@@ -121,7 +121,7 @@ end;
 
 ## 🇧🇷 Português
 
-**FluentQuery** é uma biblioteca de alta performance para programação funcional e manipulação de coleções em Delphi e Lazarus, fortemente inspirada no **LINQ do C#** e nas APIs de processamento de streams do Java, Kotlin e Rust. Ela introduz estruturas otimizadas baseadas em records (`IFluentEnumerable<T>` e `IFluentQueryable<T>`) projetadas para consultar, filtrar, mapear, ordenar e agregar coleções na memória e datasets. Ao adotar **Avaliação Preguiçosa** (lazy evaluation), o FluentQuery posterga o processamento até o último instante, eliminando alocações desnecessárias e maximizando a performance de CPU e memória.
+**LQ-Colligo** é uma biblioteca de alta performance para programação funcional e manipulação de coleções em Delphi e Lazarus, fortemente inspirada no **LINQ do C#** e nas APIs de processamento de streams do Java, Kotlin e Rust. Ela introduz estruturas otimizadas baseadas em records (`IFluentEnumerable<T>` e `IFluentQueryable<T>`) projetadas para consultar, filtrar, mapear, ordenar e agregar coleções na memória e datasets. Ao adotar **Avaliação Preguiçosa** (lazy evaluation), o LQ-Colligo posterga o processamento até o último instante, eliminando alocações desnecessárias e maximizando a performance de CPU e memória.
 
 ### 🚀 Recursos Principais
 
@@ -147,7 +147,7 @@ end;
 
 ### 🐧 Build Multiplataforma — Win32 / Win64 / Linux64 (verificado)
 
-> **✅ Verificado em 2026-06-20** num backend real em produção: o FluentQuery compila como dependência em **Win32, Win64 e Linux64** (`dcclinux64`). macOS/iOS/Android seguem da RTL Delphi, mas **ainda não foram verificados** em build aqui.
+> **✅ Verificado em 2026-06-20** num backend real em produção: o LQ-Colligo compila como dependência em **Win32, Win64 e Linux64** (`dcclinux64`). macOS/iOS/Android seguem da RTL Delphi, mas **ainda não foram verificados** em build aqui.
 
 As operações de caixa do `TFluentString` (`ToLower`/`ToUpper` e invariantes) tinham um fallback Linux quebrado chamando `UCS4LowerCase`/`UCS4UpperCase` (inexistente). O lowering com locale continua usando o caminho `USE_LIBICU`; o fallback agora usa o RTL `System.SysUtils.LowerCase`/`UpperCase`. O comportamento no Windows não muda.
 
@@ -158,7 +158,7 @@ As operações de caixa do `TFluentString` (`ToLower`/`ToUpper` e invariantes) t
 Instale usando o gerenciador de pacotes [**Boss**](https://github.com/HashLoad/boss):
 
 ```sh
-boss install FluentQuery
+boss install LQ-Colligo
 ```
 
 Ou registre o pacote via [**pubpascal.dev**](https://www.pubpascal.dev/packages/fluentquery) e siga as instruções na tela.
@@ -172,7 +172,7 @@ Ou registre o pacote via [**pubpascal.dev**](https://www.pubpascal.dev/packages/
 ```delphi
 uses
   System.SysUtils,
-  FluentQuery;
+  LQ-Colligo;
 
 var
   LNumbers: TArray<Integer>;
@@ -249,8 +249,8 @@ Contribuições são bem-vindas — relatórios de bugs, correções, novos oper
 
 ## 💲 Donation / Doação
 
-If FluentQuery saves you time, consider supporting its development.
-Se o FluentQuery economiza seu tempo, considere apoiar o desenvolvimento.
+If LQ-Colligo saves you time, consider supporting its development.
+Se o LQ-Colligo economiza seu tempo, considere apoiar o desenvolvimento.
 
 [![Doação](https://img.shields.io/badge/PagSeguro-contribua-green)](https://pag.ae/bglQrWD)
 

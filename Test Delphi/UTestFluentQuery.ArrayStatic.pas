@@ -9,8 +9,8 @@ uses
   DUnitX.TestFramework,
   Generics.Collections,
   Generics.Defaults,
-  FluentQuery,
-  FluentQuery.Collections;
+  LQColligo,
+  LQColligo.Collections;
 
 type
   TArrayStaticTest = class
