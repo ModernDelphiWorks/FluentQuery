@@ -1,8 +1,8 @@
 {
-  "name": "FluentQuery",
+  "name": "LQ-Colligo",
   "description": "A powerful and intuitive framework for fluent-style data manipulation in Delphi",
   "version": "^0",
-  "homepage": "https://github.com/ModernDelphiWorks/FluentQuery",
+  "homepage": "https://github.com/ModernDelphiWorks/LQ-Colligo",
   "mainsrc": "Source/",
   "projects": [],
   "dependencies": {

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<test-results name="D:\Ecossistema-Delphi\FluentQuery\Test Delphi\PTestFluentQueryString.exe" total="18" errors="0" failures="0" ignored="0" inconclusive="0" not-run="0" skipped="0" invalid="0" date="2026-03-03" time="0.007">
+<test-results name="D:\Ecossistema-Axial\developer-friends-backend\.modules\LQColligo\Test Delphi\Win32\Debug\PTestLQColligoString.exe" total="18" errors="0" failures="0" ignored="0" inconclusive="0" not-run="0" skipped="0" invalid="0" date="2026-07-06" time="0.004">
   <culture-info current-culture="en" current-uiculture="en" />
-  <test-suite type="Assembly" name="PTestFluentQueryString.exe" executed="true" result="Success" success="True" time="0.007" asserts="0">
+  <test-suite type="Assembly" name="PTestLQColligoString.exe" executed="true" result="Success" success="True" time="0.004" asserts="0">
     <results>
-        <test-suite type="Namespace" name="UTestFluentQuery" executed="true" result="Success" success="True" time="0.006" asserts="0" >
+        <test-suite type="Namespace" name="UTestLQColligo" executed="true" result="Success" success="True" time="0.004" asserts="0" >
           <results>
-              <test-suite type="Fixture" name="TFluentStringTest" executed="True" result="Success" success="True" time="0.006" >
+              <test-suite type="Fixture" name="TLQColligoStringTest" executed="True" result="Success" success="True" time="0.004" >
                 <results>
                   <test-case name="TestPartition" executed="True" result="Success" success="True" time="0.000" asserts="0" />
                   <test-case name="TestWhere" executed="True" result="Success" success="True" time="0.000" asserts="0" />
