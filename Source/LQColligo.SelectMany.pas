@@ -25,23 +25,23 @@ uses
   LQColligo;
 
 type
-  TFluentSelectManyEnumerable<T, TResult> = class(TInterfacedObject, IFluentEnumerableBase<TResult>)
+  TLQColligoSelectManyEnumerable<T, TResult> = class(TInterfacedObject, ILQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FSelector: TFunc<T, TArray<TResult>>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ASelector: TFunc<T, TArray<TResult>>);
-    function GetEnumerator: IFluentEnumerator<TResult>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ASelector: TFunc<T, TArray<TResult>>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>;
   end;
 
-  TFluentSelectManyEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoSelectManyEnumerator<T, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSelector: TFunc<T, TArray<TResult>>;
     FCurrentArray: TArray<TResult>;
     FIndex: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASelector: TFunc<T, TArray<TResult>>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASelector: TFunc<T, TArray<TResult>>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
     procedure Reset;
@@ -50,23 +50,23 @@ type
 
 implementation
 
-{ TFluentSelectManyEnumerable<T, TResult> }
+{ TLQColligoSelectManyEnumerable<T, TResult> }
 
-constructor TFluentSelectManyEnumerable<T, TResult>.Create(const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoSelectManyEnumerable<T, TResult>.Create(const ASource: ILQColligoEnumerableBase<T>;
   const ASelector: TFunc<T, TArray<TResult>>);
 begin
   FSource := ASource;
   FSelector := ASelector;
 end;
 
-function TFluentSelectManyEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoSelectManyEnumerable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentSelectManyEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
+  Result := TLQColligoSelectManyEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
 end;
 
-{ TFluentSelectManyEnumerator<T, TResult> }
+{ TLQColligoSelectManyEnumerator<T, TResult> }
 
-constructor TFluentSelectManyEnumerator<T, TResult>.Create(const ASource: IFluentEnumerator<T>;
+constructor TLQColligoSelectManyEnumerator<T, TResult>.Create(const ASource: ILQColligoEnumerator<T>;
   const ASelector: TFunc<T, TArray<TResult>>);
 begin
   FSource := ASource;
@@ -74,7 +74,7 @@ begin
   FIndex := -1;
 end;
 
-function TFluentSelectManyEnumerator<T, TResult>.GetCurrent: TResult;
+function TLQColligoSelectManyEnumerator<T, TResult>.GetCurrent: TResult;
 begin
   if (FIndex >= 0) and (FIndex < Length(FCurrentArray)) then
     Result := FCurrentArray[FIndex]
@@ -82,7 +82,7 @@ begin
     raise ERangeError.Create('Index out of bounds');
 end;
 
-function TFluentSelectManyEnumerator<T, TResult>.MoveNext: Boolean;
+function TLQColligoSelectManyEnumerator<T, TResult>.MoveNext: Boolean;
 begin
   while True do
   begin
@@ -107,7 +107,7 @@ begin
   end;
 end;
 
-procedure TFluentSelectManyEnumerator<T, TResult>.Reset;
+procedure TLQColligoSelectManyEnumerator<T, TResult>.Reset;
 begin
   FIndex := -1;
   FSource.Reset;

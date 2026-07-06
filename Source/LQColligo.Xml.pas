@@ -18,11 +18,11 @@ unit LQColligo.Xml;
 interface
 
 type
-  IFluentXmlProvider<T> = interface
+  ILQColligoXmlProvider<T> = interface
     ['{6ED58176-0945-4A85-8E5E-D0A25A60FDC8}']
   end;
 
-  IFluentXmlEnumerable<T> = record
+  ILQColligoXmlEnumerable<T> = record
 
   end;
 

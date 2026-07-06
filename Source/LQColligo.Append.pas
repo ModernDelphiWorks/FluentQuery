@@ -27,24 +27,24 @@ uses
 type
   // LINQ Append: deferred/streaming — yields the source, then one extra element.
   // Nothing runs until enumeration (no materialization at construction).
-  TFluentAppendEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoAppendEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FElement: T;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const AElement: T);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const AElement: T);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentAppendEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoAppendEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FElement: T;
     FCurrent: T;
     FSourceDone: Boolean;
     FElementYielded: Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const AElement: T);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const AElement: T);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -53,22 +53,22 @@ type
 
 implementation
 
-{ TFluentAppendEnumerable<T> }
+{ TLQColligoAppendEnumerable<T> }
 
-constructor TFluentAppendEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const AElement: T);
+constructor TLQColligoAppendEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const AElement: T);
 begin
   FSource := ASource;
   FElement := AElement;
 end;
 
-function TFluentAppendEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoAppendEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentAppendEnumerator<T>.Create(FSource.GetEnumerator, FElement);
+  Result := TLQColligoAppendEnumerator<T>.Create(FSource.GetEnumerator, FElement);
 end;
 
-{ TFluentAppendEnumerator<T> }
+{ TLQColligoAppendEnumerator<T> }
 
-constructor TFluentAppendEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const AElement: T);
+constructor TLQColligoAppendEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const AElement: T);
 begin
   FSource := ASource;
   FElement := AElement;
@@ -76,12 +76,12 @@ begin
   FElementYielded := False;
 end;
 
-function TFluentAppendEnumerator<T>.GetCurrent: T;
+function TLQColligoAppendEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentAppendEnumerator<T>.MoveNext: Boolean;
+function TLQColligoAppendEnumerator<T>.MoveNext: Boolean;
 begin
   if not FSourceDone then
   begin
@@ -103,7 +103,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentAppendEnumerator<T>.Reset;
+procedure TLQColligoAppendEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSourceDone := False;

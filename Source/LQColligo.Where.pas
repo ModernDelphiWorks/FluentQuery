@@ -22,22 +22,22 @@ uses
   LQColligo;
 
 type
-  TFluentWhereEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoWhereEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FPredicate: TFunc<T, Boolean>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentWhereEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoWhereEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FPredicate: TFunc<T, Boolean>;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const APredicate: TFunc<T, Boolean>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const APredicate: TFunc<T, Boolean>);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -46,33 +46,33 @@ type
 
 implementation
 
-{ TFluentFilterEnumerable<T> }
+{ TLQColligoFilterEnumerable<T> }
 
-constructor TFluentWhereEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
+constructor TLQColligoWhereEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
 begin
   FSource := ASource;
   FPredicate := APredicate;
 end;
 
-function TFluentWhereEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoWhereEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentWhereEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
+  Result := TLQColligoWhereEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
 end;
 
-{ TFluentFilterEnumerator<T> }
+{ TLQColligoFilterEnumerator<T> }
 
-constructor TFluentWhereEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const APredicate: TFunc<T, Boolean>);
+constructor TLQColligoWhereEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const APredicate: TFunc<T, Boolean>);
 begin
   FSource := ASource;
   FPredicate := APredicate;
 end;
 
-function TFluentWhereEnumerator<T>.GetCurrent: T;
+function TLQColligoWhereEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentWhereEnumerator<T>.MoveNext: Boolean;
+function TLQColligoWhereEnumerator<T>.MoveNext: Boolean;
 begin
   while FSource.MoveNext do
   begin
@@ -86,7 +86,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentWhereEnumerator<T>.Reset;
+procedure TLQColligoWhereEnumerator<T>.Reset;
 begin
   FSource.Reset;
 end;

@@ -22,25 +22,25 @@ uses
   LQColligo;
 
 type
-  TFluentZipEnumerable<T, TSecond, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoZipEnumerable<T, TSecond, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource1: IFluentEnumerableBase<T>;
-    FSource2: IFluentEnumerableBase<TSecond>;
+    FSource1: ILQColligoEnumerableBase<T>;
+    FSource2: ILQColligoEnumerableBase<TSecond>;
     FSelector: TFunc<T, TSecond, TResult>;
   public
-    constructor Create(const ASource1: IFluentEnumerableBase<T>; const ASource2: IFluentEnumerableBase<TSecond>;
+    constructor Create(const ASource1: ILQColligoEnumerableBase<T>; const ASource2: ILQColligoEnumerableBase<TSecond>;
       const ASelector: TFunc<T, TSecond, TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentZipEnumerator<T, TSecond, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoZipEnumerator<T, TSecond, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource1: IFluentEnumerator<T>;
-    FSource2: IFluentEnumerator<TSecond>;
+    FSource1: ILQColligoEnumerator<T>;
+    FSource2: ILQColligoEnumerator<TSecond>;
     FSelector: TFunc<T, TSecond, TResult>;
     FCurrent: TResult;
   public
-    constructor Create(const ASource1: IFluentEnumerator<T>; const ASource2: IFluentEnumerator<TSecond>;
+    constructor Create(const ASource1: ILQColligoEnumerator<T>; const ASource2: ILQColligoEnumerator<TSecond>;
       const ASelector: TFunc<T, TSecond, TResult>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
@@ -50,37 +50,37 @@ type
 
 implementation
 
-{ TFluentZipEnumerable<T, TSecond, TResult> }
+{ TLQColligoZipEnumerable<T, TSecond, TResult> }
 
-constructor TFluentZipEnumerable<T, TSecond, TResult>.Create(const ASource1: IFluentEnumerableBase<T>;
-  const ASource2: IFluentEnumerableBase<TSecond>; const ASelector: TFunc<T, TSecond, TResult>);
+constructor TLQColligoZipEnumerable<T, TSecond, TResult>.Create(const ASource1: ILQColligoEnumerableBase<T>;
+  const ASource2: ILQColligoEnumerableBase<TSecond>; const ASelector: TFunc<T, TSecond, TResult>);
 begin
   FSource1 := ASource1;
   FSource2 := ASource2;
   FSelector := ASelector;
 end;
 
-function TFluentZipEnumerable<T, TSecond, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoZipEnumerable<T, TSecond, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentZipEnumerator<T, TSecond, TResult>.Create(FSource1.GetEnumerator, FSource2.GetEnumerator, FSelector);
+  Result := TLQColligoZipEnumerator<T, TSecond, TResult>.Create(FSource1.GetEnumerator, FSource2.GetEnumerator, FSelector);
 end;
 
-{ TFluentZipEnumerator<T, TSecond, TResult> }
+{ TLQColligoZipEnumerator<T, TSecond, TResult> }
 
-constructor TFluentZipEnumerator<T, TSecond, TResult>.Create(const ASource1: IFluentEnumerator<T>;
-  const ASource2: IFluentEnumerator<TSecond>; const ASelector: TFunc<T, TSecond, TResult>);
+constructor TLQColligoZipEnumerator<T, TSecond, TResult>.Create(const ASource1: ILQColligoEnumerator<T>;
+  const ASource2: ILQColligoEnumerator<TSecond>; const ASelector: TFunc<T, TSecond, TResult>);
 begin
   FSource1 := ASource1;
   FSource2 := ASource2;
   FSelector := ASelector;
 end;
 
-function TFluentZipEnumerator<T, TSecond, TResult>.GetCurrent: TResult;
+function TLQColligoZipEnumerator<T, TSecond, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentZipEnumerator<T, TSecond, TResult>.MoveNext: Boolean;
+function TLQColligoZipEnumerator<T, TSecond, TResult>.MoveNext: Boolean;
 begin
   if FSource1.MoveNext and FSource2.MoveNext then
   begin
@@ -91,7 +91,7 @@ begin
     Result := False;
 end;
 
-procedure TFluentZipEnumerator<T, TSecond, TResult>.Reset;
+procedure TLQColligoZipEnumerator<T, TSecond, TResult>.Reset;
 begin
   FSource1.Reset;
   FSource2.Reset;

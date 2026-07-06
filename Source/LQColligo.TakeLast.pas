@@ -29,18 +29,18 @@ type
   // LINQ TakeLast(n): deferred, non-streaming — buffers the whole source on the
   // FIRST MoveNext (not at construction), then yields the last n elements in
   // order. n <= 0 yields nothing.
-  TFluentTakeLastEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoTakeLastEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FCount: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ACount: Integer);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ACount: Integer);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentTakeLastEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoTakeLastEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCount: Integer;
     FBuffer: TList<T>;
     FIndex: Integer;
@@ -48,7 +48,7 @@ type
     FCurrent: T;
     procedure EnsureBuffered;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
     destructor Destroy; override;
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -58,22 +58,22 @@ type
 
 implementation
 
-{ TFluentTakeLastEnumerable<T> }
+{ TLQColligoTakeLastEnumerable<T> }
 
-constructor TFluentTakeLastEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const ACount: Integer);
+constructor TLQColligoTakeLastEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
 end;
 
-function TFluentTakeLastEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoTakeLastEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentTakeLastEnumerator<T>.Create(FSource.GetEnumerator, FCount);
+  Result := TLQColligoTakeLastEnumerator<T>.Create(FSource.GetEnumerator, FCount);
 end;
 
-{ TFluentTakeLastEnumerator<T> }
+{ TLQColligoTakeLastEnumerator<T> }
 
-constructor TFluentTakeLastEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+constructor TLQColligoTakeLastEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
@@ -81,13 +81,13 @@ begin
   FBuffered := False;
 end;
 
-destructor TFluentTakeLastEnumerator<T>.Destroy;
+destructor TLQColligoTakeLastEnumerator<T>.Destroy;
 begin
   FBuffer.Free;
   inherited;
 end;
 
-procedure TFluentTakeLastEnumerator<T>.EnsureBuffered;
+procedure TLQColligoTakeLastEnumerator<T>.EnsureBuffered;
 begin
   if FBuffered then
     Exit;
@@ -104,12 +104,12 @@ begin
   FBuffered := True;
 end;
 
-function TFluentTakeLastEnumerator<T>.GetCurrent: T;
+function TLQColligoTakeLastEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentTakeLastEnumerator<T>.MoveNext: Boolean;
+function TLQColligoTakeLastEnumerator<T>.MoveNext: Boolean;
 begin
   EnsureBuffered;
   Result := FIndex < FBuffer.Count;
@@ -120,7 +120,7 @@ begin
   end;
 end;
 
-procedure TFluentTakeLastEnumerator<T>.Reset;
+procedure TLQColligoTakeLastEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FBuffer.Clear;

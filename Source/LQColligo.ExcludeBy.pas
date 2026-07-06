@@ -32,29 +32,29 @@ type
   // The second (keys) is buffered when enumeration starts (in the enumerator
   // constructor, i.e. at GetEnumerator); the source is streamed. Key equality
   // uses AComparer (nil => default).
-  TFluentExcludeByEnumerable<T, TKey> = class(TFluentEnumerableBase<T>)
+  TLQColligoExcludeByEnumerable<T, TKey> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSecondKeys: IFluentEnumerableBase<TKey>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSecondKeys: ILQColligoEnumerableBase<TKey>;
     FKeySelector: TFunc<T, TKey>;
     FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
+      const ASecondKeys: ILQColligoEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey> = nil);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentExcludeByEnumerator<T, TKey> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoExcludeByEnumerator<T, TKey> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FKeySelector: TFunc<T, TKey>;
     FExcluded: TDictionary<TKey, Byte>;
     FEmitted: TDictionary<TKey, Byte>;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
-      const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
+      const ASecondKeys: ILQColligoEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -65,10 +65,10 @@ type
 
 implementation
 
-{ TFluentExcludeByEnumerable<T, TKey> }
+{ TLQColligoExcludeByEnumerable<T, TKey> }
 
-constructor TFluentExcludeByEnumerable<T, TKey>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecondKeys: IFluentEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
+constructor TLQColligoExcludeByEnumerable<T, TKey>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const ASecondKeys: ILQColligoEnumerableBase<TKey>; const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
@@ -77,16 +77,16 @@ begin
   FComparer := AComparer;
 end;
 
-function TFluentExcludeByEnumerable<T, TKey>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoExcludeByEnumerable<T, TKey>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentExcludeByEnumerator<T, TKey>.Create(
+  Result := TLQColligoExcludeByEnumerator<T, TKey>.Create(
     FSource.GetEnumerator, FSecondKeys.GetEnumerator, FKeySelector, FComparer);
 end;
 
-{ TFluentExcludeByEnumerator<T, TKey> }
+{ TLQColligoExcludeByEnumerator<T, TKey> }
 
-constructor TFluentExcludeByEnumerator<T, TKey>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecondKeys: IFluentEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
+constructor TLQColligoExcludeByEnumerator<T, TKey>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecondKeys: ILQColligoEnumerator<TKey>; const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
@@ -97,19 +97,19 @@ begin
     FExcluded.AddOrSetValue(ASecondKeys.Current, 0);
 end;
 
-destructor TFluentExcludeByEnumerator<T, TKey>.Destroy;
+destructor TLQColligoExcludeByEnumerator<T, TKey>.Destroy;
 begin
   FExcluded.Free;
   FEmitted.Free;
   inherited;
 end;
 
-function TFluentExcludeByEnumerator<T, TKey>.GetCurrent: T;
+function TLQColligoExcludeByEnumerator<T, TKey>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentExcludeByEnumerator<T, TKey>.MoveNext: Boolean;
+function TLQColligoExcludeByEnumerator<T, TKey>.MoveNext: Boolean;
 var
   LItem: T;
   LKey: TKey;
@@ -130,7 +130,7 @@ begin
   Result := False;
 end;
 
-procedure TFluentExcludeByEnumerator<T, TKey>.Reset;
+procedure TLQColligoExcludeByEnumerator<T, TKey>.Reset;
 begin
   FSource.Reset;
   FEmitted.Clear; // FExcluded persists (the second keys were already buffered)

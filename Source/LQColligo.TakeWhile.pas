@@ -22,23 +22,23 @@ uses
   LQColligo;
 
 type
-  TFluentTakeWhileEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoTakeWhileEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FPredicate: TFunc<T, Boolean>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentTakeWhileEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoTakeWhileEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FPredicate: TFunc<T, Boolean>;
     FCurrent: T;
     FDone: Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const APredicate: TFunc<T, Boolean>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const APredicate: TFunc<T, Boolean>);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -47,34 +47,34 @@ type
 
 implementation
 
-{ TFluentTakeWhileEnumerable<T> }
+{ TLQColligoTakeWhileEnumerable<T> }
 
-constructor TFluentTakeWhileEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
+constructor TLQColligoTakeWhileEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const APredicate: TFunc<T, Boolean>);
 begin
   FSource := ASource;
   FPredicate := APredicate;
 end;
 
-function TFluentTakeWhileEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoTakeWhileEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentTakeWhileEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
+  Result := TLQColligoTakeWhileEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
 end;
 
-{ TFluentTakeWhileEnumerator<T> }
+{ TLQColligoTakeWhileEnumerator<T> }
 
-constructor TFluentTakeWhileEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const APredicate: TFunc<T, Boolean>);
+constructor TLQColligoTakeWhileEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const APredicate: TFunc<T, Boolean>);
 begin
   FSource := ASource;
   FPredicate := APredicate;
   FDone := False;
 end;
 
-function TFluentTakeWhileEnumerator<T>.GetCurrent: T;
+function TLQColligoTakeWhileEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentTakeWhileEnumerator<T>.MoveNext: Boolean;
+function TLQColligoTakeWhileEnumerator<T>.MoveNext: Boolean;
 begin
   if FDone or not FSource.MoveNext then
     Exit(False);
@@ -87,7 +87,7 @@ begin
   Result := True;
 end;
 
-procedure TFluentTakeWhileEnumerator<T>.Reset;
+procedure TLQColligoTakeWhileEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FDone := False;

@@ -29,14 +29,14 @@ uses
   LQColligo.Core;
 
 type
-  IFluentEnumerableAdapter<TResult> = interface;
+  ILQColligoEnumerableAdapter<TResult> = interface;
   IGroupByEnumerable<TKey, T> = interface;
   IGrouping<TKey, T> = interface;
-  IFluentArray<T> = interface;
-  IFluentList<T> = interface;
-//  IFluentChunkResult<T> = interface;
+  ILQColligoArray<T> = interface;
+  ILQColligoList<T> = interface;
+//  ILQColligoChunkResult<T> = interface;
 
-  IFluentEnumerator<T> = interface(IInterface)
+  ILQColligoEnumerator<T> = interface(IInterface)
     ['{E2DEBD49-1094-41A5-A817-48FB81A6F6F2}']
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -44,14 +44,14 @@ type
     property Current: T read GetCurrent;
   end;
 
-  IFluentEnumerableBase<T> = interface(IInterface)
+  ILQColligoEnumerableBase<T> = interface(IInterface)
     ['{B68572C5-32C6-436A-B39B-D8DA06E33C14}']
-    function GetEnumerator: IFluentEnumerator<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
   end;
 
-  TFluentEnumerableBase<T> = class abstract(TInterfacedObject, IFluentEnumerableBase<T>)
+  TLQColligoEnumerableBase<T> = class abstract(TInterfacedObject, ILQColligoEnumerableBase<T>)
   protected
-    function GetEnumerator: IFluentEnumerator<T>; virtual; abstract;
+    function GetEnumerator: ILQColligoEnumerator<T>; virtual; abstract;
   end;
 
   // Ordered enumerable produced by OrderBy/OrderByDescending/Order/OrderDescending.
@@ -59,42 +59,42 @@ type
   // can append a subordinate criterion (primary key stays dominant), mirroring
   // C#'s IOrderedEnumerable<T>. Kept as an ARC interface so the criteria chain lives
   // in a managed object, never in a record temporary.
-  IFluentOrderedEnumerable<T> = interface(IFluentEnumerableBase<T>)
+  ILQColligoOrderedEnumerable<T> = interface(ILQColligoEnumerableBase<T>)
     ['{7E2C1A44-9B3D-4F6E-8A21-3C5D9E0F1B22}']
-    function ThenByAppend(const AComparer: TFunc<T, T, Integer>): IFluentOrderedEnumerable<T>;
+    function ThenByAppend(const AComparer: TFunc<T, T, Integer>): ILQColligoOrderedEnumerable<T>;
   end;
 
-  IFluentEnumerable<T> = record
+  ILQColligoEnumerable<T> = record
   private
-    FEnumerator: IFluentEnumerableBase<T>;
-    FFluentType: TFluentType;
+    FEnumerator: ILQColligoEnumerableBase<T>;
+    FLQColligoType: TLQColligoType;
     FComparer: IEqualityComparer<T>;
     FIsValid: Boolean;
     // Non-nil only when this record was produced by an ordering operator
     // (OrderBy/OrderByDescending/Order/OrderDescending). ThenBy/ThenByDescending
     // read it to append a subordinate criterion. Managed (ARC) field, so it
-    // survives record copies/temporaries. See IFluentOrderedEnumerable<T>.
-    FOrdered: IFluentOrderedEnumerable<T>;
+    // survives record copies/temporaries. See ILQColligoOrderedEnumerable<T>.
+    FOrdered: ILQColligoOrderedEnumerable<T>;
     type
-      TFluentCompare = class
+      TLQColligoCompare = class
       public
-        class function Compare(const AEnumerator: IFluentEnumerableBase<T>;
+        class function Compare(const AEnumerator: ILQColligoEnumerableBase<T>;
           const AValue: T; const AComparer: IEqualityComparer<T>): Boolean; static;
       end;
     function _IsEmpty: Boolean;
   public
-    constructor Create(const AEnumerator: IFluentEnumerableBase<T>;
-      const AFluentType: TFluentType = ftNone; const AComparer: IEqualityComparer<T> = nil);
+    constructor Create(const AEnumerator: ILQColligoEnumerableBase<T>;
+      const ALQColligoType: TLQColligoType = ftNone; const AComparer: IEqualityComparer<T> = nil);
     function IsNotAssigned: Boolean;
-    function GetEnumerator: IFluentEnumerator<T>;
-    function Where(const APredicate: TFunc<T, Boolean>): IFluentEnumerable<T>;
-    function Take(const ACount: Integer): IFluentEnumerable<T>;
-    function Skip(const ACount: Integer): IFluentEnumerable<T>;
-    function Distinct: IFluentEnumerable<T>; overload;
-    function Distinct(const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
-    function DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
+    function GetEnumerator: ILQColligoEnumerator<T>;
+    function Where(const APredicate: TFunc<T, Boolean>): ILQColligoEnumerable<T>;
+    function Take(const ACount: Integer): ILQColligoEnumerable<T>;
+    function Skip(const ACount: Integer): ILQColligoEnumerable<T>;
+    function Distinct: ILQColligoEnumerable<T>; overload;
+    function Distinct(const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>; overload;
+    function DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>; overload;
     function DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>;
-      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
+      const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>; overload;
     function Aggregate(const AReducer: TFunc<T, T, T>): T; overload;
     function Aggregate<TAcc>(const AInitialValue: TAcc; const AAccumulator: TFunc<TAcc, T, TAcc>): TAcc; overload;
     function Aggregate<TAccumulate, TResult>(const AInitialValue: TAccumulate;
@@ -138,30 +138,30 @@ type
     function Count(const APredicate: TFunc<T, Boolean>): Integer; overload;
     function LongCount: Int64; overload;
     function LongCount(const APredicate: TFunc<T, Boolean>): Int64; overload;
-    function Zip<TSecond, TResult>(const ASecond: IFluentEnumerable<TSecond>;
-      const AResultSelector: TFunc<T, TSecond, TResult>): IFluentEnumerable<TResult>;
-    function OfType<TResult>: IFluentEnumerable<TResult>;
-    function Exclude(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>; overload;
-    function Exclude(const ASecond: IFluentEnumerable<T>;
-      const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
-    function Intersect(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>; overload;
-    function Intersect(const ASecond: IFluentEnumerable<T>;
-      const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
-    function Union(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>; overload;
-    function Union(const ASecond: IFluentEnumerable<T>;
-      const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
-    function Concat(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
-    function SequenceEqual(const ASecond: IFluentEnumerable<T>): Boolean;
+    function Zip<TSecond, TResult>(const ASecond: ILQColligoEnumerable<TSecond>;
+      const AResultSelector: TFunc<T, TSecond, TResult>): ILQColligoEnumerable<TResult>;
+    function OfType<TResult>: ILQColligoEnumerable<TResult>;
+    function Exclude(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>; overload;
+    function Exclude(const ASecond: ILQColligoEnumerable<T>;
+      const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>; overload;
+    function Intersect(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>; overload;
+    function Intersect(const ASecond: ILQColligoEnumerable<T>;
+      const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>; overload;
+    function Union(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>; overload;
+    function Union(const ASecond: ILQColligoEnumerable<T>;
+      const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>; overload;
+    function Concat(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>;
+    function SequenceEqual(const ASecond: ILQColligoEnumerable<T>): Boolean;
     function Single: T; overload;
     function Single(const APredicate: TFunc<T, Boolean>): T; overload;
     function SingleOrDefault: T; overload;
     function SingleOrDefault(const APredicate: TFunc<T, Boolean>): T; overload;
     function ElementAt(const AIndex: Integer): T;
     function ElementAtOrDefault(const AIndex: Integer): T;
-    function OrderBy(const AComparer: TFunc<T, T, Integer>): IFluentEnumerable<T>; overload;
+    function OrderBy(const AComparer: TFunc<T, T, Integer>): ILQColligoEnumerable<T>; overload;
     function OrderBy<TKey>(const AKeySelector: TFunc<T, TKey>;
-      const AComparer: IComparer<TKey>): IFluentEnumerable<T>; overload;
-    function OrderByDesc(const AComparer: TFunc<T, T, Integer>): IFluentEnumerable<T>;
+      const AComparer: IComparer<TKey>): ILQColligoEnumerable<T>; overload;
+    function OrderByDesc(const AComparer: TFunc<T, T, Integer>): ILQColligoEnumerable<T>;
     function GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>): IGroupByEnumerable<TKey, T>; overload;
     function GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, T>; overload;
@@ -171,46 +171,46 @@ type
       const AElementSelector: TFunc<T, TElement>;
       const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, TElement>; overload;
     function GroupBy<TKey, TResult>(const AKeySelector: TFunc<T, TKey>;
-      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<T>, TResult>): IFluentEnumerable<TResult>; overload;
+      const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<T>, TResult>): ILQColligoEnumerable<TResult>; overload;
     function GroupBy<TKey, TResult>(const AKeySelector: TFunc<T, TKey>;
-      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<T>, TResult>;
-      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>; overload;
-    function Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+      const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<T>, TResult>;
+      const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<TResult>; overload;
+    function Join<TInner, TKey, TResult>(const AInner: ILQColligoEnumerable<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-      const AResultSelector: TFunc<T, TInner, TResult>): IFluentEnumerable<TResult>; overload;
-    function Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+      const AResultSelector: TFunc<T, TInner, TResult>): ILQColligoEnumerable<TResult>; overload;
+    function Join<TInner, TKey, TResult>(const AInner: ILQColligoEnumerable<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
       const AResultSelector: TFunc<T, TInner, TResult>;
-      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>; overload;
-    function GroupJoin<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+      const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<TResult>; overload;
+    function GroupJoin<TInner, TKey, TResult>(const AInner: ILQColligoEnumerable<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-      const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>): IFluentEnumerable<TResult>;
+      const AResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>): ILQColligoEnumerable<TResult>;
     function ToHashSet: THashSet<T>;
     function ToLookup<TKey, TElement>(const AKeySelector: TFunc<T, TKey>;
       const AElementSelector: TFunc<T, TElement>): TDictionary<TKey, TList<TElement>>;
-    function UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
-      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
-    function UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
+    function UnionBy<TKey>(const ASecond: ILQColligoEnumerable<T>;
+      const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>; overload;
+    function UnionBy<TKey>(const ASecond: ILQColligoEnumerable<T>;
       const AKeySelector: TFunc<T, TKey>;
-      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
-    function Append(const AElement: T): IFluentEnumerable<T>;
-    function Cast<TResult>: IFluentEnumerable<TResult>;
-    function DefaultIfEmpty: IFluentEnumerable<T>; overload;
-    function DefaultIfEmpty(const ADefaultValue: T): IFluentEnumerable<T>; overload;
-    function ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
-      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
-    function ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+      const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>; overload;
+    function Append(const AElement: T): ILQColligoEnumerable<T>;
+    function Cast<TResult>: ILQColligoEnumerable<TResult>;
+    function DefaultIfEmpty: ILQColligoEnumerable<T>; overload;
+    function DefaultIfEmpty(const ADefaultValue: T): ILQColligoEnumerable<T>; overload;
+    function ExcludeBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
+      const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>; overload;
+    function ExcludeBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
       const AKeySelector: TFunc<T, TKey>;
-      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
-    function IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
-      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
-    function IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+      const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>; overload;
+    function IntersectBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
+      const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>; overload;
+    function IntersectBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
       const AKeySelector: TFunc<T, TKey>;
-      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
-    function Prepend(const AElement: T): IFluentEnumerable<T>;
-    function Reverse: IFluentEnumerable<T>;
-    function SkipLast(const ACount: Integer): IFluentEnumerable<T>;
-    function TakeLast(const ACount: Integer): IFluentEnumerable<T>;
+      const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>; overload;
+    function Prepend(const AElement: T): ILQColligoEnumerable<T>;
+    function Reverse: ILQColligoEnumerable<T>;
+    function SkipLast(const ACount: Integer): ILQColligoEnumerable<T>;
+    function TakeLast(const ACount: Integer): ILQColligoEnumerable<T>;
     function Average(const ASelector: TFunc<T, Double>): Double; overload;
     function Average(const ASelector: TFunc<T, Currency>): Currency; overload;
     function Average(const ASelector: TFunc<T, Int32>): Double; overload;
@@ -223,11 +223,11 @@ type
     function Average(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency; overload;
     // Chunk splits the sequence into arrays of at most ASize elements (the last
     // may be shorter). Deferred/streaming. Returns the base interface (not the
-    // IFluentEnumerable<TArray<T>> record) to avoid E2604 "recursive use of
+    // ILQColligoEnumerable<TArray<T>> record) to avoid E2604 "recursive use of
     // generic type" — a record cannot return an instantiation of itself over a
     // type derived from its own T. Iterate the result via GetEnumerator, or wrap
-    // it in IFluentEnumerable<TArray<T>>.Create(...) to chain further.
-    function Chunk(const ASize: Integer): IFluentEnumerableBase<TArray<T>>;
+    // it in ILQColligoEnumerable<TArray<T>>.Create(...) to chain further.
+    function Chunk(const ASize: Integer): ILQColligoEnumerableBase<TArray<T>>;
     function CountBy<TKey>(const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey> = nil): TDictionary<TKey, Integer>;
     function Max: T; overload;
@@ -258,24 +258,24 @@ type
     function Min(const ASelector: TFunc<T, NullableSingle>): NullableSingle; overload;
     function Min<TResult>(const ASelector: TFunc<T, TResult>): TResult; overload;
     function Min(const AComparer: IComparer<T>): T; overload;
-    function Order: IFluentEnumerable<T>; overload;
-    function Order(const AComparer: IComparer<T>): IFluentEnumerable<T>; overload;
-    function OrderDescending: IFluentEnumerable<T>; overload;
-    function OrderDescending(const AComparer: IComparer<T>): IFluentEnumerable<T>; overload;
-    function Select<TResult>(const ASelector: TFunc<T, TResult>): IFluentEnumerable<TResult>; overload;
-    function Select<TResult>(const ASelector: TFunc<T, Integer, TResult>): IFluentEnumerable<TResult>; overload;
-    function SelectMany<TResult>(const ASelector: TFunc<T, TArray<TResult>>): IFluentEnumerable<TResult>; overload;
-    function SelectMany<TResult>(const ASelector: TFunc<T, Integer, IFluentArray<TResult>>): IFluentEnumerable<TResult>; overload;
+    function Order: ILQColligoEnumerable<T>; overload;
+    function Order(const AComparer: IComparer<T>): ILQColligoEnumerable<T>; overload;
+    function OrderDescending: ILQColligoEnumerable<T>; overload;
+    function OrderDescending(const AComparer: IComparer<T>): ILQColligoEnumerable<T>; overload;
+    function Select<TResult>(const ASelector: TFunc<T, TResult>): ILQColligoEnumerable<TResult>; overload;
+    function Select<TResult>(const ASelector: TFunc<T, Integer, TResult>): ILQColligoEnumerable<TResult>; overload;
+    function SelectMany<TResult>(const ASelector: TFunc<T, TArray<TResult>>): ILQColligoEnumerable<TResult>; overload;
+    function SelectMany<TResult>(const ASelector: TFunc<T, Integer, ILQColligoArray<TResult>>): ILQColligoEnumerable<TResult>; overload;
     function SelectMany<TCollection, TResult>(
       const ACollectionSelector: TFunc<T, TArray<TCollection>>;
-      const AResultSelector: TFunc<T, TCollection, TResult>): IFluentEnumerable<TResult>; overload;
+      const AResultSelector: TFunc<T, TCollection, TResult>): ILQColligoEnumerable<TResult>; overload;
     function SelectMany<TCollection, TResult>(
       const ACollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
-      const AResultSelector: TFunc<T, TCollection, TResult>): IFluentEnumerable<TResult>; overload;
-    function SkipWhile(const APredicate: TFunc<T, Boolean>): IFluentEnumerable<T>; overload;
-    function SkipWhile(const APredicate: TFunc<T, Integer, Boolean>): IFluentEnumerable<T>; overload;
-    function TakeWhile(const APredicate: TFunc<T, Boolean>): IFluentEnumerable<T>; overload;
-    function TakeWhile(const APredicate: TFunc<T, Integer, Boolean>): IFluentEnumerable<T>; overload;
+      const AResultSelector: TFunc<T, TCollection, TResult>): ILQColligoEnumerable<TResult>; overload;
+    function SkipWhile(const APredicate: TFunc<T, Boolean>): ILQColligoEnumerable<T>; overload;
+    function SkipWhile(const APredicate: TFunc<T, Integer, Boolean>): ILQColligoEnumerable<T>; overload;
+    function TakeWhile(const APredicate: TFunc<T, Boolean>): ILQColligoEnumerable<T>; overload;
+    function TakeWhile(const APredicate: TFunc<T, Integer, Boolean>): ILQColligoEnumerable<T>; overload;
     function ToDictionary<TKey, TValue>(const AKeySelector: TFunc<T, TKey>;
       const AValueSelector: TFunc<T, TValue>): TDictionary<TKey, TValue>; overload;
     function ToDictionary<TKey, TValue>(const AKeySelector: TFunc<T, TKey>;
@@ -284,81 +284,81 @@ type
       const AValueSelector: TFunc<T, TValue>;
       const AComparer: IEqualityComparer<TKey>): TDictionary<TKey, TValue>; overload;
     function TryGetNonEnumeratedCount(out ACount: Integer): Boolean;
-    function ThenBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
-    function ThenByDescending<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
-    function ToArray: IFluentArray<T>;
-    function ToList: IFluentList<T>;
+    function ThenBy<TKey>(const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
+    function ThenByDescending<TKey>(const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
+    function ToArray: ILQColligoArray<T>;
+    function ToList: ILQColligoList<T>;
   end;
 
   IGroupByEnumerable<TKey, T> = interface(IInterface)
     ['{A85DB3F6-E808-4E81-B386-75190087507B}']
-    function GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>;
-    function AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
+    function GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, T>>;
+    function AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, T>>;
   end;
 
   IGrouping<TKey, T> = interface(IInterface)
     ['{87B4E3F7-C092-44D1-B682-0B03C0202BF0}']
     function GetKey: TKey;
-    function GetItems: IFluentEnumerable<T>;
+    function GetItems: ILQColligoEnumerable<T>;
     property Key: TKey read GetKey;
-    property Items: IFluentEnumerable<T> read GetItems;
+    property Items: ILQColligoEnumerable<T> read GetItems;
   end;
 
-  TFluentGrouping<TKey, T> = class(TInterfacedObject, IGrouping<TKey, T>)
+  TLQColligoGrouping<TKey, T> = class(TInterfacedObject, IGrouping<TKey, T>)
   private
     FKey: TKey;
-    FItems: IFluentEnumerable<T>;
+    FItems: ILQColligoEnumerable<T>;
   public
-    constructor Create(const AKey: TKey; const AItems: IFluentEnumerable<T>);
+    constructor Create(const AKey: TKey; const AItems: ILQColligoEnumerable<T>);
     function GetKey: TKey;
-    function GetItems: IFluentEnumerable<T>;
+    function GetItems: ILQColligoEnumerable<T>;
     property Key: TKey read GetKey;
-    property Items: IFluentEnumerable<T> read GetItems;
+    property Items: ILQColligoEnumerable<T> read GetItems;
   end;
 
-//  IFluentChunkResult<T> = interface(IInterface)
+//  ILQColligoChunkResult<T> = interface(IInterface)
 //    ['{1148CD41-1C5F-44DA-A4EF-C200AC3F2D5A}']
-//    function GetEnumerator: IFluentEnumerator<TArray<T>>;
-//    function AsEnumerable: IFluentEnumerable<TArray<T>>;
+//    function GetEnumerator: ILQColligoEnumerator<TArray<T>>;
+//    function AsEnumerable: ILQColligoEnumerable<TArray<T>>;
 //  end;
 
-  IFluentEnumerableAdapter<TResult> = interface(IInterface)
+  ILQColligoEnumerableAdapter<TResult> = interface(IInterface)
     ['{69303F43-C266-437F-A790-4038CFDA0680}']
-    function AsEnumerable: IFluentEnumerable<TResult>;
+    function AsEnumerable: ILQColligoEnumerable<TResult>;
   end;
 
-  IFluentArray<T> = interface(IInterface)
+  ILQColligoArray<T> = interface(IInterface)
     ['{E3DF6D61-1A52-466E-8B16-CF7AAC574A02}']
     function GetItem(AIndex: NativeInt): T;
     procedure SetItem(AIndex: NativeInt; const AValue: T);
     function _GetArray: TArray<T>;
     procedure SetItems(const AItems: TArray<T>);
-    function AsEnumerable: IFluentEnumerable<T>;
-    function GetEnumerator: IFluentEnumerator<T>;
+    function AsEnumerable: ILQColligoEnumerable<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
     function Length: Integer;
     property ArrayData: TArray<T> read _GetArray;
     property Items[AIndex: NativeInt]: T read GetItem write SetItem; default;
   end;
 
-  ICollections<T> = interface(IFluentEnumerableBase<T>)
+  ICollections<T> = interface(ILQColligoEnumerableBase<T>)
     ['{1F1B87DA-2722-40E3-899F-5622CA9BE807}']
     function Count: NativeInt;
     function Contains(const AItem: T): Boolean;
     function Remove(const AItem: T): Boolean;
-    function AsEnumerable: IFluentEnumerable<T>;
-    function GetEnumerator: IFluentEnumerator<T>;
+    function AsEnumerable: ILQColligoEnumerable<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
     procedure Add(const AItem: T);
     procedure CopyTo(AArray: array of T; AIndex: Integer);
     procedure Clear;
   end;
 
-  IFluentList<T> = interface(ICollections<T>)
+  ILQColligoList<T> = interface(ICollections<T>)
     ['{2749C02A-9973-4747-A4D3-29376DFD6242}']
     function GetCapacity: NativeInt;
     procedure SetCapacity(const AValue: NativeInt);
     function GetItem(AIndex: NativeInt): T;
     procedure SetItem(AIndex: NativeInt; const AValue: T);
-    function GetList: IFluentArray<T>;
+    function GetList: ILQColligoArray<T>;
     function GetComparer: IComparer<T>;
     procedure SetOnNotify(const AValue: TCollectionNotifyEvent<T>);
     function GetOnNotify: TCollectionNotifyEvent<T>;
@@ -386,7 +386,7 @@ type
     function ExtractAt(constIndex: NativeInt): T;
     function First: T;
     function Last: T;
-    function Expand: IFluentList<T>;
+    function Expand: ILQColligoList<T>;
     function IndexOf(const AValue: T): NativeInt;
     function IndexOfItem(const AValue: T; Direction: TDirection): NativeInt;
     function LastIndexOf(const AValue: T): NativeInt;
@@ -394,15 +394,15 @@ type
     function BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>): Boolean; overload;
     function BinarySearch(const AItem: T; out FoundIndex: NativeInt; const AComparer: IComparer<T>; AIndex, Count: NativeInt): Boolean; overload;
     function IsEmpty: Boolean;
-    function ToArray: IFluentArray<T>;
+    function ToArray: ILQColligoArray<T>;
     property Capacity: NativeInt read GetCapacity write SetCapacity;
     property Items[AIndex: NativeInt]: T read GetItem write SetItem; default;
-    property List: IFluentArray<T> read GetList;
+    property List: ILQColligoArray<T> read GetList;
     property Comparer: IComparer<T> read GetComparer;
     property OnNotify: TCollectionNotifyEvent<T> read GetOnNotify write SetOnNotify;
   end;
 
-  IFluentDictionary<K, V> = interface(ICollections<TPair<K, V>>)
+  ILQColligoDictionary<K, V> = interface(ICollections<TPair<K, V>>)
     ['{CF242859-D62D-4277-91B3-D4E389793E7C}']
     procedure SetCapacity(const AValue: NativeInt);
     procedure SetItem(const AKey: K; const AValue: V);
@@ -434,7 +434,7 @@ type
     function ContainsKey(const AKey: K): Boolean;
     function ContainsValue(const AValue: V): Boolean;
     function IsEmpty: Boolean;
-    function ToArray: IFluentArray<TPair<K, V>>;
+    function ToArray: ILQColligoArray<TPair<K, V>>;
     property Capacity: NativeInt read GetCapacity write SetCapacity;
     property GrowThreshold: NativeInt read GetGrowThreshold;
     property Collisions: NativeInt read GetCollisions;
@@ -448,18 +448,18 @@ type
 
   // Static entry points for the LINQ generators (Enumerable.Range/Repeat/Empty).
   // These start a pipeline from nothing (no source collection). All deferred.
-  TFluentQuery = class
+  TLQColligo = class
   public
     // ACount consecutive integers from AStart (AStart..AStart+ACount-1).
     // ACount=0 -> empty. Raises EArgumentOutOfRangeException if ACount < 0 or
     // AStart+ACount-1 overflows Integer. Note: the 2nd argument is a COUNT, not
     // an end value (Range(1,5) = 1,2,3,4,5).
-    class function Range(const AStart, ACount: Integer): IFluentEnumerable<Integer>; static;
+    class function Range(const AStart, ACount: Integer): ILQColligoEnumerable<Integer>; static;
     // The same element ACount times. ACount=0 -> empty. Raises if ACount < 0.
     // (Repeat is a reserved word, hence the & escape.)
-    class function &Repeat<T>(const AElement: T; const ACount: Integer): IFluentEnumerable<T>; static;
+    class function &Repeat<T>(const AElement: T; const ACount: Integer): ILQColligoEnumerable<T>; static;
     // An empty sequence of T.
-    class function Empty<T>: IFluentEnumerable<T>; static;
+    class function Empty<T>: ILQColligoEnumerable<T>; static;
   end;
 
 implementation
@@ -505,13 +505,13 @@ uses
   LQColligo.SelectManyIndexed,
   LQColligo.SelectManyCollectionIndexed;
 
-{ IFluentEnumerable<T> }
+{ ILQColligoEnumerable<T> }
 
-constructor IFluentEnumerable<T>.Create(const AEnumerator: IFluentEnumerableBase<T>;
-  const AFluentType: TFluentType; const AComparer: IEqualityComparer<T>);
+constructor ILQColligoEnumerable<T>.Create(const AEnumerator: ILQColligoEnumerableBase<T>;
+  const ALQColligoType: TLQColligoType; const AComparer: IEqualityComparer<T>);
 begin
   FEnumerator := AEnumerator;
-  FFluentType := AFluentType;
+  FLQColligoType := ALQColligoType;
   FComparer := AComparer;
   if FComparer = nil then
     FComparer := TEqualityComparer<T>.Default;
@@ -519,51 +519,51 @@ begin
   FOrdered := nil;
 end;
 
-function IFluentEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function ILQColligoEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
   Result := FEnumerator.GetEnumerator;
 end;
 
-function IFluentEnumerable<T>.Where(const APredicate: TFunc<T, Boolean>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Where(const APredicate: TFunc<T, Boolean>): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentWhereEnumerable<T>.Create(FEnumerator, APredicate),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoWhereEnumerable<T>.Create(FEnumerator, APredicate),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Take(const ACount: Integer): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Take(const ACount: Integer): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentTakeEnumerable<T>.Create(FEnumerator, ACount),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoTakeEnumerable<T>.Create(FEnumerator, ACount),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Skip(const ACount: Integer): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Skip(const ACount: Integer): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentSkipEnumerable<T>.Create(FEnumerator, ACount),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoSkipEnumerable<T>.Create(FEnumerator, ACount),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.OrderBy(const AComparer: TFunc<T, T, Integer>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.OrderBy(const AComparer: TFunc<T, T, Integer>): ILQColligoEnumerable<T>;
 var
-  LOrdered: IFluentOrderedEnumerable<T>;
+  LOrdered: ILQColligoOrderedEnumerable<T>;
 begin
-  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, AComparer);
-  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  LOrdered := TLQColligoOrderByEnumerable<T>.Create(FEnumerator, AComparer);
+  Result := ILQColligoEnumerable<T>.Create(LOrdered, FLQColligoType, FComparer);
   Result.FOrdered := LOrdered;
 end;
 
-function IFluentEnumerable<T>.OrderBy<TKey>(const AKeySelector: TFunc<T, TKey>;
-  const AComparer: IComparer<TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.OrderBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IComparer<TKey>): ILQColligoEnumerable<T>;
 var
-  LOrdered: IFluentOrderedEnumerable<T>;
+  LOrdered: ILQColligoOrderedEnumerable<T>;
   LFunc: TFunc<T, T, Integer>;
 begin
   if not Assigned(AKeySelector) then
@@ -575,14 +575,14 @@ begin
     begin
       Result := AComparer.Compare(AKeySelector(A), AKeySelector(B));
     end;
-  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
-  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  LOrdered := TLQColligoOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := ILQColligoEnumerable<T>.Create(LOrdered, FLQColligoType, FComparer);
   Result.FOrdered := LOrdered;
 end;
 
-function IFluentEnumerable<T>.OrderByDesc(const AComparer: TFunc<T, T, Integer>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.OrderByDesc(const AComparer: TFunc<T, T, Integer>): ILQColligoEnumerable<T>;
 var
-  LOrdered: IFluentOrderedEnumerable<T>;
+  LOrdered: ILQColligoOrderedEnumerable<T>;
   LFunc: TFunc<T, T, Integer>;
 begin
   LFunc :=
@@ -590,14 +590,14 @@ begin
     begin
       Result := -AComparer(A, B);
     end;
-  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
-  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  LOrdered := TLQColligoOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := ILQColligoEnumerable<T>.Create(LOrdered, FLQColligoType, FComparer);
   Result.FOrdered := LOrdered;
 end;
 
-function IFluentEnumerable<T>.OrderDescending(const AComparer: IComparer<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.OrderDescending(const AComparer: IComparer<T>): ILQColligoEnumerable<T>;
 var
-  LOrdered: IFluentOrderedEnumerable<T>;
+  LOrdered: ILQColligoOrderedEnumerable<T>;
   LFunc: TFunc<T, T, Integer>;
 begin
   LFunc :=
@@ -608,46 +608,46 @@ begin
       else
         Result := -AComparer.Compare(A, B);
     end;
-  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
-  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  LOrdered := TLQColligoOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := ILQColligoEnumerable<T>.Create(LOrdered, FLQColligoType, FComparer);
   Result.FOrdered := LOrdered;
 end;
 
-function IFluentEnumerable<T>.OrderDescending: IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.OrderDescending: ILQColligoEnumerable<T>;
 begin
   Result := OrderDescending(nil);
 end;
 
-function IFluentEnumerable<T>.Distinct: IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Distinct: ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentDistinctEnumerable<T>.Create(FEnumerator, FComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoDistinctEnumerable<T>.Create(FEnumerator, FComparer),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Distinct(const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Distinct(const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentDistinctEnumerable<T>.Create(FEnumerator, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoDistinctEnumerable<T>.Create(FEnumerator, AComparer),
+    FLQColligoType,
     AComparer
   );
 end;
 
-function IFluentEnumerable<T>.Select<TResult>(const ASelector: TFunc<T, TResult>): IFluentEnumerable<TResult>;
+function ILQColligoEnumerable<T>.Select<TResult>(const ASelector: TFunc<T, TResult>): ILQColligoEnumerable<TResult>;
 begin
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentSelectEnumerable<T, TResult>.Create(FEnumerator, ASelector),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoSelectEnumerable<T, TResult>.Create(FEnumerator, ASelector),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.Aggregate(const AReducer: TFunc<T, T, T>): T;
+function ILQColligoEnumerable<T>.Aggregate(const AReducer: TFunc<T, T, T>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -669,10 +669,10 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Aggregate<TAcc>(const AInitialValue: TAcc;
+function ILQColligoEnumerable<T>.Aggregate<TAcc>(const AInitialValue: TAcc;
   const AAccumulator: TFunc<TAcc, T, TAcc>): TAcc;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: TAcc;
 begin
   LEnum := GetEnumerator;
@@ -682,12 +682,12 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Aggregate<TAccumulate, TResult>(
+function ILQColligoEnumerable<T>.Aggregate<TAccumulate, TResult>(
   const AInitialValue: TAccumulate;
   const AAccumulator: TFunc<TAccumulate, T, TAccumulate>;
   const AResultSelector: TFunc<TAccumulate, TResult>): TResult;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: TAccumulate;
 begin
   if not Assigned(AAccumulator) then
@@ -701,13 +701,13 @@ begin
   Result := AResultSelector(LResult);
 end;
 
-function IFluentEnumerable<T>.AggregateBy<TKey, TAccumulate>(
+function ILQColligoEnumerable<T>.AggregateBy<TKey, TAccumulate>(
   const AKeySelector: TFunc<T, TKey>;
   const ASeedFactory: TFunc<TKey, TAccumulate>;
   const AAccumulator: TFunc<TAccumulate, T, TAccumulate>;
   const AComparer: IEqualityComparer<TKey>): TDictionary<TKey, TAccumulate>;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LDict: TDictionary<TKey, TAccumulate>;
   LKey: TKey;
   LAccum: TAccumulate;
@@ -731,13 +731,13 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.AggregateBy<TKey, TAccumulate>(
+function ILQColligoEnumerable<T>.AggregateBy<TKey, TAccumulate>(
   const AKeySelector: TFunc<T, TKey>;
   const ASeed: TAccumulate;
   const AAccumulator: TFunc<TAccumulate, T, TAccumulate>;
   const AComparer: IEqualityComparer<TKey>): TDictionary<TKey, TAccumulate>;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LDict: TDictionary<TKey, TAccumulate>;
   LKey: TKey;
   LAccum: TAccumulate;
@@ -761,9 +761,9 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, Double>): Double;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, Double>): Double;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Double;
 begin
   if not Assigned(ASelector) then
@@ -775,9 +775,9 @@ begin
   Result := LSum;
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, Integer>): Integer;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, Integer>): Integer;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Int64;
 begin
   if not Assigned(ASelector) then
@@ -796,9 +796,9 @@ begin
   Result := Integer(LSum);
 end;
 
-function IFluentEnumerable<T>.SumCurrency(const ASelector: TFunc<T, Currency>): Currency;
+function ILQColligoEnumerable<T>.SumCurrency(const ASelector: TFunc<T, Currency>): Currency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Currency;
 begin
   if not Assigned(ASelector) then
@@ -810,9 +810,9 @@ begin
   Result := LSum;
 end;
 
-function IFluentEnumerable<T>.SumInt32(const ASelector: TFunc<T, Int32>): Int32;
+function ILQColligoEnumerable<T>.SumInt32(const ASelector: TFunc<T, Int32>): Int32;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Int64;
 begin
   if not Assigned(ASelector) then
@@ -828,9 +828,9 @@ begin
   Result := Int32(LSum);
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, Int64>): Int64;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, Int64>): Int64;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum, LValue, LNew: Int64;
 begin
   if not Assigned(ASelector) then
@@ -850,9 +850,9 @@ begin
   Result := LSum;
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, Single>): Single;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, Single>): Single;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
   if not Assigned(ASelector) then
     raise EArgumentNilException.Create('Selector cannot be nil');
@@ -862,9 +862,9 @@ begin
     Result := Result + ASelector(LEnum.Current);
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableInt32>): NullableInt32;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, NullableInt32>): NullableInt32;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Int64;
   LValue: NullableInt32;
   LCount: Integer;
@@ -889,9 +889,9 @@ begin
   Result := NullableInt32.Create(Int32(LSum));
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableInt64>): NullableInt64;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, NullableInt64>): NullableInt64;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum, LNew: Int64;
   LCount: Integer;
   LValue: NullableInt64;
@@ -917,9 +917,9 @@ begin
   Result := NullableInt64.Create(LSum);
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LValue: NullableSingle;
   LHasValue: Boolean;
 begin
@@ -946,9 +946,9 @@ begin
   // never null and never raises.
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Double;
   LCount: Integer;
   LValue: NullableDouble;
@@ -971,9 +971,9 @@ begin
   Result := NullableDouble.Create(LSum);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, Currency>): Currency;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, Currency>): Currency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Currency;
   LCount: Integer;
 begin
@@ -992,9 +992,9 @@ begin
   Result := LSum / LCount;
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, Int32>): Double;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, Int32>): Double;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Int64;
   LCount: Integer;
 begin
@@ -1013,9 +1013,9 @@ begin
   Result := LSum / LCount;
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, Int64>): Double;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, Int64>): Double;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Int64;
   LCount: Integer;
 begin
@@ -1034,9 +1034,9 @@ begin
   Result := LSum / LCount;
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, Single>): Double;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, Single>): Double;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Double;
   LCount: Integer;
 begin
@@ -1055,9 +1055,9 @@ begin
   Result := LSum / LCount;
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt32>): NullableDouble;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt32>): NullableDouble;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Int64;
   LCount: Integer;
   LValue: NullableInt32;
@@ -1083,9 +1083,9 @@ begin
     Result := NullableDouble.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt64>): NullableDouble;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt64>): NullableDouble;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Int64;
   LCount: Integer;
   LValue: NullableInt64;
@@ -1111,9 +1111,9 @@ begin
     Result := NullableDouble.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Double;
   LCount: Integer;
   LValue: NullableSingle;
@@ -1139,9 +1139,9 @@ begin
     Result := NullableSingle.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Double;
   LCount: Integer;
   LValue: NullableDouble;
@@ -1167,9 +1167,9 @@ begin
     Result := NullableDouble.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Currency;
   LCount: Integer;
   LValue: NullableCurrency;
@@ -1195,9 +1195,9 @@ begin
     Result := NullableCurrency.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, Double>): Double;
+function ILQColligoEnumerable<T>.Average(const ASelector: TFunc<T, Double>): Double;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Double;
   LCount: Integer;
 begin
@@ -1216,9 +1216,9 @@ begin
   Result := LSum / LCount;
 end;
 
-function IFluentEnumerable<T>.Min: T;
+function ILQColligoEnumerable<T>.Min: T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -1240,9 +1240,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max: T;
+function ILQColligoEnumerable<T>.Max: T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -1264,9 +1264,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Any(const APredicate: TFunc<T, Boolean>): Boolean;
+function ILQColligoEnumerable<T>.Any(const APredicate: TFunc<T, Boolean>): Boolean;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
   LEnum := GetEnumerator;
   while LEnum.MoveNext do
@@ -1277,14 +1277,14 @@ begin
   Result := False;
 end;
 
-function IFluentEnumerable<T>.Any: Boolean;
+function ILQColligoEnumerable<T>.Any: Boolean;
 begin
   Result := GetEnumerator.MoveNext;
 end;
 
-function IFluentEnumerable<T>.All(const APredicate: TFunc<T, Boolean>): Boolean;
+function ILQColligoEnumerable<T>.All(const APredicate: TFunc<T, Boolean>): Boolean;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
   if not Assigned(APredicate) then
     raise EArgumentNilException.Create('Predicate cannot be nil');
@@ -1297,15 +1297,15 @@ begin
   Result := True;
 end;
 
-function IFluentEnumerable<T>.Contains(const AValue: T): Boolean;
+function ILQColligoEnumerable<T>.Contains(const AValue: T): Boolean;
 begin
-  Result := TFluentCompare.Compare(FEnumerator, AValue, FComparer);
+  Result := TLQColligoCompare.Compare(FEnumerator, AValue, FComparer);
 end;
 
-function IFluentEnumerable<T>.Contains(const AValue: T;
+function ILQColligoEnumerable<T>.Contains(const AValue: T;
   const AComparer: IEqualityComparer<T>): Boolean;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
   if not Assigned(AComparer) then
     raise EArgumentNilException.Create('Comparer cannot be nil');
@@ -1316,14 +1316,14 @@ begin
   Result := False;
 end;
 
-function IFluentEnumerable<T>.First: T;
+function ILQColligoEnumerable<T>.First: T;
 begin
   Result := First(nil);
 end;
 
-function IFluentEnumerable<T>.First(const APredicate: TFunc<T, Boolean>): T;
+function ILQColligoEnumerable<T>.First(const APredicate: TFunc<T, Boolean>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LItem: T;
   LFound: Boolean;
 begin
@@ -1345,9 +1345,9 @@ begin
     raise EInvalidOperation.Create('Nenhum elemento encontrado');
 end;
 
-function IFluentEnumerable<T>.FirstOrDefault(const APredicate: TFunc<T, Boolean>): T;
+function ILQColligoEnumerable<T>.FirstOrDefault(const APredicate: TFunc<T, Boolean>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
   LEnum := GetEnumerator;
   while LEnum.MoveNext do
@@ -1358,14 +1358,14 @@ begin
   Result := Default(T);
 end;
 
-function IFluentEnumerable<T>.FirstOrDefault: T;
+function ILQColligoEnumerable<T>.FirstOrDefault: T;
 begin
   Result := FirstOrDefault(nil);
 end;
 
-function IFluentEnumerable<T>.Last(const APredicate: TFunc<T, Boolean>): T;
+function ILQColligoEnumerable<T>.Last(const APredicate: TFunc<T, Boolean>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -1385,14 +1385,14 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Last: T;
+function ILQColligoEnumerable<T>.Last: T;
 begin
   Result := Last(nil);
 end;
 
-function IFluentEnumerable<T>.LastOrDefault(const APredicate: TFunc<T, Boolean>): T;
+function ILQColligoEnumerable<T>.LastOrDefault(const APredicate: TFunc<T, Boolean>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -1413,14 +1413,14 @@ begin
     Result := LResult;
 end;
 
-function IFluentEnumerable<T>.LastOrDefault: T;
+function ILQColligoEnumerable<T>.LastOrDefault: T;
 begin
   Result := LastOrDefault(nil);
 end;
 
-function IFluentEnumerable<T>.Count(const APredicate: TFunc<T, Boolean>): Integer;
+function ILQColligoEnumerable<T>.Count(const APredicate: TFunc<T, Boolean>): Integer;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LCount: Integer;
 begin
   LEnum := GetEnumerator;
@@ -1433,11 +1433,11 @@ begin
   Result := LCount;
 end;
 
-function IFluentEnumerable<T>.CountBy<TKey>(
+function ILQColligoEnumerable<T>.CountBy<TKey>(
   const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>): TDictionary<TKey, Integer>;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LDict: TDictionary<TKey, Integer>;
   LKey: TKey;
   LCount: Integer;
@@ -1462,14 +1462,14 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.Count: Integer;
+function ILQColligoEnumerable<T>.Count: Integer;
 begin
   Result := Count(nil);
 end;
 
-function IFluentEnumerable<T>.LongCount(const APredicate: TFunc<T, Boolean>): Int64;
+function ILQColligoEnumerable<T>.LongCount(const APredicate: TFunc<T, Boolean>): Int64;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LCount: Int64;
 begin
   LEnum := GetEnumerator;
@@ -1482,39 +1482,39 @@ begin
   Result := LCount;
 end;
 
-function IFluentEnumerable<T>.LongCount: Int64;
+function ILQColligoEnumerable<T>.LongCount: Int64;
 begin
   Result := LongCount(nil);
 end;
 
-function IFluentEnumerable<T>.TakeWhile(const APredicate: TFunc<T, Boolean>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.TakeWhile(const APredicate: TFunc<T, Boolean>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(APredicate) then
     raise EArgumentNilException.Create('Predicate cannot be nil');
-  Result := IFluentEnumerable<T>.Create(
-    TFluentTakeWhileEnumerable<T>.Create(FEnumerator, APredicate),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoTakeWhileEnumerable<T>.Create(FEnumerator, APredicate),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.SkipWhile(const APredicate: TFunc<T, Boolean>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.SkipWhile(const APredicate: TFunc<T, Boolean>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(APredicate) then
     raise EArgumentNilException.Create('Predicate cannot be nil');
-  Result := IFluentEnumerable<T>.Create(
-    TFluentSkipWhileEnumerable<T>.Create(FEnumerator, APredicate),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoSkipWhileEnumerable<T>.Create(FEnumerator, APredicate),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.ToArray: IFluentArray<T>;
+function ILQColligoEnumerable<T>.ToArray: ILQColligoArray<T>;
 var
-  LEnum: IFluentEnumerator<T>;
-  LList: IFluentList<T>;
+  LEnum: ILQColligoEnumerator<T>;
+  LList: ILQColligoList<T>;
 begin
-  LList := TFluentList<T>.Create;
+  LList := TLQColligoList<T>.Create;
   try
     LEnum := GetEnumerator;
     while LEnum.MoveNext do
@@ -1525,19 +1525,19 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.ToDictionary<TKey, TValue>(
+function ILQColligoEnumerable<T>.ToDictionary<TKey, TValue>(
   const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>): TDictionary<TKey, T>;
 begin
   Result := ToDictionary<TKey, T>(AKeySelector, function(x: T): T begin Result := x end, AComparer);
 end;
 
-function IFluentEnumerable<T>.ToDictionary<TKey, TValue>(
+function ILQColligoEnumerable<T>.ToDictionary<TKey, TValue>(
   const AKeySelector: TFunc<T, TKey>;
   const AValueSelector: TFunc<T, TValue>;
   const AComparer: IEqualityComparer<TKey>): TDictionary<TKey, TValue>;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LDict: TDictionary<TKey, TValue>;
 begin
   if not Assigned(AKeySelector) then
@@ -1556,33 +1556,33 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.ToList: IFluentList<T>;
+function ILQColligoEnumerable<T>.ToList: ILQColligoList<T>;
 var
-  LList: IFluentList<T>;
-  LEnum: IFluentEnumerator<T>;
+  LList: ILQColligoList<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
-  LList := TFluentList<T>.Create;
+  LList := TLQColligoList<T>.Create;
   LEnum := GetEnumerator;
   while LEnum.MoveNext do
     LList.Add(LEnum.Current);
   Result := LList;
 end;
 
-function IFluentEnumerable<T>.ToDictionary<TKey, TValue>(
+function ILQColligoEnumerable<T>.ToDictionary<TKey, TValue>(
   const AKeySelector: TFunc<T, TKey>;
   const AValueSelector: TFunc<T, TValue>): TDictionary<TKey, TValue>;
 begin
   Result := ToDictionary<TKey, TValue>(AKeySelector, AValueSelector, nil);
 end;
 
-function IFluentEnumerable<T>.GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>): IGroupByEnumerable<TKey, T>;
+function ILQColligoEnumerable<T>.GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>): IGroupByEnumerable<TKey, T>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  Result := TFluentGroupByEnumerable<TKey, T>.Create(FEnumerator, AKeySelector);
+  Result := TLQColligoGroupByEnumerable<TKey, T>.Create(FEnumerator, AKeySelector);
 end;
 
-function IFluentEnumerable<T>.GroupBy<TKey, TElement>(
+function ILQColligoEnumerable<T>.GroupBy<TKey, TElement>(
   const AKeySelector: TFunc<T, TKey>;
   const AElementSelector: TFunc<T, TElement>): IGroupByEnumerable<TKey, TElement>;
 begin
@@ -1590,37 +1590,37 @@ begin
     raise EArgumentNilException.Create('Key selector cannot be nil');
   if not Assigned(AElementSelector) then
     raise EArgumentNilException.Create('Element selector cannot be nil');
-  Result := TFluentGroupByEnumerable<TKey, TElement, T>.Create(
+  Result := TLQColligoGroupByEnumerable<TKey, TElement, T>.Create(
     FEnumerator,
     AKeySelector,
     AElementSelector);
 end;
 
-function IFluentEnumerable<T>.GroupBy<TKey, TResult>(
+function ILQColligoEnumerable<T>.GroupBy<TKey, TResult>(
   const AKeySelector: TFunc<T, TKey>;
-  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<T>, TResult>): IFluentEnumerable<TResult>;
+  const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<T>, TResult>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentGroupByResultEnumerable<TKey, T, TResult>.Create(
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoGroupByResultEnumerable<TKey, T, TResult>.Create(
       FEnumerator, AKeySelector, AResultSelector),
-    FFluentType,
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+function ILQColligoEnumerable<T>.GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, T>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  Result := TFluentGroupByEnumerable<TKey, T>.Create(FEnumerator, AKeySelector, AComparer);
+  Result := TLQColligoGroupByEnumerable<TKey, T>.Create(FEnumerator, AKeySelector, AComparer);
 end;
 
-function IFluentEnumerable<T>.GroupBy<TKey, TElement>(
+function ILQColligoEnumerable<T>.GroupBy<TKey, TElement>(
   const AKeySelector: TFunc<T, TKey>;
   const AElementSelector: TFunc<T, TElement>;
   const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, TElement>;
@@ -1629,108 +1629,108 @@ begin
     raise EArgumentNilException.Create('Key selector cannot be nil');
   if not Assigned(AElementSelector) then
     raise EArgumentNilException.Create('Element selector cannot be nil');
-  Result := TFluentGroupByEnumerable<TKey, TElement, T>.Create(
+  Result := TLQColligoGroupByEnumerable<TKey, TElement, T>.Create(
     FEnumerator,
     AKeySelector,
     AElementSelector,
     AComparer);
 end;
 
-function IFluentEnumerable<T>.GroupBy<TKey, TResult>(
+function ILQColligoEnumerable<T>.GroupBy<TKey, TResult>(
   const AKeySelector: TFunc<T, TKey>;
-  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<T>, TResult>;
-  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>;
+  const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<T>, TResult>;
+  const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentGroupByResultEnumerable<TKey, T, TResult>.Create(
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoGroupByResultEnumerable<TKey, T, TResult>.Create(
       FEnumerator, AKeySelector, AResultSelector, AComparer),
-    FFluentType,
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.Zip<TSecond, TResult>(const ASecond: IFluentEnumerable<TSecond>;
-  const AResultSelector: TFunc<T, TSecond, TResult>): IFluentEnumerable<TResult>;
+function ILQColligoEnumerable<T>.Zip<TSecond, TResult>(const ASecond: ILQColligoEnumerable<TSecond>;
+  const AResultSelector: TFunc<T, TSecond, TResult>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentZipEnumerable<T, TSecond, TResult>.Create(FEnumerator, ASecond.FEnumerator, AResultSelector),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoZipEnumerable<T, TSecond, TResult>.Create(FEnumerator, ASecond.FEnumerator, AResultSelector),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.OfType<TResult>: IFluentEnumerable<TResult>;
+function ILQColligoEnumerable<T>.OfType<TResult>: ILQColligoEnumerable<TResult>;
 begin
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentOfTypeEnumerable<T, TResult>.Create(FEnumerator),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoOfTypeEnumerable<T, TResult>.Create(FEnumerator),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.Exclude(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Exclude(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>;
 begin
   Result := Exclude(ASecond, FComparer);
 end;
 
-function IFluentEnumerable<T>.Exclude(const ASecond: IFluentEnumerable<T>;
-  const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Exclude(const ASecond: ILQColligoEnumerable<T>;
+  const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentExcludeEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoExcludeEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
+    FLQColligoType,
     AComparer
   );
 end;
 
-function IFluentEnumerable<T>.Intersect(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Intersect(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>;
 begin
   Result := Intersect(ASecond, FComparer);
 end;
 
-function IFluentEnumerable<T>.Intersect(const ASecond: IFluentEnumerable<T>;
-  const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Intersect(const ASecond: ILQColligoEnumerable<T>;
+  const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentIntersectEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoIntersectEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
+    FLQColligoType,
     AComparer
   );
 end;
 
-function IFluentEnumerable<T>.Union(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Union(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>;
 begin
   Result := Union(ASecond, FComparer);
 end;
 
-function IFluentEnumerable<T>.Union(const ASecond: IFluentEnumerable<T>;
-  const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Union(const ASecond: ILQColligoEnumerable<T>;
+  const AComparer: IEqualityComparer<T>): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentUnionEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoUnionEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
+    FLQColligoType,
     AComparer
   );
 end;
 
-function IFluentEnumerable<T>.Concat(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Concat(const ASecond: ILQColligoEnumerable<T>): ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(
-    TFluentConcatEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoConcatEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.SequenceEqual(const ASecond: IFluentEnumerable<T>): Boolean;
+function ILQColligoEnumerable<T>.SequenceEqual(const ASecond: ILQColligoEnumerable<T>): Boolean;
 var
-  LEnum1, LEnum2: IFluentEnumerator<T>;
+  LEnum1, LEnum2: ILQColligoEnumerator<T>;
 begin
   LEnum1 := GetEnumerator;
   LEnum2 := ASecond.GetEnumerator;
@@ -1740,9 +1740,9 @@ begin
   Result := not (LEnum1.MoveNext or LEnum2.MoveNext);
 end;
 
-function IFluentEnumerable<T>.Single(const APredicate: TFunc<T, Boolean>): T;
+function ILQColligoEnumerable<T>.Single(const APredicate: TFunc<T, Boolean>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LFound: Boolean;
   LResult: T;
 begin
@@ -1764,14 +1764,14 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Single: T;
+function ILQColligoEnumerable<T>.Single: T;
 begin
   Result := Single(nil);
 end;
 
-function IFluentEnumerable<T>.SingleOrDefault(const APredicate: TFunc<T, Boolean>): T;
+function ILQColligoEnumerable<T>.SingleOrDefault(const APredicate: TFunc<T, Boolean>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LFound: Boolean;
   LResult: T;
 begin
@@ -1791,14 +1791,14 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.SingleOrDefault: T;
+function ILQColligoEnumerable<T>.SingleOrDefault: T;
 begin
   Result := SingleOrDefault(nil);
 end;
 
-function IFluentEnumerable<T>.ElementAt(const AIndex: Integer): T;
+function ILQColligoEnumerable<T>.ElementAt(const AIndex: Integer): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LCount: Integer;
 begin
   if AIndex < 0 then
@@ -1814,9 +1814,9 @@ begin
   raise EArgumentOutOfRangeException.Create('Index out of range');
 end;
 
-function IFluentEnumerable<T>.ElementAtOrDefault(const AIndex: Integer): T;
+function ILQColligoEnumerable<T>.ElementAtOrDefault(const AIndex: Integer): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LCount: Integer;
 begin
   if AIndex < 0 then
@@ -1832,27 +1832,27 @@ begin
   Result := Default(T);
 end;
 
-function IFluentEnumerable<T>.DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
 begin
   Result := DistinctBy<TKey>(AKeySelector, nil);
 end;
 
-function IFluentEnumerable<T>.DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>;
-  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred/streaming: nothing is enumerated until the result is iterated.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentDistinctByEnumerable<T, TKey>.Create(FEnumerator, AKeySelector, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoDistinctByEnumerable<T, TKey>.Create(FEnumerator, AKeySelector, AComparer),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Min(const AComparer: TFunc<T, T, Integer>): T;
+function ILQColligoEnumerable<T>.Min(const AComparer: TFunc<T, T, Integer>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -1876,9 +1876,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const AComparer: TFunc<T, T, Integer>): T;
+function ILQColligoEnumerable<T>.Max(const AComparer: TFunc<T, T, Integer>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -1902,9 +1902,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.GroupJoin<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+function ILQColligoEnumerable<T>.GroupJoin<TInner, TKey, TResult>(const AInner: ILQColligoEnumerable<TInner>;
   const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-  const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>): IFluentEnumerable<TResult>;
+  const AResultSelector: TFunc<T, ILQColligoEnumerableAdapter<TInner>, TResult>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(AOuterKeySelector) then
     raise EArgumentNilException.Create('Outer key selector cannot be nil');
@@ -1912,25 +1912,25 @@ begin
     raise EArgumentNilException.Create('Inner key selector cannot be nil');
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentGroupJoinEnumerable<T, TInner, TKey, TResult>.Create(FEnumerator, AInner.FEnumerator, AOuterKeySelector, AInnerKeySelector, AResultSelector),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoGroupJoinEnumerable<T, TInner, TKey, TResult>.Create(FEnumerator, AInner.FEnumerator, AOuterKeySelector, AInnerKeySelector, AResultSelector),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+function ILQColligoEnumerable<T>.Join<TInner, TKey, TResult>(const AInner: ILQColligoEnumerable<TInner>;
   const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-  const AResultSelector: TFunc<T, TInner, TResult>): IFluentEnumerable<TResult>;
+  const AResultSelector: TFunc<T, TInner, TResult>): ILQColligoEnumerable<TResult>;
 begin
   Result := Join<TInner, TKey, TResult>(AInner, AOuterKeySelector, AInnerKeySelector,
     AResultSelector, nil);
 end;
 
-function IFluentEnumerable<T>.Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+function ILQColligoEnumerable<T>.Join<TInner, TKey, TResult>(const AInner: ILQColligoEnumerable<TInner>;
   const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
   const AResultSelector: TFunc<T, TInner, TResult>;
-  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>;
+  const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(AOuterKeySelector) then
     raise EArgumentNilException.Create('Outer key selector cannot be nil');
@@ -1938,18 +1938,18 @@ begin
     raise EArgumentNilException.Create('Inner key selector cannot be nil');
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentJoinEnumerable<T, TInner, TKey, TResult>.Create(FEnumerator, AInner.FEnumerator,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoJoinEnumerable<T, TInner, TKey, TResult>.Create(FEnumerator, AInner.FEnumerator,
       AOuterKeySelector, AInnerKeySelector, AResultSelector, AComparer),
-    FFluentType,
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.MinBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+function ILQColligoEnumerable<T>.MinBy<TKey>(const AKeySelector: TFunc<T, TKey>;
   const AComparer: TFunc<TKey, TKey, Integer>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LMinKey: TKey;
   LKey: TKey;
@@ -1986,9 +1986,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, Single>): Single;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, Single>): Single;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LHasValue: Boolean;
 begin
   Result := 0;
@@ -2010,9 +2010,9 @@ begin
     raise EInvalidOperation.Create('Empty sequence.');
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, Int64>): Int64;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, Int64>): Int64;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Int64;
   LHasValue: Boolean;
 begin
@@ -2036,9 +2036,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, Int32>): Int32;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, Int32>): Int32;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Int32;
   LHasValue: Boolean;
 begin
@@ -2062,9 +2062,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, Double>): Double;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, Double>): Double;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Double;
   LHasValue: Boolean;
 begin
@@ -2088,9 +2088,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, Currency>): Currency;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, Currency>): Currency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Currency;
   LHasValue: Boolean;
 begin
@@ -2114,9 +2114,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableSingle;
   LValue: NullableSingle;
 begin
@@ -2133,9 +2133,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, NullableInt64>): NullableInt64;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, NullableInt64>): NullableInt64;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableInt64;
   LValue: NullableInt64;
 begin
@@ -2152,9 +2152,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, NullableInt32>): NullableInt32;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, NullableInt32>): NullableInt32;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableInt32;
   LValue: NullableInt32;
 begin
@@ -2171,9 +2171,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableCurrency;
   LValue: NullableCurrency;
 begin
@@ -2190,9 +2190,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
+function ILQColligoEnumerable<T>.Max(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableDouble;
   LValue: NullableDouble;
 begin
@@ -2209,10 +2209,10 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.MaxBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+function ILQColligoEnumerable<T>.MaxBy<TKey>(const AKeySelector: TFunc<T, TKey>;
   const AComparer: TFunc<TKey, TKey, Integer>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LMaxKey: TKey;
   LKey: TKey;
@@ -2249,14 +2249,14 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>._IsEmpty: Boolean;
+function ILQColligoEnumerable<T>._IsEmpty: Boolean;
 begin
   Result := not FIsValid;
 end;
 
-function IFluentEnumerable<T>.ToHashSet: THashSet<T>;
+function ILQColligoEnumerable<T>.ToHashSet: THashSet<T>;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
   Result := THashSet<T>.Create(FComparer);
   try
@@ -2269,10 +2269,10 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.ToLookup<TKey, TElement>(const AKeySelector: TFunc<T, TKey>;
+function ILQColligoEnumerable<T>.ToLookup<TKey, TElement>(const AKeySelector: TFunc<T, TKey>;
   const AElementSelector: TFunc<T, TElement>): TDictionary<TKey, TList<TElement>>;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LKey: TKey;
   LElement: TElement;
   LList: TList<TElement>;
@@ -2303,7 +2303,7 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.TryGetNonEnumeratedCount(out ACount: Integer): Boolean;
+function ILQColligoEnumerable<T>.TryGetNonEnumeratedCount(out ACount: Integer): Boolean;
 begin
   if FEnumerator is TListAdapter<T> then
   begin
@@ -2322,9 +2322,9 @@ begin
   end;
 end;
 
-function IFluentEnumerable<T>.ThenBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.ThenBy<TKey>(const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
 var
-  LOrdered: IFluentOrderedEnumerable<T>;
+  LOrdered: ILQColligoOrderedEnumerable<T>;
   LFunc: TFunc<T, T, Integer>;
 begin
   if not Assigned(AKeySelector) then
@@ -2337,13 +2337,13 @@ begin
       Result := TComparer<TKey>.Default.Compare(AKeySelector(A), AKeySelector(B));
     end;
   LOrdered := FOrdered.ThenByAppend(LFunc);
-  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result := ILQColligoEnumerable<T>.Create(LOrdered, FLQColligoType, FComparer);
   Result.FOrdered := LOrdered;
 end;
 
-function IFluentEnumerable<T>.ThenByDescending<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.ThenByDescending<TKey>(const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
 var
-  LOrdered: IFluentOrderedEnumerable<T>;
+  LOrdered: ILQColligoOrderedEnumerable<T>;
   LFunc: TFunc<T, T, Integer>;
 begin
   if not Assigned(AKeySelector) then
@@ -2356,190 +2356,190 @@ begin
       Result := -TComparer<TKey>.Default.Compare(AKeySelector(A), AKeySelector(B));
     end;
   LOrdered := FOrdered.ThenByAppend(LFunc);
-  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  Result := ILQColligoEnumerable<T>.Create(LOrdered, FLQColligoType, FComparer);
   Result.FOrdered := LOrdered;
 end;
 
-function IFluentEnumerable<T>.UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
-  const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.UnionBy<TKey>(const ASecond: ILQColligoEnumerable<T>;
+  const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
 begin
   Result := UnionBy<TKey>(ASecond, AKeySelector, nil);
 end;
 
-function IFluentEnumerable<T>.UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.UnionBy<TKey>(const ASecond: ILQColligoEnumerable<T>;
   const AKeySelector: TFunc<T, TKey>;
-  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+  const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred/streaming: nothing is enumerated until the result is iterated.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentUnionByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoUnionByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Append(const AElement: T): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Append(const AElement: T): ILQColligoEnumerable<T>;
 begin
   // Deferred/streaming: nothing is enumerated until the result is iterated.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentAppendEnumerable<T>.Create(FEnumerator, AElement),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoAppendEnumerable<T>.Create(FEnumerator, AElement),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Cast<TResult>: IFluentEnumerable<TResult>;
+function ILQColligoEnumerable<T>.Cast<TResult>: ILQColligoEnumerable<TResult>;
 begin
   // Deferred/streaming: nothing is converted until enumeration; a non-matching
   // element raises EInvalidCast at the point it is reached (see LQColligo.Cast).
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentCastEnumerable<T, TResult>.Create(FEnumerator),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoCastEnumerable<T, TResult>.Create(FEnumerator),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.Chunk(const ASize: Integer): IFluentEnumerableBase<TArray<T>>;
+function ILQColligoEnumerable<T>.Chunk(const ASize: Integer): ILQColligoEnumerableBase<TArray<T>>;
 begin
   if ASize < 1 then
     raise EArgumentOutOfRangeException.Create('Chunk size must be at least 1');
   // Deferred/streaming over the already-working chunk enumerable.
-  Result := TFluentChunkEnumerable<T>.Create(FEnumerator, ASize);
+  Result := TLQColligoChunkEnumerable<T>.Create(FEnumerator, ASize);
 end;
 
-function IFluentEnumerable<T>.DefaultIfEmpty: IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.DefaultIfEmpty: ILQColligoEnumerable<T>;
 begin
   Result := DefaultIfEmpty(Default(T));
 end;
 
-function IFluentEnumerable<T>.DefaultIfEmpty(const ADefaultValue: T): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.DefaultIfEmpty(const ADefaultValue: T): ILQColligoEnumerable<T>;
 begin
   // Deferred/streaming: nothing is enumerated until the result is iterated.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentDefaultIfEmptyEnumerable<T>.Create(FEnumerator, ADefaultValue),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoDefaultIfEmptyEnumerable<T>.Create(FEnumerator, ADefaultValue),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
-  const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.ExcludeBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
+  const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
 begin
   Result := ExcludeBy<TKey>(ASecond, AKeySelector, nil);
 end;
 
-function IFluentEnumerable<T>.ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+function ILQColligoEnumerable<T>.ExcludeBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
   const AKeySelector: TFunc<T, TKey>;
-  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+  const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred: the second (keys) is buffered when enumeration starts; the source
   // is streamed and yields DISTINCT non-excluded elements.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentExcludeByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoExcludeByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
-  const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.IntersectBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
+  const AKeySelector: TFunc<T, TKey>): ILQColligoEnumerable<T>;
 begin
   Result := IntersectBy<TKey>(ASecond, AKeySelector, nil);
 end;
 
-function IFluentEnumerable<T>.IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+function ILQColligoEnumerable<T>.IntersectBy<TKey>(const ASecond: ILQColligoEnumerable<TKey>;
   const AKeySelector: TFunc<T, TKey>;
-  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+  const AComparer: IEqualityComparer<TKey>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred: the second (keys) is buffered when enumeration starts; the source
   // is streamed and yields DISTINCT matching elements.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentIntersectByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoIntersectByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.IsNotAssigned: Boolean;
+function ILQColligoEnumerable<T>.IsNotAssigned: Boolean;
 begin
-  Result := not TEqualityComparer<IFluentEnumerable<T>>.Default.Equals(Self, Default(IFluentEnumerable<T>));
+  Result := not TEqualityComparer<ILQColligoEnumerable<T>>.Default.Equals(Self, Default(ILQColligoEnumerable<T>));
 end;
 
-function IFluentEnumerable<T>.Prepend(const AElement: T): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Prepend(const AElement: T): ILQColligoEnumerable<T>;
 begin
   // Deferred/streaming: nothing is enumerated until the result is iterated.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentPrependEnumerable<T>.Create(FEnumerator, AElement),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoPrependEnumerable<T>.Create(FEnumerator, AElement),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Reverse: IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Reverse: ILQColligoEnumerable<T>;
 begin
   // Deferred, non-streaming: buffers only on the first MoveNext, not here.
-  Result := IFluentEnumerable<T>.Create(
-    TFluentReverseEnumerable<T>.Create(FEnumerator),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoReverseEnumerable<T>.Create(FEnumerator),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.SkipLast(const ACount: Integer): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.SkipLast(const ACount: Integer): ILQColligoEnumerable<T>;
 begin
   // Deferred, non-streaming: buffers only on the first MoveNext. ACount <= 0
   // yields the whole source (handled inside the enumerator).
-  Result := IFluentEnumerable<T>.Create(
-    TFluentSkipLastEnumerable<T>.Create(FEnumerator, ACount),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoSkipLastEnumerable<T>.Create(FEnumerator, ACount),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.SkipWhile(
-  const APredicate: TFunc<T, Integer, Boolean>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.SkipWhile(
+  const APredicate: TFunc<T, Integer, Boolean>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(APredicate) then
     raise EArgumentNilException.Create('Predicate cannot be nil');
-  Result := IFluentEnumerable<T>.Create(
-    TFluentSkipWhileIndexedEnumerable<T>.Create(FEnumerator, APredicate),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoSkipWhileIndexedEnumerable<T>.Create(FEnumerator, APredicate),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.TakeLast(const ACount: Integer): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.TakeLast(const ACount: Integer): ILQColligoEnumerable<T>;
 begin
   // Deferred, non-streaming: buffers only on the first MoveNext. ACount <= 0
   // yields nothing (handled inside the enumerator).
-  Result := IFluentEnumerable<T>.Create(
-    TFluentTakeLastEnumerable<T>.Create(FEnumerator, ACount),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoTakeLastEnumerable<T>.Create(FEnumerator, ACount),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.TakeWhile(
-  const APredicate: TFunc<T, Integer, Boolean>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.TakeWhile(
+  const APredicate: TFunc<T, Integer, Boolean>): ILQColligoEnumerable<T>;
 begin
   if not Assigned(APredicate) then
     raise EArgumentNilException.Create('Predicate cannot be nil');
-  Result := IFluentEnumerable<T>.Create(
-    TFluentTakeWhileIndexedEnumerable<T>.Create(FEnumerator, APredicate),
-    FFluentType,
+  Result := ILQColligoEnumerable<T>.Create(
+    TLQColligoTakeWhileIndexedEnumerable<T>.Create(FEnumerator, APredicate),
+    FLQColligoType,
     FComparer
   );
 end;
 
-function IFluentEnumerable<T>.Max<TResult>(const ASelector: TFunc<T, TResult>): TResult;
+function ILQColligoEnumerable<T>.Max<TResult>(const ASelector: TFunc<T, TResult>): TResult;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: TResult;
   LHasValue: Boolean;
 begin
@@ -2566,9 +2566,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Max(const AComparer: IComparer<T>): T;
+function ILQColligoEnumerable<T>.Max(const AComparer: IComparer<T>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -2592,9 +2592,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, Single>): Single;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, Single>): Single;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LHasValue: Boolean;
 begin
   Result := 0;
@@ -2616,9 +2616,9 @@ begin
     raise EInvalidOperation.Create('Sequence is empty.');
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, Int64>): Int64;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, Int64>): Int64;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Int64;
   LHasValue: Boolean;
 begin
@@ -2642,9 +2642,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, Int32>): Int32;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, Int32>): Int32;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Int32;
   LHasValue: Boolean;
 begin
@@ -2668,9 +2668,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, Double>): Double;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, Double>): Double;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Double;
   LHasValue: Boolean;
 begin
@@ -2694,9 +2694,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, Currency>): Currency;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, Currency>): Currency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: Currency;
   LHasValue: Boolean;
 begin
@@ -2720,9 +2720,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableSingle;
   LValue: NullableSingle;
 begin
@@ -2739,9 +2739,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, NullableInt64>): NullableInt64;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, NullableInt64>): NullableInt64;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableInt64;
   LValue: NullableInt64;
 begin
@@ -2758,9 +2758,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, NullableInt32>): NullableInt32;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, NullableInt32>): NullableInt32;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableInt32;
   LValue: NullableInt32;
 begin
@@ -2777,9 +2777,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableCurrency;
   LValue: NullableCurrency;
 begin
@@ -2796,9 +2796,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
+function ILQColligoEnumerable<T>.Min(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: NullableDouble;
   LValue: NullableDouble;
 begin
@@ -2815,9 +2815,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min<TResult>(const ASelector: TFunc<T, TResult>): TResult;
+function ILQColligoEnumerable<T>.Min<TResult>(const ASelector: TFunc<T, TResult>): TResult;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: TResult;
   LHasValue: Boolean;
 begin
@@ -2844,9 +2844,9 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.Min(const AComparer: IComparer<T>): T;
+function ILQColligoEnumerable<T>.Min(const AComparer: IComparer<T>): T;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LResult: T;
   LHasValue: Boolean;
 begin
@@ -2870,76 +2870,76 @@ begin
   Result := LResult;
 end;
 
-function IFluentEnumerable<T>.SelectMany<TCollection, TResult>(
+function ILQColligoEnumerable<T>.SelectMany<TCollection, TResult>(
   const ACollectionSelector: TFunc<T, Integer, TArray<TCollection>>;
-  const AResultSelector: TFunc<T, TCollection, TResult>): IFluentEnumerable<TResult>;
+  const AResultSelector: TFunc<T, TCollection, TResult>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(ACollectionSelector) then
     raise EArgumentNilException.Create('Collection selector cannot be nil');
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentSelectManyCollectionIndexedEnumerable<T, TCollection, TResult>.Create(
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoSelectManyCollectionIndexedEnumerable<T, TCollection, TResult>.Create(
       FEnumerator, ACollectionSelector, AResultSelector),
-    FFluentType,
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.SelectMany<TCollection, TResult>(
+function ILQColligoEnumerable<T>.SelectMany<TCollection, TResult>(
   const ACollectionSelector: TFunc<T, TArray<TCollection>>;
-  const AResultSelector: TFunc<T, TCollection, TResult>): IFluentEnumerable<TResult>;
+  const AResultSelector: TFunc<T, TCollection, TResult>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(ACollectionSelector) then
     raise EArgumentNilException.Create('Collection selector cannot be nil');
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentSelectManyCollectionEnumerable<T, TCollection, TResult>.Create(
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoSelectManyCollectionEnumerable<T, TCollection, TResult>.Create(
       FEnumerator, ACollectionSelector, AResultSelector),
-    FFluentType,
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.SelectMany<TResult>(
-  const ASelector: TFunc<T, Integer, IFluentArray<TResult>>): IFluentEnumerable<TResult>;
+function ILQColligoEnumerable<T>.SelectMany<TResult>(
+  const ASelector: TFunc<T, Integer, ILQColligoArray<TResult>>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(ASelector) then
     raise EArgumentNilException.Create('Selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentSelectManyIndexedEnumerable<T, TResult>.Create(FEnumerator, ASelector),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoSelectManyIndexedEnumerable<T, TResult>.Create(FEnumerator, ASelector),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.SelectMany<TResult>(const ASelector: TFunc<T, TArray<TResult>>): IFluentEnumerable<TResult>;
+function ILQColligoEnumerable<T>.SelectMany<TResult>(const ASelector: TFunc<T, TArray<TResult>>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(ASelector) then
     raise EArgumentNilException.Create('Selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentSelectManyEnumerable<T, TResult>.Create(FEnumerator, ASelector),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoSelectManyEnumerable<T, TResult>.Create(FEnumerator, ASelector),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.Select<TResult>(
-  const ASelector: TFunc<T, Integer, TResult>): IFluentEnumerable<TResult>;
+function ILQColligoEnumerable<T>.Select<TResult>(
+  const ASelector: TFunc<T, Integer, TResult>): ILQColligoEnumerable<TResult>;
 begin
   if not Assigned(ASelector) then
     raise EArgumentNilException.Create('Selector cannot be nil');
-  Result := IFluentEnumerable<TResult>.Create(
-    TFluentSelectIndexedEnumerable<T, TResult>.Create(FEnumerator, ASelector),
-    FFluentType,
+  Result := ILQColligoEnumerable<TResult>.Create(
+    TLQColligoSelectIndexedEnumerable<T, TResult>.Create(FEnumerator, ASelector),
+    FLQColligoType,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-function IFluentEnumerable<T>.Order(const AComparer: IComparer<T>): IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Order(const AComparer: IComparer<T>): ILQColligoEnumerable<T>;
 var
-  LOrdered: IFluentOrderedEnumerable<T>;
+  LOrdered: ILQColligoOrderedEnumerable<T>;
   LFunc: TFunc<T, T, Integer>;
 begin
   LFunc :=
@@ -2950,19 +2950,19 @@ begin
       else
         Result := AComparer.Compare(A, B);
     end;
-  LOrdered := TFluentOrderByEnumerable<T>.Create(FEnumerator, LFunc);
-  Result := IFluentEnumerable<T>.Create(LOrdered, FFluentType, FComparer);
+  LOrdered := TLQColligoOrderByEnumerable<T>.Create(FEnumerator, LFunc);
+  Result := ILQColligoEnumerable<T>.Create(LOrdered, FLQColligoType, FComparer);
   Result.FOrdered := LOrdered;
 end;
 
-function IFluentEnumerable<T>.Order: IFluentEnumerable<T>;
+function ILQColligoEnumerable<T>.Order: ILQColligoEnumerable<T>;
 begin
   Result := Order(nil);
 end;
 
-function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
+function ILQColligoEnumerable<T>.Sum(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
   LSum: Double;
   LCount: Integer;
   LValue: NullableCurrency;
@@ -2985,13 +2985,13 @@ begin
   Result := NullableCurrency.Create(LSum);
 end;
 
-{ IFluentEnumerable<T>.TFluentCompare }
+{ ILQColligoEnumerable<T>.TLQColligoCompare }
 
-class function IFluentEnumerable<T>.TFluentCompare.Compare(
-  const AEnumerator: IFluentEnumerableBase<T>; const AValue: T;
+class function ILQColligoEnumerable<T>.TLQColligoCompare.Compare(
+  const AEnumerator: ILQColligoEnumerableBase<T>; const AValue: T;
   const AComparer: IEqualityComparer<T>): Boolean;
 var
-  LEnum: IFluentEnumerator<T>;
+  LEnum: ILQColligoEnumerator<T>;
 begin
   LEnum := AEnumerator.GetEnumerator;
   while LEnum.MoveNext do
@@ -3000,46 +3000,46 @@ begin
   Result := False;
 end;
 
-{ TFluentGrouping<TKey, T> }
+{ TLQColligoGrouping<TKey, T> }
 
-constructor TFluentGrouping<TKey, T>.Create(const AKey: TKey; const AItems: IFluentEnumerable<T>);
+constructor TLQColligoGrouping<TKey, T>.Create(const AKey: TKey; const AItems: ILQColligoEnumerable<T>);
 begin
   FKey := AKey;
   FItems := AItems;
 end;
 
-function TFluentGrouping<TKey, T>.GetKey: TKey;
+function TLQColligoGrouping<TKey, T>.GetKey: TKey;
 begin
   Result := FKey;
 end;
 
-function TFluentGrouping<TKey, T>.GetItems: IFluentEnumerable<T>;
+function TLQColligoGrouping<TKey, T>.GetItems: ILQColligoEnumerable<T>;
 begin
   Result := FItems;
 end;
 
-{ TFluentQuery }
+{ TLQColligo }
 
-class function TFluentQuery.Range(const AStart, ACount: Integer): IFluentEnumerable<Integer>;
+class function TLQColligo.Range(const AStart, ACount: Integer): ILQColligoEnumerable<Integer>;
 begin
   if ACount < 0 then
     raise EArgumentOutOfRangeException.Create('Count must be non-negative');
   // Int64 math so the overflow check itself cannot overflow.
   if Int64(AStart) + Int64(ACount) - 1 > High(Integer) then
     raise EArgumentOutOfRangeException.Create('Range end exceeds Integer range');
-  Result := IFluentEnumerable<Integer>.Create(TFluentRangeEnumerable.Create(AStart, ACount));
+  Result := ILQColligoEnumerable<Integer>.Create(TLQColligoRangeEnumerable.Create(AStart, ACount));
 end;
 
-class function TFluentQuery.&Repeat<T>(const AElement: T; const ACount: Integer): IFluentEnumerable<T>;
+class function TLQColligo.&Repeat<T>(const AElement: T; const ACount: Integer): ILQColligoEnumerable<T>;
 begin
   if ACount < 0 then
     raise EArgumentOutOfRangeException.Create('Count must be non-negative');
-  Result := IFluentEnumerable<T>.Create(TFluentRepeatEnumerable<T>.Create(AElement, ACount));
+  Result := ILQColligoEnumerable<T>.Create(TLQColligoRepeatEnumerable<T>.Create(AElement, ACount));
 end;
 
-class function TFluentQuery.Empty<T>: IFluentEnumerable<T>;
+class function TLQColligo.Empty<T>: ILQColligoEnumerable<T>;
 begin
-  Result := IFluentEnumerable<T>.Create(TFluentEmptyEnumerable<T>.Create);
+  Result := ILQColligoEnumerable<T>.Create(TLQColligoEmptyEnumerable<T>.Create);
 end;
 
 end.

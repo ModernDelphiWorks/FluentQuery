@@ -22,24 +22,24 @@ uses
   LQColligo;
 
 type
-  TFluentTakeWhileIndexedEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoTakeWhileIndexedEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FPredicate: TFunc<T, Integer, Boolean>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const APredicate: TFunc<T, Integer, Boolean>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const APredicate: TFunc<T, Integer, Boolean>);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentTakeWhileIndexedEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoTakeWhileIndexedEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FPredicate: TFunc<T, Integer, Boolean>;
     FIndex: Integer;
     FDone: Boolean;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const APredicate: TFunc<T, Integer, Boolean>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const APredicate: TFunc<T, Integer, Boolean>);
     function GetCurrent: T;
     function MoveNext: Boolean;
     procedure Reset;
@@ -48,24 +48,24 @@ type
 
 implementation
 
-{ TFluentTakeWhileIndexedEnumerable<T> }
+{ TLQColligoTakeWhileIndexedEnumerable<T> }
 
-constructor TFluentTakeWhileIndexedEnumerable<T>.Create(
-  const ASource: IFluentEnumerableBase<T>; const APredicate: TFunc<T, Integer, Boolean>);
+constructor TLQColligoTakeWhileIndexedEnumerable<T>.Create(
+  const ASource: ILQColligoEnumerableBase<T>; const APredicate: TFunc<T, Integer, Boolean>);
 begin
   FSource := ASource;
   FPredicate := APredicate;
 end;
 
-function TFluentTakeWhileIndexedEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoTakeWhileIndexedEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentTakeWhileIndexedEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
+  Result := TLQColligoTakeWhileIndexedEnumerator<T>.Create(FSource.GetEnumerator, FPredicate);
 end;
 
-{ TFluentTakeWhileIndexedEnumerator<T> }
+{ TLQColligoTakeWhileIndexedEnumerator<T> }
 
-constructor TFluentTakeWhileIndexedEnumerator<T>.Create(
-  const ASource: IFluentEnumerator<T>; const APredicate: TFunc<T, Integer, Boolean>);
+constructor TLQColligoTakeWhileIndexedEnumerator<T>.Create(
+  const ASource: ILQColligoEnumerator<T>; const APredicate: TFunc<T, Integer, Boolean>);
 begin
   FSource := ASource;
   FPredicate := APredicate;
@@ -73,12 +73,12 @@ begin
   FDone := False;
 end;
 
-function TFluentTakeWhileIndexedEnumerator<T>.GetCurrent: T;
+function TLQColligoTakeWhileIndexedEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentTakeWhileIndexedEnumerator<T>.MoveNext: Boolean;
+function TLQColligoTakeWhileIndexedEnumerator<T>.MoveNext: Boolean;
 begin
   if FDone or not FSource.MoveNext then
     Exit(False);
@@ -92,7 +92,7 @@ begin
   Result := True;
 end;
 
-procedure TFluentTakeWhileIndexedEnumerator<T>.Reset;
+procedure TLQColligoTakeWhileIndexedEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FIndex := -1;

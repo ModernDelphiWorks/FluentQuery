@@ -27,29 +27,29 @@ uses
   LQColligo;
 
 type
-  TFluentUnionEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoUnionEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FSecond: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FSecond: ILQColligoEnumerableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const ASecond: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
+      const ASecond: ILQColligoEnumerableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentUnionEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoUnionEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
-    FSecond: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
+    FSecond: ILQColligoEnumerator<T>;
     FSet: TDictionary<T, Boolean>;
     FCurrent: T;
     FOnSecond: Boolean;
     FComparer: IEqualityComparer<T>;
     function ContainsValue(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -59,29 +59,29 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentUnionQueryable<T> = class(TFluentQueryableBase<T>)
+  TLQColligoUnionQueryable<T> = class(TLQColligoQueryableBase<T>)
   private
-    FSource: IFluentQueryableBase<T>;
-    FSecond: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
+    FSecond: ILQColligoQueryableBase<T>;
     FComparer: IEqualityComparer<T>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const ASecond: IFluentQueryableBase<T>;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const ASecond: ILQColligoQueryableBase<T>;
       const AComparer: IEqualityComparer<T>);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
     function BuildQuery: string; override;
   end;
 
-  TFluentUnionQueryableEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoUnionQueryableEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
-    FSecond: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
+    FSecond: ILQColligoEnumerator<T>;
     FSet: TDictionary<T, Boolean>;
     FComparer: IEqualityComparer<T>;
     FCurrent: T;
     FOnSecond: Boolean;
     function _ContainsValue(const AValue: T): Boolean;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASecond: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASecond: ILQColligoEnumerator<T>;
       const AComparer: IEqualityComparer<T>);
     destructor Destroy; override;
     function GetCurrent: T;
@@ -93,25 +93,25 @@ type
 
 implementation
 
-{ TFluentUnionEnumerable<T> }
+{ TLQColligoUnionEnumerable<T> }
 
-constructor TFluentUnionEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>;
-  const ASecond: IFluentEnumerableBase<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoUnionEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const ASecond: ILQColligoEnumerableBase<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FComparer := AComparer;
 end;
 
-function TFluentUnionEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoUnionEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentUnionEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
+  Result := TLQColligoUnionEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
 end;
 
-{ TFluentUnionEnumerator<T> }
+{ TLQColligoUnionEnumerator<T> }
 
-constructor TFluentUnionEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoUnionEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
@@ -120,24 +120,24 @@ begin
   FOnSecond := False;
 end;
 
-destructor TFluentUnionEnumerator<T>.Destroy;
+destructor TLQColligoUnionEnumerator<T>.Destroy;
 begin
   FSet.Free;
   inherited;
 end;
 
-function TFluentUnionEnumerator<T>.GetCurrent: T;
+function TLQColligoUnionEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentUnionEnumerator<T>.ContainsValue(const AValue: T): Boolean;
+function TLQColligoUnionEnumerator<T>.ContainsValue(const AValue: T): Boolean;
 begin
   // O(1) hash lookup — the dictionary was already built with FComparer.
   Result := FSet.ContainsKey(AValue);
 end;
 
-function TFluentUnionEnumerator<T>.MoveNext: Boolean;
+function TLQColligoUnionEnumerator<T>.MoveNext: Boolean;
 begin
   while True do
   begin
@@ -171,7 +171,7 @@ begin
   end;
 end;
 
-procedure TFluentUnionEnumerator<T>.Reset;
+procedure TLQColligoUnionEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSecond.Reset;
@@ -180,32 +180,32 @@ begin
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentUnionQueryable<T> }
+{ TLQColligoUnionQueryable<T> }
 
-constructor TFluentUnionQueryable<T>.Create(const ASource: IFluentQueryableBase<T>;
-  const ASecond: IFluentQueryableBase<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoUnionQueryable<T>.Create(const ASource: ILQColligoQueryableBase<T>;
+  const ASecond: ILQColligoQueryableBase<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
   FComparer := AComparer;
 end;
 
-function TFluentUnionQueryable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoUnionQueryable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentUnionQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
+  Result := TLQColligoUnionQueryableEnumerator<T>.Create(FSource.GetEnumerator, FSecond.GetEnumerator, FComparer);
 end;
 
-function TFluentUnionQueryable<T>.BuildQuery: string;
+function TLQColligoUnionQueryable<T>.BuildQuery: string;
 begin
   // Placeholder: traduzir Union pra SQL (ex.: UNION)
   Result := FSource.BuildQuery + ' UNION ' + FSecond.BuildQuery;
   // Exemplo fictício: 'SELECT * FROM Table1 UNION SELECT * FROM Table2'
 end;
 
-{ TFluentUnionQueryableEnumerator<T> }
+{ TLQColligoUnionQueryableEnumerator<T> }
 
-constructor TFluentUnionQueryableEnumerator<T>.Create(const ASource: IFluentEnumerator<T>;
-  const ASecond: IFluentEnumerator<T>; const AComparer: IEqualityComparer<T>);
+constructor TLQColligoUnionQueryableEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>;
+  const ASecond: ILQColligoEnumerator<T>; const AComparer: IEqualityComparer<T>);
 begin
   FSource := ASource;
   FSecond := ASecond;
@@ -214,24 +214,24 @@ begin
   FOnSecond := False;
 end;
 
-destructor TFluentUnionQueryableEnumerator<T>.Destroy;
+destructor TLQColligoUnionQueryableEnumerator<T>.Destroy;
 begin
   FSet.Free;
   inherited;
 end;
 
-function TFluentUnionQueryableEnumerator<T>.GetCurrent: T;
+function TLQColligoUnionQueryableEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentUnionQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
+function TLQColligoUnionQueryableEnumerator<T>._ContainsValue(const AValue: T): Boolean;
 begin
   // O(1) hash lookup — the dictionary was already built with FComparer.
   Result := FSet.ContainsKey(AValue);
 end;
 
-function TFluentUnionQueryableEnumerator<T>.MoveNext: Boolean;
+function TLQColligoUnionQueryableEnumerator<T>.MoveNext: Boolean;
 begin
   while True do
   begin
@@ -265,7 +265,7 @@ begin
   end;
 end;
 
-procedure TFluentUnionQueryableEnumerator<T>.Reset;
+procedure TLQColligoUnionQueryableEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FSecond.Reset;

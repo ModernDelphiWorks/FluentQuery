@@ -25,7 +25,7 @@ type
 
   TArrayTest = class
   private
-    FArray: IFluentArray<Integer>;
+    FArray: ILQColligoArray<Integer>;
   public
     [Setup]
     procedure Setup;
@@ -176,7 +176,7 @@ end;
 
 procedure TArrayTest.Setup;
 begin
-  FArray := TFluentArray<Integer>.Create([]);
+  FArray := TLQColligoArray<Integer>.Create([]);
 end;
 
 procedure TArrayTest.TearDown;
@@ -186,7 +186,7 @@ end;
 
 procedure TArrayTest.TestArrayToArray;
 var
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4, 5]);
   LArray := FArray.AsEnumerable.ToArray;
@@ -197,7 +197,7 @@ end;
 
 procedure TArrayTest.TestArrayToList;
 var
-  LResult: IFluentList<Integer>;
+  LResult: ILQColligoList<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4, 5]);
   LResult := FArray.AsEnumerable.ToList;
@@ -304,8 +304,8 @@ end;
 
 procedure TArrayTest.TestArrayDistinct;
 var
-  LDistinct: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDistinct: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 2, 3, 3, 4, 5, 5]);
   LDistinct := FArray.AsEnumerable.Distinct;
@@ -317,8 +317,8 @@ end;
 
 procedure TArrayTest.TestArrayFilter;
 var
-  LFiltered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LFiltered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4, 5]);
   LFiltered := FArray.AsEnumerable.Where(
@@ -334,8 +334,8 @@ end;
 
 procedure TArrayTest.TestArrayTake;
 var
-  LTaken: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LTaken: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4, 5]);
   LTaken := FArray.AsEnumerable.Take(3);
@@ -347,8 +347,8 @@ end;
 
 procedure TArrayTest.TestArraySkip;
 var
-  LSkipped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSkipped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4, 5]);
   LSkipped := FArray.AsEnumerable.Skip(2);
@@ -360,8 +360,8 @@ end;
 
 procedure TArrayTest.TestArrayOrderBy;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([5, 2, 4, 1, 3]);
   LOrdered := FArray.AsEnumerable.OrderBy(
@@ -379,8 +379,8 @@ end;
 // Before the fix, ordering [3,0,1,0,2] returned [1,2,3] (both zeros lost).
 procedure TArrayTest.TestArrayOrderByKeepsDefaultValues;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([3, 0, 1, 0, 2]);
   LOrdered := FArray.AsEnumerable.OrderBy(
@@ -412,8 +412,8 @@ end;
 
 procedure TArrayTest.TestArrayMap;
 var
-  LMapped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LMapped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4, 5]);
   LMapped := FArray.AsEnumerable.Select<Integer>(
@@ -430,9 +430,9 @@ end;
 procedure TArrayTest.TestArrayGroupBy;
 var
   LGroups: IGroupByEnumerable<Integer, Integer>;
-  LEnum: IFluentEnumerator<IGrouping<Integer, Integer>>;
+  LEnum: ILQColligoEnumerator<IGrouping<Integer, Integer>>;
   LGroup: IGrouping<Integer, Integer>;
-  LArray: IFluentArray<Integer>;
+  LArray: ILQColligoArray<Integer>;
   LCount: Integer;
 begin
   FArray.SetItems([1, 2, 3, 4, 5, 6]);
@@ -467,12 +467,12 @@ end;
 
 procedure TArrayTest.TestArrayZip;
 var
-  LArray2: TFluentArray<string>;
-  LZipped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LArray2: TLQColligoArray<string>;
+  LZipped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FArray.SetItems([1, 2, 3]);
-  LArray2 := TFluentArray<string>.Create(['A', 'B', 'C']);
+  LArray2 := TLQColligoArray<string>.Create(['A', 'B', 'C']);
   try
     LZipped := FArray.AsEnumerable.Zip<string, string>(
       LArray2.AsEnumerable,
@@ -492,12 +492,12 @@ end;
 
 procedure TArrayTest.TestArrayJoin;
 var
-  LInner: IFluentArray<string>;
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LInner: ILQColligoArray<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FArray.SetItems([1, 2, 3]);
-  LInner := TFluentArray<string>.Create(['A1', 'B2', 'C3']);
+  LInner := TLQColligoArray<string>.Create(['A1', 'B2', 'C3']);
   LJoined := FArray.AsEnumerable.Join<string, Integer, string>(
     LInner.AsEnumerable,
     function(Num: Integer): Integer
@@ -521,8 +521,8 @@ end;
 
 procedure TArrayTest.TestArrayMapLazy;
 var
-  LMapped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LMapped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FArray.SetItems([1, 2, 3]);
   LMapped := FArray.AsEnumerable.Select<string>(
@@ -541,8 +541,8 @@ end;
 
 procedure TArrayTest.TestArrayOrderByLazy;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([3, 1, 4, 1, 5]);
   LOrdered := FArray.AsEnumerable.Where(
@@ -566,8 +566,8 @@ end;
 
 procedure TArrayTest.TestArrayDistinctLazy;
 var
-  LDistinct: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LDistinct: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([3, 1, 4, 1, 5, 3]);
   LDistinct := FArray.AsEnumerable.Where(
@@ -586,12 +586,12 @@ end;
 
 procedure TArrayTest.TestArrayZipLazy;
 var
-  LArray2: IFluentArray<string>;
-  LZipped: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LArray2: ILQColligoArray<string>;
+  LZipped: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FArray.SetItems([1, 2, 3]);
-  LArray2 := TFluentArray<string>.Create(['A', 'B', 'C']);
+  LArray2 := TLQColligoArray<string>.Create(['A', 'B', 'C']);
   LZipped := FArray.AsEnumerable.Zip<string, string>(
     LArray2.AsEnumerable,
     function(Num: Integer; Letter: string): string
@@ -609,12 +609,12 @@ end;
 
 procedure TArrayTest.TestArrayJoinLazy;
 var
-  LInner: IFluentArray<string>;
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LInner: ILQColligoArray<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FArray.SetItems([1, 2, 3]);
-  LInner := TFluentArray<string>.Create(['A1', 'B2', 'C3']);
+  LInner := TLQColligoArray<string>.Create(['A1', 'B2', 'C3']);
   LJoined := FArray.AsEnumerable.Join<string, Integer, string>(
     LInner.AsEnumerable,
     function(Num: Integer): Integer
@@ -640,11 +640,11 @@ end;
 
 procedure TArrayTest.TestArrayOfType;
 var
-  LArrayVar: IFluentArray<Variant>;
-  LFiltered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LArrayVar: ILQColligoArray<Variant>;
+  LFiltered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
-  LArrayVar := TFluentArray<Variant>.Create([1, 'two', 3, 'four', 5]);
+  LArrayVar := TLQColligoArray<Variant>.Create([1, 'two', 3, 'four', 5]);
   // OfType<Integer>() with no arguments filters by runtime type.
   LFiltered := LArrayVar.AsEnumerable.OfType<Integer>;
   LArray := LFiltered.ToArray;
@@ -703,10 +703,10 @@ end;
 
 procedure TArrayTest.TestArraySumDouble;
 var
-  LArray: TFluentArray<Double>;
+  LArray: TLQColligoArray<Double>;
   LSum: Double;
 begin
-  LArray := TFluentArray<Double>.Create([1.5, 2.5, 3.5]);
+  LArray := TLQColligoArray<Double>.Create([1.5, 2.5, 3.5]);
   try
     LSum := LArray.AsEnumerable.Sum(
       function(Value: Double): Double
@@ -747,12 +747,12 @@ end;
 
 procedure TArrayTest.TestArrayGroupJoin;
 var
-  LInner: IFluentArray<string>;
-  LJoined: IFluentEnumerable<string>;
-  LArray: IFluentArray<string>;
+  LInner: ILQColligoArray<string>;
+  LJoined: ILQColligoEnumerable<string>;
+  LArray: ILQColligoArray<string>;
 begin
   FArray.SetItems([1, 2, 3]);
-  LInner := TFluentArray<string>.Create(['A1', 'B1', 'C2']);
+  LInner := TLQColligoArray<string>.Create(['A1', 'B1', 'C2']);
   LJoined := FArray.AsEnumerable.GroupJoin<string, Integer, string>(
     LInner.AsEnumerable,
     function(Num: Integer): Integer
@@ -763,7 +763,7 @@ begin
     begin
       Result := StrToInt(Str[2]);
     end,
-    function(Num: Integer; Matches: IFluentEnumerableAdapter<string>): string
+    function(Num: Integer; Matches: ILQColligoEnumerableAdapter<string>): string
     begin
       Result := Num.ToString + ': ' + string.Join(', ', Matches.AsEnumerable.ToArray.ArrayData);
     end);
@@ -776,8 +776,8 @@ end;
 
 procedure TArrayTest.TestArrayTakeWhile;
 var
-  LTaken: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LTaken: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 0, 4]);
   LTaken := FArray.AsEnumerable.TakeWhile(
@@ -793,8 +793,8 @@ end;
 
 procedure TArrayTest.TestArraySkipWhile;
 var
-  LSkipped: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSkipped: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 0, 4]);
   LSkipped := FArray.AsEnumerable.SkipWhile(
@@ -823,12 +823,12 @@ end;
 
 procedure TArrayTest.TestArrayExclude;
 var
-  LSecond: IFluentArray<Integer>;
-  LExclude: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoArray<Integer>;
+  LExclude: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4]);
-  LSecond := TFluentArray<Integer>.Create([2, 4]);
+  LSecond := TLQColligoArray<Integer>.Create([2, 4]);
   LExclude := FArray.AsEnumerable.Exclude(LSecond.AsEnumerable);
   LArray := LExclude.ToArray;
   Assert.AreEqual(2, LArray.Length, 'Exclude array should have 2 elements');
@@ -838,12 +838,12 @@ end;
 
 procedure TArrayTest.TestArrayIntersect;
 var
-  LSecond: IFluentArray<Integer>;
-  LIntersect: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoArray<Integer>;
+  LIntersect: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3, 4]);
-  LSecond := TFluentArray<Integer>.Create([2, 4, 5]);
+  LSecond := TLQColligoArray<Integer>.Create([2, 4, 5]);
   LIntersect := FArray.AsEnumerable.Intersect(LSecond.AsEnumerable);
   LArray := LIntersect.ToArray;
   Assert.AreEqual(2, LArray.Length, 'Intersect array should have 2 elements');
@@ -853,12 +853,12 @@ end;
 
 procedure TArrayTest.TestArrayUnion;
 var
-  LSecond: IFluentArray<Integer>;
-  LUnion: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoArray<Integer>;
+  LUnion: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3]);
-  LSecond := TFluentArray<Integer>.Create([2, 3, 4]);
+  LSecond := TLQColligoArray<Integer>.Create([2, 3, 4]);
   LUnion := FArray.AsEnumerable.Union(LSecond.AsEnumerable);
   LArray := LUnion.ToArray;
   Assert.AreEqual(4, LArray.Length, 'Union array should have 4 elements');
@@ -868,12 +868,12 @@ end;
 
 procedure TArrayTest.TestArrayConcat;
 var
-  LSecond: IFluentArray<Integer>;
-  LConcat: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LSecond: ILQColligoArray<Integer>;
+  LConcat: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([1, 2, 3]);
-  LSecond := TFluentArray<Integer>.Create([2, 3, 4]);
+  LSecond := TLQColligoArray<Integer>.Create([2, 3, 4]);
   LConcat := FArray.AsEnumerable.Concat(LSecond.AsEnumerable);
   LArray := LConcat.ToArray;
   Assert.AreEqual(6, LArray.Length, 'Concat array should have 6 elements');
@@ -916,11 +916,11 @@ end;
 
 procedure TArrayTest.TestArraySequenceEqual;
 var
-  LSecond: IFluentArray<Integer>;
+  LSecond: ILQColligoArray<Integer>;
   LResult: Boolean;
 begin
   FArray.SetItems([1, 2, 3]);
-  LSecond := TFluentArray<Integer>.Create([1, 2, 3]);
+  LSecond := TLQColligoArray<Integer>.Create([1, 2, 3]);
   LResult := FArray.AsEnumerable.SequenceEqual(LSecond.AsEnumerable);
   Assert.IsTrue(LResult, 'Sequences should be equal');
 
@@ -931,11 +931,11 @@ end;
 
 procedure TArrayTest.TestArraySequenceEqualNegative;
 var
-  LSecond: TFluentArray<Integer>;
+  LSecond: TLQColligoArray<Integer>;
   LResult: Boolean;
 begin
   FArray.SetItems([1, 2, 3]);
-  LSecond := TFluentArray<Integer>.Create([1, 2, 4]);
+  LSecond := TLQColligoArray<Integer>.Create([1, 2, 4]);
   try
     LResult := FArray.AsEnumerable.SequenceEqual(LSecond.AsEnumerable);
     Assert.IsFalse(LResult, 'Sequences should not be equal');
@@ -1040,8 +1040,8 @@ end;
 
 procedure TArrayTest.TestArrayOrderByDescending;
 var
-  LOrdered: IFluentEnumerable<Integer>;
-  LArray: IFluentArray<Integer>;
+  LOrdered: ILQColligoEnumerable<Integer>;
+  LArray: ILQColligoArray<Integer>;
 begin
   FArray.SetItems([3, 1, 4, 1, 5]);
   LOrdered := FArray.AsEnumerable.OrderByDesc(
@@ -1057,11 +1057,11 @@ end;
 
 procedure TArrayTest.TestArrayFlatMap;
 var
-  LArrayStr: IFluentArray<string>;
-  LFiltered: IFluentEnumerable<Char>;
-  LResult: IFluentArray<Char>;
+  LArrayStr: ILQColligoArray<string>;
+  LFiltered: ILQColligoEnumerable<Char>;
+  LResult: ILQColligoArray<Char>;
 begin
-  LArrayStr := TFluentArray<string>.Create(['abc', 'def']);
+  LArrayStr := TLQColligoArray<string>.Create(['abc', 'def']);
   LFiltered := LArrayStr.AsEnumerable.SelectMany<Char>(
     function(x: string): TArray<Char>
     begin
@@ -1075,12 +1075,12 @@ end;
 
 procedure TArrayTest.TestArrayFlatMapAutoManaged;
 var
-  LArrayStr: IFluentArray<string>;
-  LEnum: IFluentEnumerable<string>;
-  LFiltered: IFluentEnumerable<Char>;
-  LResult: IFluentArray<Char>;
+  LArrayStr: ILQColligoArray<string>;
+  LEnum: ILQColligoEnumerable<string>;
+  LFiltered: ILQColligoEnumerable<Char>;
+  LResult: ILQColligoArray<Char>;
 begin
-  LArrayStr := TFluentArray<string>.Create(['abc', 'def']);
+  LArrayStr := TLQColligoArray<string>.Create(['abc', 'def']);
   LEnum := LArrayStr.AsEnumerable;
   LFiltered := LEnum.SelectMany<Char>(
     function(x: string): TArray<Char>
@@ -1131,12 +1131,12 @@ begin
   end;
 end;
 
-// TFluentArray.From must not leak the wrapper (FastMM FullDebugMode fails on leak).
+// TLQColligoArray.From must not leak the wrapper (FastMM FullDebugMode fails on leak).
 procedure TArrayTest.TestArrayFromDoesNotLeak;
 var
-  LArr: IFluentArray<Integer>;
+  LArr: ILQColligoArray<Integer>;
 begin
-  LArr := TFluentArray<Integer>.From(TArray<Integer>.Create(1, 2, 3)).ToArray;
+  LArr := TLQColligoArray<Integer>.From(TArray<Integer>.Create(1, 2, 3)).ToArray;
   Assert.AreEqual(3, LArr.Length, 'From must enumerate all elements');
 end;
 

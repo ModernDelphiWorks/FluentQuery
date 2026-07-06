@@ -32,58 +32,58 @@ uses
   LQColligo;
 
 type
-  TFluentGroupByEnumerable<TKey, T> = class(TFluentEnumerableBase<IGrouping<TKey, T>>, IGroupByEnumerable<TKey, T>)
+  TLQColligoGroupByEnumerable<TKey, T> = class(TLQColligoEnumerableBase<IGrouping<TKey, T>>, IGroupByEnumerable<TKey, T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FKeySelector: TFunc<T, TKey>;
     FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
       const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey> = nil);
-    function GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>; override;
-    function AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
+    function GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, T>>; override;
+    function AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, T>>;
   end;
 
-  TFluentGroupByEnumerable<TKey, TElement, TSource> = class(TFluentEnumerableBase<IGrouping<TKey, TElement>>, IGroupByEnumerable<TKey, TElement>)
+  TLQColligoGroupByEnumerable<TKey, TElement, TSource> = class(TLQColligoEnumerableBase<IGrouping<TKey, TElement>>, IGroupByEnumerable<TKey, TElement>)
   private
-    FSource: IFluentEnumerableBase<TSource>;
+    FSource: ILQColligoEnumerableBase<TSource>;
     FKeySelector: TFunc<TSource, TKey>;
     FElementSelector: TFunc<TSource, TElement>;
     FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<TSource>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
       const AElementSelector: TFunc<TSource, TElement>;
       const AComparer: IEqualityComparer<TKey> = nil);
-    function GetEnumerator: IFluentEnumerator<IGrouping<TKey, TElement>>; override;
-    function AsEnumerable: IFluentEnumerable<IGrouping<TKey, TElement>>;
+    function GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, TElement>>; override;
+    function AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, TElement>>;
   end;
 
-  TFluentGroupByResultEnumerable<TKey, TSource, TResult> = class(TFluentEnumerableBase<TResult>, IFluentEnumerableBase<TResult>)
+  TLQColligoGroupByResultEnumerable<TKey, TSource, TResult> = class(TLQColligoEnumerableBase<TResult>, ILQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<TSource>;
+    FSource: ILQColligoEnumerableBase<TSource>;
     FKeySelector: TFunc<TSource, TKey>;
-    FResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+    FResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<TSource>, TResult>;
     FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<TSource>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
-      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+      const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<TSource>, TResult>;
       const AComparer: IEqualityComparer<TKey> = nil);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentGroupByEnumerator<TKey, T> = class(TInterfacedObject, IFluentEnumerator<IGrouping<TKey, T>>)
+  TLQColligoGroupByEnumerator<TKey, T> = class(TInterfacedObject, ILQColligoEnumerator<IGrouping<TKey, T>>)
   private
-    FSourceEnum: IFluentEnumerator<T>;
+    FSourceEnum: ILQColligoEnumerator<T>;
     FKeySelector: TFunc<T, TKey>;
     FGroups: TDictionary<TKey, TList<T>>;
     FKeys: TList<TKey>;
     FIndex: Integer;
     FCurrent: IGrouping<TKey, T>;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>;
       const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
@@ -93,9 +93,9 @@ type
     property Current: IGrouping<TKey, T> read GetCurrent;
   end;
 
-  TFluentGroupByEnumerator<TKey, TElement, TSource> = class(TInterfacedObject, IFluentEnumerator<IGrouping<TKey, TElement>>)
+  TLQColligoGroupByEnumerator<TKey, TElement, TSource> = class(TInterfacedObject, ILQColligoEnumerator<IGrouping<TKey, TElement>>)
   private
-    FSourceEnum: IFluentEnumerator<TSource>;
+    FSourceEnum: ILQColligoEnumerator<TSource>;
     FKeySelector: TFunc<TSource, TKey>;
     FElementSelector: TFunc<TSource, TElement>;
     FGroups: TDictionary<TKey, TList<TElement>>;
@@ -103,7 +103,7 @@ type
     FIndex: Integer;
     FCurrent: IGrouping<TKey, TElement>;
   public
-    constructor Create(const ASource: IFluentEnumerator<TSource>;
+    constructor Create(const ASource: ILQColligoEnumerator<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
       const AElementSelector: TFunc<TSource, TElement>;
       const AComparer: IEqualityComparer<TKey>);
@@ -114,19 +114,19 @@ type
     property Current: IGrouping<TKey, TElement> read GetCurrent;
   end;
 
-  TFluentGroupByResultEnumerator<TKey, TSource, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoGroupByResultEnumerator<TKey, TSource, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSourceEnum: IFluentEnumerator<TSource>;
+    FSourceEnum: ILQColligoEnumerator<TSource>;
     FKeySelector: TFunc<TSource, TKey>;
-    FResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+    FResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<TSource>, TResult>;
     FGroups: TDictionary<TKey, TList<TSource>>;
     FKeys: TList<TKey>;
     FIndex: Integer;
     FCurrent: TResult;
   public
-    constructor Create(const ASource: IFluentEnumerator<TSource>;
+    constructor Create(const ASource: ILQColligoEnumerator<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
-      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+      const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<TSource>, TResult>;
       const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: TResult;
@@ -136,21 +136,21 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentGroupByQueryable<TKey, T> = class(TFluentQueryableBase<IGrouping<TKey, T>>, IGroupByQueryable<TKey, T>)
+  TLQColligoGroupByQueryable<TKey, T> = class(TLQColligoQueryableBase<IGrouping<TKey, T>>, IGroupByQueryable<TKey, T>)
   private
-    FSource: IFluentQueryableBase<T>;
-    FProvider: IFluentQueryProvider<T>;
-    FKeySelector: IFluentQueryExpression;
+    FSource: ILQColligoQueryableBase<T>;
+    FProvider: ILQColligoQueryProvider<T>;
+    FKeySelector: ILQColligoQueryExpression;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const AKeySelector: IFluentQueryExpression;
-      const AProvider: IFluentQueryProvider<T>);
-    function GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>; override;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const AKeySelector: ILQColligoQueryExpression;
+      const AProvider: ILQColligoQueryProvider<T>);
+    function GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, T>>; override;
     function BuildQuery: string; override;
-    function AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
-    function ToList: IFluentList<IGrouping<TKey, T>>;
+    function AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, T>>;
+    function ToList: ILQColligoList<IGrouping<TKey, T>>;
   end;
 
-  TFluentGroupByQueryableEnumerator<TKey, T> = class(TInterfacedObject, IFluentEnumerator<IGrouping<TKey, T>>)
+  TLQColligoGroupByQueryableEnumerator<TKey, T> = class(TInterfacedObject, ILQColligoEnumerator<IGrouping<TKey, T>>)
   private
     FDataSet: IDBDataSet;
     FKeyColumn: string;
@@ -175,10 +175,10 @@ uses
   LQColligo.Adapters,
   LQColligo.Collections;
 
-{ TFluentGroupByEnumerable<TKey, T> }
+{ TLQColligoGroupByEnumerable<TKey, T> }
 
-constructor TFluentGroupByEnumerable<TKey, T>.Create(
-  const ASource: IFluentEnumerableBase<T>;
+constructor TLQColligoGroupByEnumerable<TKey, T>.Create(
+  const ASource: ILQColligoEnumerableBase<T>;
   const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 begin
@@ -187,20 +187,20 @@ begin
   FComparer := AComparer;
 end;
 
-function TFluentGroupByEnumerable<TKey, T>.GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>;
+function TLQColligoGroupByEnumerable<TKey, T>.GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, T>>;
 begin
-  Result := TFluentGroupByEnumerator<TKey, T>.Create(FSource.GetEnumerator, FKeySelector, FComparer);
+  Result := TLQColligoGroupByEnumerator<TKey, T>.Create(FSource.GetEnumerator, FKeySelector, FComparer);
 end;
 
-function TFluentGroupByEnumerable<TKey, T>.AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
+function TLQColligoGroupByEnumerable<TKey, T>.AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, T>>;
 begin
-  Result := IFluentEnumerable<IGrouping<TKey, T>>.Create(Self);
+  Result := ILQColligoEnumerable<IGrouping<TKey, T>>.Create(Self);
 end;
 
-{ TFluentGroupByEnumerable<TKey, TElement, TSource> }
+{ TLQColligoGroupByEnumerable<TKey, TElement, TSource> }
 
-constructor TFluentGroupByEnumerable<TKey, TElement, TSource>.Create(
-  const ASource: IFluentEnumerableBase<TSource>;
+constructor TLQColligoGroupByEnumerable<TKey, TElement, TSource>.Create(
+  const ASource: ILQColligoEnumerableBase<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
   const AElementSelector: TFunc<TSource, TElement>;
   const AComparer: IEqualityComparer<TKey>);
@@ -211,23 +211,23 @@ begin
   FComparer := AComparer;
 end;
 
-function TFluentGroupByEnumerable<TKey, TElement, TSource>.GetEnumerator: IFluentEnumerator<IGrouping<TKey, TElement>>;
+function TLQColligoGroupByEnumerable<TKey, TElement, TSource>.GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, TElement>>;
 begin
-  Result := TFluentGroupByEnumerator<TKey, TElement, TSource>.Create(
+  Result := TLQColligoGroupByEnumerator<TKey, TElement, TSource>.Create(
     FSource.GetEnumerator, FKeySelector, FElementSelector, FComparer);
 end;
 
-function TFluentGroupByEnumerable<TKey, TElement, TSource>.AsEnumerable: IFluentEnumerable<IGrouping<TKey, TElement>>;
+function TLQColligoGroupByEnumerable<TKey, TElement, TSource>.AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, TElement>>;
 begin
-  Result := IFluentEnumerable<IGrouping<TKey, TElement>>.Create(Self);
+  Result := ILQColligoEnumerable<IGrouping<TKey, TElement>>.Create(Self);
 end;
 
-{ TFluentGroupByResultEnumerable<TKey, TSource, TResult> }
+{ TLQColligoGroupByResultEnumerable<TKey, TSource, TResult> }
 
-constructor TFluentGroupByResultEnumerable<TKey, TSource, TResult>.Create(
-  const ASource: IFluentEnumerableBase<TSource>;
+constructor TLQColligoGroupByResultEnumerable<TKey, TSource, TResult>.Create(
+  const ASource: ILQColligoEnumerableBase<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
-  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+  const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<TSource>, TResult>;
   const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
@@ -236,16 +236,16 @@ begin
   FComparer := AComparer;
 end;
 
-function TFluentGroupByResultEnumerable<TKey, TSource, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoGroupByResultEnumerable<TKey, TSource, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Create(
+  Result := TLQColligoGroupByResultEnumerator<TKey, TSource, TResult>.Create(
     FSource.GetEnumerator, FKeySelector, FResultSelector, FComparer);
 end;
 
-{ TFluentGroupByEnumerator<TKey, T> }
+{ TLQColligoGroupByEnumerator<TKey, T> }
 
-constructor TFluentGroupByEnumerator<TKey, T>.Create(
-  const ASource: IFluentEnumerator<T>;
+constructor TLQColligoGroupByEnumerator<TKey, T>.Create(
+  const ASource: ILQColligoEnumerator<T>;
   const AKeySelector: TFunc<T, TKey>;
   const AComparer: IEqualityComparer<TKey>);
 var
@@ -272,7 +272,7 @@ begin
   end;
 end;
 
-destructor TFluentGroupByEnumerator<TKey, T>.Destroy;
+destructor TLQColligoGroupByEnumerator<TKey, T>.Destroy;
 var
   LList: TList<T>;
 begin
@@ -284,12 +284,12 @@ begin
   inherited;
 end;
 
-function TFluentGroupByEnumerator<TKey, T>.GetCurrent: IGrouping<TKey, T>;
+function TLQColligoGroupByEnumerator<TKey, T>.GetCurrent: IGrouping<TKey, T>;
 begin
   Result := FCurrent;
 end;
 
-function TFluentGroupByEnumerator<TKey, T>.MoveNext: Boolean;
+function TLQColligoGroupByEnumerator<TKey, T>.MoveNext: Boolean;
 var
   LKey: TKey;
 begin
@@ -302,9 +302,9 @@ begin
     // valid if retained past this enumerator (e.g. GroupBy(...).ToList).
     // The master list in FGroups is kept for the enumerator's lifetime,
     // which keeps Reset re-enumerable and avoids any double-free.
-    FCurrent := TFluentGrouping<TKey, T>.Create(
+    FCurrent := TLQColligoGrouping<TKey, T>.Create(
       LKey,
-      IFluentEnumerable<T>.Create(
+      ILQColligoEnumerable<T>.Create(
         TListAdapter<T>.Create(TList<T>.Create(FGroups[LKey]), True),
         ftNone,
         TEqualityComparer<T>.Default
@@ -313,16 +313,16 @@ begin
   end;
 end;
 
-procedure TFluentGroupByEnumerator<TKey, T>.Reset;
+procedure TLQColligoGroupByEnumerator<TKey, T>.Reset;
 begin
   FIndex := -1;
   FCurrent := nil;
 end;
 
-{ TFluentGroupByEnumerator<TKey, TElement, TSource> }
+{ TLQColligoGroupByEnumerator<TKey, TElement, TSource> }
 
-constructor TFluentGroupByEnumerator<TKey, TElement, TSource>.Create(
-  const ASource: IFluentEnumerator<TSource>;
+constructor TLQColligoGroupByEnumerator<TKey, TElement, TSource>.Create(
+  const ASource: ILQColligoEnumerator<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
   const AElementSelector: TFunc<TSource, TElement>;
   const AComparer: IEqualityComparer<TKey>);
@@ -351,7 +351,7 @@ begin
   end;
 end;
 
-destructor TFluentGroupByEnumerator<TKey, TElement, TSource>.Destroy;
+destructor TLQColligoGroupByEnumerator<TKey, TElement, TSource>.Destroy;
 var
   LList: TList<TElement>;
 begin
@@ -363,12 +363,12 @@ begin
   inherited;
 end;
 
-function TFluentGroupByEnumerator<TKey, TElement, TSource>.GetCurrent: IGrouping<TKey, TElement>;
+function TLQColligoGroupByEnumerator<TKey, TElement, TSource>.GetCurrent: IGrouping<TKey, TElement>;
 begin
   Result := FCurrent;
 end;
 
-function TFluentGroupByEnumerator<TKey, TElement, TSource>.MoveNext: Boolean;
+function TLQColligoGroupByEnumerator<TKey, TElement, TSource>.MoveNext: Boolean;
 var
   LKey: TKey;
 begin
@@ -378,27 +378,27 @@ begin
   begin
     LKey := FKeys[FIndex];
     // Grouping owns an independent copy (see single-key MoveNext note).
-    FCurrent := TFluentGrouping<TKey, TElement>.Create(
+    FCurrent := TLQColligoGrouping<TKey, TElement>.Create(
       LKey,
-      IFluentEnumerable<TElement>.Create(
+      ILQColligoEnumerable<TElement>.Create(
         TListAdapter<TElement>.Create(TList<TElement>.Create(FGroups[LKey]), True),
         ftNone,
         TEqualityComparer<TElement>.Default));
   end;
 end;
 
-procedure TFluentGroupByEnumerator<TKey, TElement, TSource>.Reset;
+procedure TLQColligoGroupByEnumerator<TKey, TElement, TSource>.Reset;
 begin
   FIndex := -1;
   FCurrent := nil;
 end;
 
-{ TFluentGroupByResultEnumerator<TKey, TSource, TResult> }
+{ TLQColligoGroupByResultEnumerator<TKey, TSource, TResult> }
 
-constructor TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Create(
-  const ASource: IFluentEnumerator<TSource>;
+constructor TLQColligoGroupByResultEnumerator<TKey, TSource, TResult>.Create(
+  const ASource: ILQColligoEnumerator<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
-  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+  const AResultSelector: TFunc<TKey, ILQColligoEnumerableAdapter<TSource>, TResult>;
   const AComparer: IEqualityComparer<TKey>);
 var
   LItem: TSource;
@@ -425,7 +425,7 @@ begin
   end;
 end;
 
-destructor TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Destroy;
+destructor TLQColligoGroupByResultEnumerator<TKey, TSource, TResult>.Destroy;
 var
   LList: TList<TSource>;
 begin
@@ -437,12 +437,12 @@ begin
   inherited;
 end;
 
-function TFluentGroupByResultEnumerator<TKey, TSource, TResult>.GetCurrent: TResult;
+function TLQColligoGroupByResultEnumerator<TKey, TSource, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentGroupByResultEnumerator<TKey, TSource, TResult>.MoveNext: Boolean;
+function TLQColligoGroupByResultEnumerator<TKey, TSource, TResult>.MoveNext: Boolean;
 var
   LKey: TKey;
 begin
@@ -455,31 +455,31 @@ begin
     FCurrent := FResultSelector(
       LKey,
       TEnumerableAdapter<TSource>.Create(
-        IFluentEnumerable<TSource>.Create(
+        ILQColligoEnumerable<TSource>.Create(
           TListAdapter<TSource>.Create(TList<TSource>.Create(FGroups[LKey]), True),
           ftNone,
           TEqualityComparer<TSource>.Default), nil));
   end;
 end;
 
-procedure TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Reset;
+procedure TLQColligoGroupByResultEnumerator<TKey, TSource, TResult>.Reset;
 begin
   FIndex := -1;
   FCurrent := Default(TResult);
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentGroupByQueryable<TKey, T> }
+{ TLQColligoGroupByQueryable<TKey, T> }
 
-constructor TFluentGroupByQueryable<TKey, T>.Create(const ASource: IFluentQueryableBase<T>;
-  const AKeySelector: IFluentQueryExpression; const AProvider: IFluentQueryProvider<T>);
+constructor TLQColligoGroupByQueryable<TKey, T>.Create(const ASource: ILQColligoQueryableBase<T>;
+  const AKeySelector: ILQColligoQueryExpression; const AProvider: ILQColligoQueryProvider<T>);
 begin
   FSource := ASource;
   FKeySelector := AKeySelector;
   FProvider := AProvider;
 end;
 
-function TFluentGroupByQueryable<TKey, T>.BuildQuery: string;
+function TLQColligoGroupByQueryable<TKey, T>.BuildQuery: string;
 begin
   if Assigned(FProvider) then
     Result := FProvider.AsString
@@ -487,36 +487,36 @@ begin
     raise EInvalidOperation.Create('Provider not assigned');
 end;
 
-function TFluentGroupByQueryable<TKey, T>.GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>;
+function TLQColligoGroupByQueryable<TKey, T>.GetEnumerator: ILQColligoEnumerator<IGrouping<TKey, T>>;
 var
   LSQL: string;
   LDataSet: IDBDataSet;
 begin
   LSQL := BuildQuery;
   LDataSet := FProvider.Connection.CreateDataSet(LSQL);
-  Result := TFluentGroupByQueryableEnumerator<TKey, T>.Create(LDataSet, FKeySelector.Serialize);
+  Result := TLQColligoGroupByQueryableEnumerator<TKey, T>.Create(LDataSet, FKeySelector.Serialize);
 end;
 
-function TFluentGroupByQueryable<TKey, T>.ToList: IFluentList<IGrouping<TKey, T>>;
+function TLQColligoGroupByQueryable<TKey, T>.ToList: ILQColligoList<IGrouping<TKey, T>>;
 var
-  LEnumerator: IFluentEnumerator<IGrouping<TKey, T>>;
+  LEnumerator: ILQColligoEnumerator<IGrouping<TKey, T>>;
 begin
-  Result := TFluentList<IGrouping<TKey, T>>.Create;
+  Result := TLQColligoList<IGrouping<TKey, T>>.Create;
   LEnumerator := GetEnumerator;
   while LEnumerator.MoveNext do
     Result.Add(LEnumerator.Current);
 end;
 
-function TFluentGroupByQueryable<TKey, T>.AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
+function TLQColligoGroupByQueryable<TKey, T>.AsEnumerable: ILQColligoEnumerable<IGrouping<TKey, T>>;
 begin
-  Result := IFluentEnumerable<IGrouping<TKey, T>>.Create(
+  Result := ILQColligoEnumerable<IGrouping<TKey, T>>.Create(
     TQueryableToEnumerableAdapter<IGrouping<TKey, T>>.Create(Self)
   );
 end;
 
-{ TFluentGroupByQueryableEnumerator<TKey, T> }
+{ TLQColligoGroupByQueryableEnumerator<TKey, T> }
 
-constructor TFluentGroupByQueryableEnumerator<TKey, T>.Create(const ADataSet: IDBDataSet; const AKeyColumn: string);
+constructor TLQColligoGroupByQueryableEnumerator<TKey, T>.Create(const ADataSet: IDBDataSet; const AKeyColumn: string);
 begin
   inherited Create;
   FDataSet := ADataSet;
@@ -526,21 +526,21 @@ begin
   FEnumerator := TDataSetEnumerator<T>.Create(FDataSet);
 end;
 
-destructor TFluentGroupByQueryableEnumerator<TKey, T>.Destroy;
+destructor TLQColligoGroupByQueryableEnumerator<TKey, T>.Destroy;
 begin
   FEnumerator.Free;
   FDataSet.Close;
   inherited;
 end;
 
-procedure TFluentGroupByQueryableEnumerator<TKey, T>.Reset;
+procedure TLQColligoGroupByQueryableEnumerator<TKey, T>.Reset;
 begin
   FDataSet.First;
   FHasNext := True;
   FEnumerator.Reset;
 end;
 
-function TFluentGroupByQueryableEnumerator<TKey, T>.MoveNext: Boolean;
+function TLQColligoGroupByQueryableEnumerator<TKey, T>.MoveNext: Boolean;
 begin
   if FHasNext and not FDataSet.Eof then
   begin
@@ -554,12 +554,12 @@ begin
   end;
 end;
 
-function TFluentGroupByQueryableEnumerator<TKey, T>.GetCurrent: IGrouping<TKey, T>;
+function TLQColligoGroupByQueryableEnumerator<TKey, T>.GetCurrent: IGrouping<TKey, T>;
 begin
   Result := FCurrentGroup;
 end;
 
-function TFluentGroupByQueryableEnumerator<TKey, T>._ParseGroup: IGrouping<TKey, T>;
+function TLQColligoGroupByQueryableEnumerator<TKey, T>._ParseGroup: IGrouping<TKey, T>;
 var
   LItems: TList<T>;
   LKey: TKey;
@@ -586,9 +586,9 @@ begin
       LItems.Add(LItem);
     end;
 
-    Result := TFluentGrouping<TKey, T>.Create(
+    Result := TLQColligoGrouping<TKey, T>.Create(
       LKey,
-      IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LItems, True))
+      ILQColligoEnumerable<T>.Create(TListAdapter<T>.Create(LItems, True))
     );
   except
     LItems.Free;

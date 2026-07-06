@@ -29,21 +29,21 @@ uses
   LQColligo;
 
 type
-  TEnumerableAdapter<TResult> = class(TInterfacedObject, IFluentEnumerableAdapter<TResult>)
+  TEnumerableAdapter<TResult> = class(TInterfacedObject, ILQColligoEnumerableAdapter<TResult>)
   private
-    FBase: IFluentEnumerableBase<TResult>;
-    FValue: IFluentEnumerable<TResult>;
+    FBase: ILQColligoEnumerableBase<TResult>;
+    FValue: ILQColligoEnumerable<TResult>;
     FList: TObject;
   public
-    constructor Create(const ABase: IFluentEnumerableBase<TResult>;
+    constructor Create(const ABase: ILQColligoEnumerableBase<TResult>;
       const AList: TObject); overload;
-    constructor Create(const AValue: IFluentEnumerable<TResult>;
+    constructor Create(const AValue: ILQColligoEnumerable<TResult>;
       const AList: TObject); overload;
     destructor Destroy; override;
-    function AsEnumerable: IFluentEnumerable<TResult>;
+    function AsEnumerable: ILQColligoEnumerable<TResult>;
   end;
 
-  TListAdapter<T> = class(TInterfacedObject, IFluentEnumerableBase<T>)
+  TListAdapter<T> = class(TInterfacedObject, ILQColligoEnumerableBase<T>)
   private
     FList: TList<T>;
     FOwnsList: Boolean;
@@ -51,11 +51,11 @@ type
   public
     constructor Create(const AList: TList<T>; AOwnsList: Boolean = False);
     destructor Destroy; override;
-    function GetEnumerator: IFluentEnumerator<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
     property Count: Integer read GetCount;
   end;
 
-  TListAdapterEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TListAdapterEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
     FEnumerator: TList<T>.TEnumerator;
   public
@@ -67,17 +67,17 @@ type
     property Current: T read GetCurrent;
   end;
 
-  TDictionaryAdapter<K, V> = class(TInterfacedObject, IFluentEnumerableBase<TPair<K, V>>)
+  TDictionaryAdapter<K, V> = class(TInterfacedObject, ILQColligoEnumerableBase<TPair<K, V>>)
   private
     FDict: TDictionary<K, V>;
     FOwnsDict: Boolean;
   public
     constructor Create(const ADict: TDictionary<K, V>; AOwnsDict: Boolean = False);
     destructor Destroy; override;
-    function GetEnumerator: IFluentEnumerator<TPair<K, V>>;
+    function GetEnumerator: ILQColligoEnumerator<TPair<K, V>>;
   end;
 
-  TDictionaryAdapterEnumerator<K, V> = class(TInterfacedObject, IFluentEnumerator<TPair<K, V>>)
+  TDictionaryAdapterEnumerator<K, V> = class(TInterfacedObject, ILQColligoEnumerator<TPair<K, V>>)
   private
     FEnumerator: TDictionary<K, V>.TPairEnumerator;
   public
@@ -89,15 +89,15 @@ type
     property Current: TPair<K, V> read GetCurrent;
   end;
 
-  TStringAdapter = class(TInterfacedObject, IFluentEnumerableBase<Char>)
+  TStringAdapter = class(TInterfacedObject, ILQColligoEnumerableBase<Char>)
   private
     FString: string;
   public
     constructor Create(const AString: string);
-    function GetEnumerator: IFluentEnumerator<Char>;
+    function GetEnumerator: ILQColligoEnumerator<Char>;
   end;
 
-  TStringAdapterEnumerator = class(TInterfacedObject, IFluentEnumerator<Char>)
+  TStringAdapterEnumerator = class(TInterfacedObject, ILQColligoEnumerator<Char>)
   private
     FString: string;
     FIndex: Integer;
@@ -109,7 +109,7 @@ type
     property Current: Char read GetCurrent;
   end;
 
-  TArrayAdapter<T> = class(TInterfacedObject, IFluentEnumerableBase<T>)
+  TArrayAdapter<T> = class(TInterfacedObject, ILQColligoEnumerableBase<T>)
   private
     FArray: TArray<T>;
     FList: TList<T>;
@@ -117,27 +117,27 @@ type
   public
     constructor Create(const AArray: TArray<T>);
     destructor Destroy; override;
-    function GetEnumerator: IFluentEnumerator<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
     property Count: Integer read GetCount;
   end;
 
-  TNonGenericArrayAdapter<T> = class(TInterfacedObject, IFluentEnumerableBase<T>)
+  TNonGenericArrayAdapter<T> = class(TInterfacedObject, ILQColligoEnumerableBase<T>)
   private
     FArray: TArray<T>;
     FList: TList<T>;
   public
     constructor Create(const AArray: array of T);
     destructor Destroy; override;
-    function GetEnumerator: IFluentEnumerator<T>;
+    function GetEnumerator: ILQColligoEnumerator<T>;
   end;
 
   {$IFDEF QUERYABLE}
-  TQueryableToEnumerableAdapter<T> = class(TInterfacedObject, IFluentEnumerableBase<T>)
+  TQueryableToEnumerableAdapter<T> = class(TInterfacedObject, ILQColligoEnumerableBase<T>)
   private
-    FQueryable: IFluentQueryableBase<T>;
+    FQueryable: ILQColligoQueryableBase<T>;
   public
-    constructor Create(const AQueryable: IFluentQueryableBase<T>);
-    function GetEnumerator: IFluentEnumerator<T>;
+    constructor Create(const AQueryable: ILQColligoQueryableBase<T>);
+    function GetEnumerator: ILQColligoEnumerator<T>;
   end;
   {$ENDIF}
 
@@ -163,7 +163,7 @@ begin
   Result := FList.Count;
 end;
 
-function TListAdapter<T>.GetEnumerator: IFluentEnumerator<T>;
+function TListAdapter<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
   Result := TListAdapterEnumerator<T>.Create(FList.GetEnumerator);
 end;
@@ -211,7 +211,7 @@ begin
   inherited;
 end;
 
-function TDictionaryAdapter<K, V>.GetEnumerator: IFluentEnumerator<TPair<K, V>>;
+function TDictionaryAdapter<K, V>.GetEnumerator: ILQColligoEnumerator<TPair<K, V>>;
 begin
   Result := TDictionaryAdapterEnumerator<K, V>.Create(FDict.GetEnumerator);
 end;
@@ -263,7 +263,7 @@ begin
   Result := Length(FArray);
 end;
 
-function TArrayAdapter<T>.GetEnumerator: IFluentEnumerator<T>;
+function TArrayAdapter<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
   Result := TListAdapterEnumerator<T>.Create(FList.GetEnumerator);
 end;
@@ -275,7 +275,7 @@ begin
   FString := AString;
 end;
 
-function TStringAdapter.GetEnumerator: IFluentEnumerator<Char>;
+function TStringAdapter.GetEnumerator: ILQColligoEnumerator<Char>;
 begin
   Result := TStringAdapterEnumerator.Create(FString);
 end;
@@ -324,7 +324,7 @@ begin
   inherited;
 end;
 
-function TNonGenericArrayAdapter<T>.GetEnumerator: IFluentEnumerator<T>;
+function TNonGenericArrayAdapter<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
   Result := TListAdapterEnumerator<T>.Create(FList.GetEnumerator);
 end;
@@ -332,32 +332,32 @@ end;
 {$IFDEF QUERYABLE}
 { TQueryableToEnumerableAdapter<T> }
 
-constructor TQueryableToEnumerableAdapter<T>.Create(const AQueryable: IFluentQueryableBase<T>);
+constructor TQueryableToEnumerableAdapter<T>.Create(const AQueryable: ILQColligoQueryableBase<T>);
 begin
   FQueryable := AQueryable;
 end;
 
-function TQueryableToEnumerableAdapter<T>.GetEnumerator: IFluentEnumerator<T>;
+function TQueryableToEnumerableAdapter<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
   Result := FQueryable.GetEnumerator;
 end;
 {$ENDIF}
 
-{ TFluentEnumerableAdapter<TResult> }
+{ TLQColligoEnumerableAdapter<TResult> }
 
-constructor TEnumerableAdapter<TResult>.Create(const ABase: IFluentEnumerableBase<TResult>;
+constructor TEnumerableAdapter<TResult>.Create(const ABase: ILQColligoEnumerableBase<TResult>;
   const AList: TObject);
 begin
   FBase := ABase;
   FList := AList;
-  FValue := IFluentEnumerable<TResult>.Create(
+  FValue := ILQColligoEnumerable<TResult>.Create(
     FBase,
     ftNone,
     TEqualityComparer<TResult>.Default
   );
 end;
 
-constructor TEnumerableAdapter<TResult>.Create(const AValue: IFluentEnumerable<TResult>;
+constructor TEnumerableAdapter<TResult>.Create(const AValue: ILQColligoEnumerable<TResult>;
   const AList: TObject);
 begin
   FValue := AValue;
@@ -371,7 +371,7 @@ begin
   inherited;
 end;
 
-function TEnumerableAdapter<TResult>.AsEnumerable: IFluentEnumerable<TResult>;
+function TEnumerableAdapter<TResult>.AsEnumerable: ILQColligoEnumerable<TResult>;
 begin
   Result := FValue;
 end;

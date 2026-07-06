@@ -25,23 +25,23 @@ uses
   LQColligo;
 
 type
-  TFluentSelectEnumerable<T, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoSelectEnumerable<T, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FSelector: TFunc<T, TResult>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>;
       const ASelector: TFunc<T, TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentSelectEnumerator<T, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoSelectEnumerator<T, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FSelector: TFunc<T, TResult>;
     FCurrent: TResult;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ASelector: TFunc<T, TResult>);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ASelector: TFunc<T, TResult>);
     function GetCurrent: TResult;
     function MoveNext: Boolean;
     procedure Reset;
@@ -49,46 +49,46 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentSelectQueryable<T, TResult> = class(TFluentQueryableBase<TResult>)
+  TLQColligoSelectQueryable<T, TResult> = class(TLQColligoQueryableBase<TResult>)
   private
-    FSource: IFluentQueryableBase<T>;
+    FSource: ILQColligoQueryableBase<T>;
     FSelector: TFunc<T, TResult>;
   public
-    constructor Create(const ASource: IFluentQueryableBase<T>; const ASelector: TFunc<T, TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    constructor Create(const ASource: ILQColligoQueryableBase<T>; const ASelector: TFunc<T, TResult>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
     function BuildQuery: string; override;
   end;
   {$ENDIF}
 
 implementation
 
-{ TFluentMapEnumerable<T, TResult> }
+{ TLQColligoMapEnumerable<T, TResult> }
 
-constructor TFluentSelectEnumerable<T, TResult>.Create(const ASource: IFluentEnumerableBase<T>; const ASelector: TFunc<T, TResult>);
+constructor TLQColligoSelectEnumerable<T, TResult>.Create(const ASource: ILQColligoEnumerableBase<T>; const ASelector: TFunc<T, TResult>);
 begin
   FSource := ASource;
   FSelector := ASelector;
 end;
 
-function TFluentSelectEnumerable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoSelectEnumerable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentSelectEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
+  Result := TLQColligoSelectEnumerator<T, TResult>.Create(FSource.GetEnumerator, FSelector);
 end;
 
-{ TFluentMapEnumerator<T, TResult> }
+{ TLQColligoMapEnumerator<T, TResult> }
 
-constructor TFluentSelectEnumerator<T, TResult>.Create(const ASource: IFluentEnumerator<T>; const ASelector: TFunc<T, TResult>);
+constructor TLQColligoSelectEnumerator<T, TResult>.Create(const ASource: ILQColligoEnumerator<T>; const ASelector: TFunc<T, TResult>);
 begin
   FSource := ASource;
   FSelector := ASelector;
 end;
 
-function TFluentSelectEnumerator<T, TResult>.GetCurrent: TResult;
+function TLQColligoSelectEnumerator<T, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSelectEnumerator<T, TResult>.MoveNext: Boolean;
+function TLQColligoSelectEnumerator<T, TResult>.MoveNext: Boolean;
 begin
   if FSource.MoveNext then
   begin
@@ -99,28 +99,28 @@ begin
     Result := False;
 end;
 
-procedure TFluentSelectEnumerator<T, TResult>.Reset;
+procedure TLQColligoSelectEnumerator<T, TResult>.Reset;
 begin
   FSource.Reset;
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentSelectQueryable}
+{ TLQColligoSelectQueryable}
 
-constructor TFluentSelectQueryable<T, TResult>.Create(const ASource: IFluentQueryableBase<T>;
+constructor TLQColligoSelectQueryable<T, TResult>.Create(const ASource: ILQColligoQueryableBase<T>;
   const ASelector: TFunc<T, TResult>);
 begin
   FSource := ASource;
   FSelector := ASelector;
 end;
 
-function TFluentSelectQueryable<T, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoSelectQueryable<T, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
   // Placeholder: Implementar iteração com FSelector
-  Result := FSource.GetEnumerator as IFluentEnumerator<TResult>; // Ajustar depois
+  Result := FSource.GetEnumerator as ILQColligoEnumerator<TResult>; // Ajustar depois
 end;
 
-function TFluentSelectQueryable<T, TResult>.BuildQuery: string;
+function TLQColligoSelectQueryable<T, TResult>.BuildQuery: string;
 begin
   // Placeholder: Converter FSelector pra SELECT via FluentSQL
   Result := FSource.BuildQuery; // + ' SELECT ColumnName'

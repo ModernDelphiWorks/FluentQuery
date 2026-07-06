@@ -31,25 +31,25 @@ uses
   LQColligo.Adapters;
 
 type
-  TFluentJoinEnumerable<T, TInner, TKey, TResult> = class(TFluentEnumerableBase<TResult>)
+  TLQColligoJoinEnumerable<T, TInner, TKey, TResult> = class(TLQColligoEnumerableBase<TResult>)
   private
-    FSource: IFluentEnumerableBase<T>;
-    FInner: IFluentEnumerableBase<TInner>;
+    FSource: ILQColligoEnumerableBase<T>;
+    FInner: ILQColligoEnumerableBase<TInner>;
     FOuterKeySelector: TFunc<T, TKey>;
     FInnerKeySelector: TFunc<TInner, TKey>;
     FResultSelector: TFunc<T, TInner, TResult>;
     FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const AInner: IFluentEnumerableBase<TInner>;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const AInner: ILQColligoEnumerableBase<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
       const AResultSelector: TFunc<T, TInner, TResult>;
       const AComparer: IEqualityComparer<TKey> = nil);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
   end;
 
-  TFluentJoinEnumerator<T, TInner, TKey, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  TLQColligoJoinEnumerator<T, TInner, TKey, TResult> = class(TInterfacedObject, ILQColligoEnumerator<TResult>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FLookup: TDictionary<TKey, TList<TInner>>;
     FOuterKeySelector: TFunc<T, TKey>;
     FResultSelector: TFunc<T, TInner, TResult>;
@@ -58,7 +58,7 @@ type
     FMatches: TList<TInner>;
     FMatchIndex: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const AInner: IFluentEnumerator<TInner>;
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const AInner: ILQColligoEnumerator<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
       const AResultSelector: TFunc<T, TInner, TResult>;
       const AComparer: IEqualityComparer<TKey>);
@@ -70,25 +70,25 @@ type
   end;
 
   {$IFDEF QUERYABLE}
-  TFluentJoinQueryable<TInner, TResult, T> = class(TFluentQueryableBase<TResult>, IFluentQueryableBase<TResult>)
+  TLQColligoJoinQueryable<TInner, TResult, T> = class(TLQColligoQueryableBase<TResult>, ILQColligoQueryableBase<TResult>)
   private
-    FProvider: IFluentQueryProvider<TResult>;
+    FProvider: ILQColligoQueryProvider<TResult>;
   public
-    constructor Create(const AProvider: IFluentQueryProvider<TResult>);
-    function GetEnumerator: IFluentEnumerator<TResult>; override;
+    constructor Create(const AProvider: ILQColligoQueryProvider<TResult>);
+    function GetEnumerator: ILQColligoEnumerator<TResult>; override;
     function BuildQuery: string; override;
-    function AsEnumerable: IFluentEnumerable<TResult>;
-    function ToList: TFluentList<TResult>;
-    function AsQueryable: IFluentQueryable<TResult>;
+    function AsEnumerable: ILQColligoEnumerable<TResult>;
+    function ToList: TLQColligoList<TResult>;
+    function AsQueryable: ILQColligoQueryable<TResult>;
   end;
   {$ENDIF}
 
 implementation
 
-{ TFluentJoinEnumerable<T, TInner, TKey, TResult> }
+{ TLQColligoJoinEnumerable<T, TInner, TKey, TResult> }
 
-constructor TFluentJoinEnumerable<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerableBase<T>;
-  const AInner: IFluentEnumerableBase<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
+constructor TLQColligoJoinEnumerable<T, TInner, TKey, TResult>.Create(const ASource: ILQColligoEnumerableBase<T>;
+  const AInner: ILQColligoEnumerableBase<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
   const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, TInner, TResult>;
   const AComparer: IEqualityComparer<TKey>);
 begin
@@ -100,16 +100,16 @@ begin
   FComparer := AComparer;
 end;
 
-function TFluentJoinEnumerable<T, TInner, TKey, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoJoinEnumerable<T, TInner, TKey, TResult>.GetEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentJoinEnumerator<T, TInner, TKey, TResult>.Create(FSource.GetEnumerator, FInner.GetEnumerator,
+  Result := TLQColligoJoinEnumerator<T, TInner, TKey, TResult>.Create(FSource.GetEnumerator, FInner.GetEnumerator,
     FOuterKeySelector, FInnerKeySelector, FResultSelector, FComparer);
 end;
 
-{ TFluentJoinEnumerator<T, TInner, TKey, TResult> }
+{ TLQColligoJoinEnumerator<T, TInner, TKey, TResult> }
 
-constructor TFluentJoinEnumerator<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerator<T>;
-  const AInner: IFluentEnumerator<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
+constructor TLQColligoJoinEnumerator<T, TInner, TKey, TResult>.Create(const ASource: ILQColligoEnumerator<T>;
+  const AInner: ILQColligoEnumerator<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
   const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, TInner, TResult>;
   const AComparer: IEqualityComparer<TKey>);
 var
@@ -141,7 +141,7 @@ begin
   end;
 end;
 
-destructor TFluentJoinEnumerator<T, TInner, TKey, TResult>.Destroy;
+destructor TLQColligoJoinEnumerator<T, TInner, TKey, TResult>.Destroy;
 var
   LList: TList<TInner>;
 begin
@@ -152,12 +152,12 @@ begin
   inherited;
 end;
 
-function TFluentJoinEnumerator<T, TInner, TKey, TResult>.GetCurrent: TResult;
+function TLQColligoJoinEnumerator<T, TInner, TKey, TResult>.GetCurrent: TResult;
 begin
   Result := FCurrent;
 end;
 
-function TFluentJoinEnumerator<T, TInner, TKey, TResult>.MoveNext: Boolean;
+function TLQColligoJoinEnumerator<T, TInner, TKey, TResult>.MoveNext: Boolean;
 var
   LKey: TKey;
 begin
@@ -188,7 +188,7 @@ begin
   end;
 end;
 
-procedure TFluentJoinEnumerator<T, TInner, TKey, TResult>.Reset;
+procedure TLQColligoJoinEnumerator<T, TInner, TKey, TResult>.Reset;
 begin
   FSource.Reset;
   FMatches := nil;
@@ -196,14 +196,14 @@ begin
 end;
 
 {$IFDEF QUERYABLE}
-{ TFluentJoinQueryable<T, TInner, TKey, TResult> }
+{ TLQColligoJoinQueryable<T, TInner, TKey, TResult> }
 
-constructor TFluentJoinQueryable<TInner, TResult, T>.Create(const AProvider: IFluentQueryProvider<TResult>);
+constructor TLQColligoJoinQueryable<TInner, TResult, T>.Create(const AProvider: ILQColligoQueryProvider<TResult>);
 begin
   FProvider := AProvider;
 end;
 
-function TFluentJoinQueryable<TInner, TResult, T>.BuildQuery: string;
+function TLQColligoJoinQueryable<TInner, TResult, T>.BuildQuery: string;
 begin
   if Assigned(FProvider) then
     Result := FProvider.AsString
@@ -211,7 +211,7 @@ begin
     raise EInvalidOperation.Create('Provider not assigned');
 end;
 
-function TFluentJoinQueryable<TInner, TResult, T>.GetEnumerator: IFluentEnumerator<TResult>;
+function TLQColligoJoinQueryable<TInner, TResult, T>.GetEnumerator: ILQColligoEnumerator<TResult>;
 var
   LSQL: string;
   LDataSet: IDBDataSet;
@@ -221,11 +221,11 @@ begin
   Result := TDataSetEnumerator<TResult>.Create(LDataSet);
 end;
 
-function TFluentJoinQueryable<TInner, TResult, T>.ToList: TFluentList<TResult>;
+function TLQColligoJoinQueryable<TInner, TResult, T>.ToList: TLQColligoList<TResult>;
 var
-  LEnumerator: IFluentEnumerator<TResult>;
+  LEnumerator: ILQColligoEnumerator<TResult>;
 begin
-  Result := TFluentList<TResult>.Create;
+  Result := TLQColligoList<TResult>.Create;
   try
     LEnumerator := GetEnumerator;
     while LEnumerator.MoveNext do
@@ -236,16 +236,16 @@ begin
   end;
 end;
 
-function TFluentJoinQueryable<TInner, TResult, T>.AsEnumerable: IFluentEnumerable<TResult>;
+function TLQColligoJoinQueryable<TInner, TResult, T>.AsEnumerable: ILQColligoEnumerable<TResult>;
 begin
-  Result := IFluentEnumerable<TResult>.Create(
+  Result := ILQColligoEnumerable<TResult>.Create(
     TQueryableToEnumerableAdapter<TResult>.Create(Self)
   );
 end;
 
-function TFluentJoinQueryable<TInner, TResult, T>.AsQueryable: IFluentQueryable<TResult>;
+function TLQColligoJoinQueryable<TInner, TResult, T>.AsQueryable: ILQColligoQueryable<TResult>;
 begin
-  Result := IFluentQueryable<TResult>.CreateForDatabase(FProvider.Database,
+  Result := ILQColligoQueryable<TResult>.CreateForDatabase(FProvider.Database,
                                                         FProvider.Connection,
                                                         FProvider.FluentSQL);
 end;

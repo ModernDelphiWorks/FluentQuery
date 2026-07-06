@@ -29,18 +29,18 @@ type
   // LINQ SkipLast(n): deferred, non-streaming — buffers the whole source on the
   // FIRST MoveNext (not at construction), then yields all but the last n
   // elements. n <= 0 yields the whole source.
-  TFluentSkipLastEnumerable<T> = class(TFluentEnumerableBase<T>)
+  TLQColligoSkipLastEnumerable<T> = class(TLQColligoEnumerableBase<T>)
   private
-    FSource: IFluentEnumerableBase<T>;
+    FSource: ILQColligoEnumerableBase<T>;
     FCount: Integer;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const ACount: Integer);
-    function GetEnumerator: IFluentEnumerator<T>; override;
+    constructor Create(const ASource: ILQColligoEnumerableBase<T>; const ACount: Integer);
+    function GetEnumerator: ILQColligoEnumerator<T>; override;
   end;
 
-  TFluentSkipLastEnumerator<T> = class(TInterfacedObject, IFluentEnumerator<T>)
+  TLQColligoSkipLastEnumerator<T> = class(TInterfacedObject, ILQColligoEnumerator<T>)
   private
-    FSource: IFluentEnumerator<T>;
+    FSource: ILQColligoEnumerator<T>;
     FCount: Integer;
     FBuffer: TList<T>;
     FIndex: Integer;
@@ -49,7 +49,7 @@ type
     FCurrent: T;
     procedure EnsureBuffered;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+    constructor Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
     destructor Destroy; override;
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -59,22 +59,22 @@ type
 
 implementation
 
-{ TFluentSkipLastEnumerable<T> }
+{ TLQColligoSkipLastEnumerable<T> }
 
-constructor TFluentSkipLastEnumerable<T>.Create(const ASource: IFluentEnumerableBase<T>; const ACount: Integer);
+constructor TLQColligoSkipLastEnumerable<T>.Create(const ASource: ILQColligoEnumerableBase<T>; const ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
 end;
 
-function TFluentSkipLastEnumerable<T>.GetEnumerator: IFluentEnumerator<T>;
+function TLQColligoSkipLastEnumerable<T>.GetEnumerator: ILQColligoEnumerator<T>;
 begin
-  Result := TFluentSkipLastEnumerator<T>.Create(FSource.GetEnumerator, FCount);
+  Result := TLQColligoSkipLastEnumerator<T>.Create(FSource.GetEnumerator, FCount);
 end;
 
-{ TFluentSkipLastEnumerator<T> }
+{ TLQColligoSkipLastEnumerator<T> }
 
-constructor TFluentSkipLastEnumerator<T>.Create(const ASource: IFluentEnumerator<T>; const ACount: Integer);
+constructor TLQColligoSkipLastEnumerator<T>.Create(const ASource: ILQColligoEnumerator<T>; const ACount: Integer);
 begin
   FSource := ASource;
   FCount := ACount;
@@ -82,13 +82,13 @@ begin
   FBuffered := False;
 end;
 
-destructor TFluentSkipLastEnumerator<T>.Destroy;
+destructor TLQColligoSkipLastEnumerator<T>.Destroy;
 begin
   FBuffer.Free;
   inherited;
 end;
 
-procedure TFluentSkipLastEnumerator<T>.EnsureBuffered;
+procedure TLQColligoSkipLastEnumerator<T>.EnsureBuffered;
 begin
   if FBuffered then
     Exit;
@@ -106,12 +106,12 @@ begin
   FBuffered := True;
 end;
 
-function TFluentSkipLastEnumerator<T>.GetCurrent: T;
+function TLQColligoSkipLastEnumerator<T>.GetCurrent: T;
 begin
   Result := FCurrent;
 end;
 
-function TFluentSkipLastEnumerator<T>.MoveNext: Boolean;
+function TLQColligoSkipLastEnumerator<T>.MoveNext: Boolean;
 begin
   EnsureBuffered;
   Result := FIndex < FLimit;
@@ -122,7 +122,7 @@ begin
   end;
 end;
 
-procedure TFluentSkipLastEnumerator<T>.Reset;
+procedure TLQColligoSkipLastEnumerator<T>.Reset;
 begin
   FSource.Reset;
   FBuffer.Clear;

@@ -221,11 +221,11 @@ end;
 
 procedure TDictionaryHelperTest.TestMap;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
-  LMapped: IFluentEnumerable<TPair<Integer, String>>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
+  LMapped: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -259,11 +259,11 @@ end;
 
 procedure TDictionaryHelperTest.TestFilter;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LFiltered: IFluentEnumerable<TPair<Integer, String>>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LFiltered: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -299,10 +299,10 @@ end;
 
 procedure TDictionaryHelperTest.TestReduce;
 var
-  LDictionary: TFluentDictionary<String, Integer>;
+  LDictionary: TLQColligoDictionary<String, Integer>;
   LResult: TPair<String, Integer>;
 begin
-  LDictionary := TFluentDictionary<String, Integer>.Create;
+  LDictionary := TLQColligoDictionary<String, Integer>.Create;
   try
     LDictionary.Add('One', 1);
     LDictionary.Add('Two', 2);
@@ -329,11 +329,11 @@ end;
 
 procedure TDictionaryHelperTest.TestTake;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LTaken: IFluentEnumerable<TPair<Integer, String>>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LTaken: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -369,10 +369,10 @@ end;
 
 procedure TDictionaryHelperTest.TestAny;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LHasLongValue: Boolean;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -400,11 +400,11 @@ end;
 
 procedure TDictionaryHelperTest.TestSkip;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LSkipped: IFluentEnumerable<TPair<Integer, String>>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LSkipped: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -440,12 +440,12 @@ end;
 
 procedure TDictionaryHelperTest.TestZip;
 var
-  LDictionary1, LDictionary2: IFluentDictionary<Integer, String>;
-  LZipped: IFluentEnumerable<TPair<Integer, String>>;
+  LDictionary1, LDictionary2: ILQColligoDictionary<Integer, String>;
+  LZipped: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary1.Add(1, 'One');
     LDictionary1.Add(2, 'Two');
@@ -484,13 +484,13 @@ end;
 
 procedure TDictionaryHelperTest.TestJoin;
 var
-  LDictionary1: TFluentDictionary<Integer, String>;
-  LDictionary2: TFluentDictionary<Integer, String>;
-  LJoined: IFluentEnumerable<TPair<Integer, String>>;
+  LDictionary1: TLQColligoDictionary<Integer, String>;
+  LDictionary2: TLQColligoDictionary<Integer, String>;
+  LJoined: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary1.Add(1, 'One');
     LDictionary1.Add(2, 'Two');
@@ -538,10 +538,10 @@ end;
 procedure TDictionaryHelperTest.TestAddRange;
 var
   LSourceDict: TDictionary<Integer, String>;
-  LTargetDict: IFluentDictionary<Integer, String>;
+  LTargetDict: ILQColligoDictionary<Integer, String>;
 begin
   LSourceDict := TDictionary<Integer, String>.Create;
-  LTargetDict := TFluentDictionary<Integer, String>.Create;
+  LTargetDict := TLQColligoDictionary<Integer, String>.Create;
   try
     LSourceDict.Add(1, 'One');
     LSourceDict.Add(2, 'Two');
@@ -560,11 +560,11 @@ end;
 
 procedure TDictionaryHelperTest.TestDistinct;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LDistinct: IFluentEnumerable<TPair<Integer, String>>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LDistinct: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'One');
@@ -598,9 +598,9 @@ end;
 
 procedure TDictionaryHelperTest.TestAdd;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
@@ -612,10 +612,10 @@ end;
 procedure TDictionaryHelperTest.TestAddRangeEnumerable;
 var
   LSource: TList<TPair<Integer, String>>;
-  LTargetDict: IFluentDictionary<Integer, String>;
+  LTargetDict: ILQColligoDictionary<Integer, String>;
 begin
   LSource := TList<TPair<Integer, String>>.Create;
-  LTargetDict := TFluentDictionary<Integer, String>.Create;
+  LTargetDict := TLQColligoDictionary<Integer, String>.Create;
   try
     LSource.Add(TPair<Integer, String>.Create(1, 'One'));
     LSource.Add(TPair<Integer, String>.Create(2, 'Two'));
@@ -632,9 +632,9 @@ end;
 
 procedure TDictionaryHelperTest.TestRemove;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
@@ -647,9 +647,9 @@ end;
 
 procedure TDictionaryHelperTest.TestClear;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -665,10 +665,10 @@ end;
 
 procedure TDictionaryHelperTest.TestTrimExcess;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LInitialCapacity: Integer;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create(10);
+  LDictionary := TLQColligoDictionary<Integer, String>.Create(10);
   LInitialCapacity := LDictionary.Capacity;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
@@ -683,9 +683,9 @@ end;
 
 procedure TDictionaryHelperTest.TestAddOrSetValue;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.AddOrSetValue(1, 'One');
   LDictionary.AddOrSetValue(1, 'Uno');
 
@@ -695,10 +695,10 @@ end;
 
 procedure TDictionaryHelperTest.TestExtractPair;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LPair: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
 
@@ -714,10 +714,10 @@ end;
 
 procedure TDictionaryHelperTest.TestTryGetValue;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LValue: String;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
 
@@ -731,9 +731,9 @@ end;
 
 procedure TDictionaryHelperTest.TestTryAdd;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   Assert.IsTrue(LDictionary.TryAdd(1, 'One'), 'Deveria adicionar a chave 1');
   Assert.IsFalse(LDictionary.TryAdd(1, 'Uno'), 'N�o deveria adicionar a chave 1 novamente');
   Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento');
@@ -742,9 +742,9 @@ end;
 
 procedure TDictionaryHelperTest.TestContainsKey;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
 
@@ -757,9 +757,9 @@ end;
 
 procedure TDictionaryHelperTest.TestContainsValue;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
 
@@ -772,10 +772,10 @@ end;
 
 procedure TDictionaryHelperTest.TestToArray;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LArray: IFluentArray<TPair<Integer, String>>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LArray: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -794,10 +794,10 @@ end;
 
 procedure TDictionaryHelperTest.TestCapacity;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LInitialCapacity: Integer;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create(10);
+  LDictionary := TLQColligoDictionary<Integer, String>.Create(10);
   Assert.IsTrue(LDictionary.Capacity >= 10, 'Capacidade inicial deveria ser pelo menos 10, mas foi ' + IntToStr(LDictionary.Capacity));
   Assert.IsTrue(LDictionary.Capacity <= 32, 'Capacidade inicial n�o deveria exceder o m�nimo padr�o de 32, mas foi ' + IntToStr(LDictionary.Capacity));
   LInitialCapacity := LDictionary.Capacity;
@@ -809,9 +809,9 @@ end;
 
 procedure TDictionaryHelperTest.TestCount;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     Assert.AreEqual(0, LDictionary.Count, 'Count inicial deveria ser 0');
 
@@ -824,9 +824,9 @@ end;
 
 procedure TDictionaryHelperTest.TestIsEmpty;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     Assert.IsTrue(LDictionary.IsEmpty, 'Deveria estar vazio inicialmente');
 
@@ -839,18 +839,18 @@ end;
 
 procedure TDictionaryHelperTest.TestGrowThreshold;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create(10);
+  LDictionary := TLQColligoDictionary<Integer, String>.Create(10);
   Assert.IsTrue(LDictionary.GrowThreshold > 0, 'GrowThreshold deveria ser maior que 0');
   Assert.IsTrue(LDictionary.GrowThreshold <= LDictionary.Capacity, 'GrowThreshold deveria ser menor ou igual � capacidade');
 end;
 
 procedure TDictionaryHelperTest.TestCollisions;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   Assert.AreEqual(0, LDictionary.Collisions, 'Collisions deveria ser 0 inicialmente');
 
   LDictionary.Add(1, 'One');
@@ -860,11 +860,11 @@ end;
 
 procedure TDictionaryHelperTest.TestKeys;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LKeys: TDictionary<Integer, String>.TKeyCollection;
   LKeyArray: TArray<Integer>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
@@ -878,11 +878,11 @@ end;
 
 procedure TDictionaryHelperTest.TestValues;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LValues: TDictionary<Integer, String>.TValueCollection;
   LValueArray: TArray<String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
@@ -896,10 +896,10 @@ end;
 
 procedure TDictionaryHelperTest.TestComparer;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LComparer: IEqualityComparer<Integer>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LComparer := LDictionary.Comparer;
 
   Assert.IsNotNull(LComparer, 'Comparer n�o deveria ser nulo');
@@ -909,9 +909,9 @@ end;
 
 procedure TDictionaryHelperTest.TestItemsGet;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
 
   Assert.AreEqual('One', LDictionary.Items[1], 'Deveria retornar "One" para chave 1');
@@ -919,9 +919,9 @@ end;
 
 procedure TDictionaryHelperTest.TestItemsSet;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Items[1] := 'Uno';
 
@@ -930,9 +930,9 @@ end;
 
 procedure TDictionaryHelperTest.TestOnKeyNotify;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.OnKeyNotify := OnKeyNotify;
   LDictionary.Add(1, 'One');
 
@@ -941,9 +941,9 @@ end;
 
 procedure TDictionaryHelperTest.TestOnValueNotify;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.OnValueNotify := OnValueNotify;
   LDictionary.Add(1, 'One');
 
@@ -952,11 +952,11 @@ end;
 
 procedure TDictionaryHelperTest.TestCreateWithComparer;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LComparer: IEqualityComparer<Integer>;
 begin
   LComparer := TEqualityComparer<Integer>.Default;
-  LDictionary := TFluentDictionary<Integer, String>.Create(LComparer);
+  LDictionary := TLQColligoDictionary<Integer, String>.Create(LComparer);
   LDictionary.Add(1, 'One');
   Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento');
   Assert.AreEqual('One', LDictionary[1], 'Deveria conter "One" para chave 1');
@@ -965,11 +965,11 @@ end;
 
 procedure TDictionaryHelperTest.TestCreateWithCapacityAndComparer;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LComparer: IEqualityComparer<Integer>;
 begin
   LComparer := TEqualityComparer<Integer>.Default;
-  LDictionary := TFluentDictionary<Integer, String>.Create(5, LComparer);
+  LDictionary := TLQColligoDictionary<Integer, String>.Create(5, LComparer);
   Assert.IsTrue(LDictionary.Capacity >= 5, 'Capacidade inicial deveria ser pelo menos 5');
   LDictionary.Add(1, 'One');
   Assert.AreEqual(1, LDictionary.Count, 'Deveria ter 1 elemento');
@@ -980,14 +980,14 @@ end;
 procedure TDictionaryHelperTest.TestCreateWithEnumerable;
 var
   LSource: TList<TPair<Integer, String>>;
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
   LSource := TList<TPair<Integer, String>>.Create;
   try
     LSource.Add(TPair<Integer, String>.Create(1, 'One'));
     LSource.Add(TPair<Integer, String>.Create(2, 'Two'));
 
-    LDictionary := TFluentDictionary<Integer, String>.Create(LSource);
+    LDictionary := TLQColligoDictionary<Integer, String>.Create(LSource);
     Assert.AreEqual(2, LDictionary.Count, 'Deveria ter 2 elementos');
     Assert.AreEqual('One', LDictionary[1], 'Deveria conter "One" para chave 1');
     Assert.AreEqual('Two', LDictionary[2], 'Deveria conter "Two" para chave 2');
@@ -999,7 +999,7 @@ end;
 procedure TDictionaryHelperTest.TestCreateWithEnumerableAndComparer;
 var
   LSource: TList<TPair<Integer, String>>;
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LComparer: IEqualityComparer<Integer>;
 begin
   LSource := TList<TPair<Integer, String>>.Create;
@@ -1008,7 +1008,7 @@ begin
     LSource.Add(TPair<Integer, String>.Create(1, 'One'));
     LSource.Add(TPair<Integer, String>.Create(2, 'Two'));
 
-    LDictionary := TFluentDictionary<Integer, String>.Create(LSource, LComparer);
+    LDictionary := TLQColligoDictionary<Integer, String>.Create(LSource, LComparer);
     Assert.AreEqual(2, LDictionary.Count, 'Deveria ter 2 elementos');
     Assert.AreEqual('One', LDictionary[1], 'Deveria conter "One" para chave 1');
     Assert.AreEqual('Two', LDictionary[2], 'Deveria conter "Two" para chave 2');
@@ -1020,9 +1020,9 @@ end;
 
 procedure TDictionaryHelperTest.TestCreateWithArray;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create([TPair<Integer, String>.Create(1, 'One'), TPair<Integer, String>.Create(2, 'Two')]);
+  LDictionary := TLQColligoDictionary<Integer, String>.Create([TPair<Integer, String>.Create(1, 'One'), TPair<Integer, String>.Create(2, 'Two')]);
   Assert.AreEqual(2, LDictionary.Count, 'Deveria ter 2 elementos');
   Assert.AreEqual('One', LDictionary[1], 'Deveria conter "One" para chave 1');
   Assert.AreEqual('Two', LDictionary[2], 'Deveria conter "Two" para chave 2');
@@ -1030,11 +1030,11 @@ end;
 
 procedure TDictionaryHelperTest.TestCreateWithArrayAndComparer;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LComparer: IEqualityComparer<Integer>;
 begin
   LComparer := TEqualityComparer<Integer>.Default;
-  LDictionary := TFluentDictionary<Integer, String>.Create([TPair<Integer, String>.Create(1, 'One'), TPair<Integer, String>.Create(2, 'Two')], LComparer);
+  LDictionary := TLQColligoDictionary<Integer, String>.Create([TPair<Integer, String>.Create(1, 'One'), TPair<Integer, String>.Create(2, 'Two')], LComparer);
   Assert.AreEqual(2, LDictionary.Count, 'Deveria ter 2 elementos');
   Assert.AreEqual('One', LDictionary[1], 'Deveria conter "One" para chave 1');
   Assert.AreEqual('Two', LDictionary[2], 'Deveria conter "Two" para chave 2');
@@ -1044,14 +1044,14 @@ end;
 procedure TDictionaryHelperTest.TestCreateWithDictNoOwns;
 var
   LSourceDict: TDictionary<Integer, String>;
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
 begin
   LSourceDict := TDictionary<Integer, String>.Create;
   try
     LSourceDict.Add(1, 'One');
     LSourceDict.Add(2, 'Two');
 
-    LDictionary := TFluentDictionary<Integer, String>.Create(LSourceDict.ToArray);
+    LDictionary := TLQColligoDictionary<Integer, String>.Create(LSourceDict.ToArray);
     Assert.AreEqual(2, LDictionary.Count, 'Deveria ter 2 elementos');
     Assert.AreEqual('One', LDictionary[1], 'Deveria conter "One" para chave 1');
     Assert.AreEqual('Two', LDictionary[2], 'Deveria conter "Two" para chave 2');
@@ -1064,8 +1064,8 @@ end;
 procedure TDictionaryHelperTest.TestFromDict;
 var
   LSourceDict: TDictionary<Integer, String>;
-  LTempDict: TFluentDictionary<Integer, String>;
-  LEnumerable: IFluentEnumerable<TPair<Integer, String>>;
+  LTempDict: TLQColligoDictionary<Integer, String>;
+  LEnumerable: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
   LSourceDict := TDictionary<Integer, String>.Create;
@@ -1073,7 +1073,7 @@ begin
     LSourceDict.Add(1, 'One');
     LSourceDict.Add(2, 'Two');
 
-    LTempDict := TFluentDictionary<Integer, String>.Create(LSourceDict);
+    LTempDict := TLQColligoDictionary<Integer, String>.Create(LSourceDict);
     try
       LEnumerable := LTempDict.AsEnumerable;
       LResult := LEnumerable.ToDictionary<Integer, String>(
@@ -1100,11 +1100,11 @@ end;
 
 procedure TDictionaryHelperTest.TestFromArray;
 var
-  LTempDict: TFluentDictionary<Integer, String>;
-  LEnumerable: IFluentEnumerable<TPair<Integer, String>>;
+  LTempDict: TLQColligoDictionary<Integer, String>;
+  LEnumerable: ILQColligoEnumerable<TPair<Integer, String>>;
   LResult: TDictionary<Integer, String>;
 begin
-  LTempDict := TFluentDictionary<Integer, String>.Create([TPair<Integer, String>.Create(1, 'One'), TPair<Integer, String>.Create(2, 'Two')]);
+  LTempDict := TLQColligoDictionary<Integer, String>.Create([TPair<Integer, String>.Create(1, 'One'), TPair<Integer, String>.Create(2, 'Two')]);
   try
     LEnumerable := LTempDict.AsEnumerable;
     LResult := LEnumerable.ToDictionary<Integer, String>(
@@ -1130,11 +1130,11 @@ end;
 
 procedure TDictionaryHelperTest.TestGetEnumerator;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LEnum: IFluentEnumerator<TPair<Integer, String>>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LEnum: ILQColligoEnumerator<TPair<Integer, String>>;
   LCount: Integer;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1152,10 +1152,10 @@ end;
 
 procedure TDictionaryHelperTest.TestElementAt;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LElement: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1175,10 +1175,10 @@ end;
 
 procedure TDictionaryHelperTest.TestElementAtOrDefault;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LElement: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
 
@@ -1193,10 +1193,10 @@ end;
 
 procedure TDictionaryHelperTest.TestTakeWhile;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
   LDictionary.Add(3, 'Three');
@@ -1218,10 +1218,10 @@ end;
 
 procedure TDictionaryHelperTest.TestSkipWhile;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
   LDictionary.Add(3, 'Three');
@@ -1243,10 +1243,10 @@ end;
 
 procedure TDictionaryHelperTest.TestFirst;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LFirst: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
@@ -1266,10 +1266,10 @@ end;
 
 procedure TDictionaryHelperTest.TestFirstOrDefault;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LFirst: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LFirst := LDictionary.AsEnumerable.FirstOrDefault(
     function(Pair: TPair<Integer, String>): Boolean
     begin
@@ -1292,10 +1292,10 @@ end;
 
 procedure TDictionaryHelperTest.TestLast;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LLast: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
@@ -1315,10 +1315,10 @@ end;
 
 procedure TDictionaryHelperTest.TestLastOrDefault;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LLast: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LLast := LDictionary.AsEnumerable.LastOrDefault(
     function(Pair: TPair<Integer, String>): Boolean
     begin
@@ -1342,10 +1342,10 @@ end;
 
 procedure TDictionaryHelperTest.TestSingle;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LSingle: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
 
   LSingle := LDictionary.AsEnumerable.Single(
@@ -1360,10 +1360,10 @@ end;
 
 procedure TDictionaryHelperTest.TestSingleOrDefault;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
   LSingle: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LSingle := LDictionary.AsEnumerable.SingleOrDefault(
     function(Pair: TPair<Integer, String>): Boolean
     begin
@@ -1386,10 +1386,10 @@ end;
 
 procedure TDictionaryHelperTest.TestOfType;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
 
@@ -1403,11 +1403,11 @@ end;
 
 procedure TDictionaryHelperTest.TestExclude;
 var
-  LDictionary1, LDictionary2: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary1, LDictionary2: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   LDictionary1.Add(1, 'One');
   LDictionary1.Add(2, 'Two');
   LDictionary1.Add(3, 'Three');
@@ -1429,11 +1429,11 @@ end;
 
 procedure TDictionaryHelperTest.TestIntersect;
 var
-  LDictionary1, LDictionary2: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary1, LDictionary2: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   LDictionary1.Add(1, 'One');
   LDictionary1.Add(2, 'Two');
   LDictionary1.Add(3, 'Three');
@@ -1454,11 +1454,11 @@ end;
 
 procedure TDictionaryHelperTest.TestUnion;
 var
-  LDictionary1, LDictionary2: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary1, LDictionary2: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   LDictionary1.Add(1, 'One');
   LDictionary1.Add(2, 'Two');
 
@@ -1479,11 +1479,11 @@ end;
 
 procedure TDictionaryHelperTest.TestConcat;
 var
-  LDictionary1, LDictionary2: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary1, LDictionary2: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   LDictionary1.Add(1, 'One');
   LDictionary1.Add(2, 'Two');
 
@@ -1505,10 +1505,10 @@ end;
 
 procedure TDictionaryHelperTest.TestSequenceEqual;
 var
-  LDictionary1, LDictionary2: IFluentDictionary<Integer, String>;
+  LDictionary1, LDictionary2: ILQColligoDictionary<Integer, String>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   LDictionary1.Add(1, 'One');
   LDictionary1.Add(2, 'Two');
 
@@ -1544,10 +1544,10 @@ end;
 
 procedure TDictionaryHelperTest.TestOrderByDesc;
 var
-  LDictionary: IFluentDictionary<Integer, String>;
-  LResult: IFluentArray<TPair<Integer, String>>;
+  LDictionary: ILQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<TPair<Integer, String>>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
   LDictionary.Add(3, 'Three');
@@ -1566,11 +1566,11 @@ end;
 procedure TDictionaryHelperTest.TestOwnsValuesWithObjects;
 var
   LStringList1, LStringList2: TStringList;
-  LDict: IFluentDictionary<Integer, TStringList>;
-  LDictStr: IFluentDictionary<Integer, String>;
+  LDict: ILQColligoDictionary<Integer, TStringList>;
+  LDictStr: ILQColligoDictionary<Integer, String>;
 begin
-  LDict := TFluentDictionary<Integer, TStringList>.Create([doOwnsValues]);
-  LDictStr := TFluentDictionary<Integer, String>.Create;
+  LDict := TLQColligoDictionary<Integer, TStringList>.Create([doOwnsValues]);
+  LDictStr := TLQColligoDictionary<Integer, String>.Create;
 
   // Adiciona TStringList ao dicion�rio
   LStringList1 := TStringList.Create;
@@ -1590,9 +1590,9 @@ end;
 
 procedure TDictionaryHelperTest.TestOwnsValuesWithStrings;
 var
-  LDictStr: IFluentDictionary<Integer, String>;
+  LDictStr: ILQColligoDictionary<Integer, String>;
 begin
-  LDictStr := TFluentDictionary<Integer, String>.Create;
+  LDictStr := TLQColligoDictionary<Integer, String>.Create;
 
   // Adiciona strings ao dicion�rio
   LDictStr.Add(1, 'One');
@@ -1605,10 +1605,10 @@ end;
 
 procedure TDictionaryHelperTest.TestMin;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LMin: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1625,10 +1625,10 @@ end;
 
 procedure TDictionaryHelperTest.TestMinWithComparer;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LMin: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'Three');
     LDictionary.Add(2, 'One');
@@ -1649,10 +1649,10 @@ end;
 
 procedure TDictionaryHelperTest.TestMax;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LMax: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1669,10 +1669,10 @@ end;
 
 procedure TDictionaryHelperTest.TestMaxWithComparer;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LMax: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Three');
@@ -1693,10 +1693,10 @@ end;
 
 procedure TDictionaryHelperTest.TestMinBy;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LMin: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1721,10 +1721,10 @@ end;
 
 procedure TDictionaryHelperTest.TestMaxBy;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LMax: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1749,10 +1749,10 @@ end;
 
 procedure TDictionaryHelperTest.TestFlatMap;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LResult: IFluentArray<String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1775,10 +1775,10 @@ end;
 
 procedure TDictionaryHelperTest.TestSelectMany;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LResult: IFluentArray<String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1801,13 +1801,13 @@ end;
 
 procedure TDictionaryHelperTest.TestGroupBy;
 var
-  LDictionary: IFluentDictionary<Integer, string>;
+  LDictionary: ILQColligoDictionary<Integer, string>;
   LGroups: IGroupByEnumerable<string, TPair<Integer, string>>;
-  LEnum: IFluentEnumerator<IGrouping<string, TPair<Integer, string>>>;
+  LEnum: ILQColligoEnumerator<IGrouping<string, TPair<Integer, string>>>;
   LGroup: IGrouping<string, TPair<Integer, string>>;
   LCount: Integer;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   LDictionary.Add(1, 'One');
   LDictionary.Add(2, 'Two');
   LDictionary.Add(3, 'Three');
@@ -1834,11 +1834,11 @@ end;
 
 procedure TDictionaryHelperTest.TestGroupJoin;
 var
-  LDictionary1, LDictionary2: TFluentDictionary<Integer, String>;
-  LResult: IFluentArray<String>;
+  LDictionary1, LDictionary2: TLQColligoDictionary<Integer, String>;
+  LResult: ILQColligoArray<String>;
 begin
-  LDictionary1 := TFluentDictionary<Integer, String>.Create;
-  LDictionary2 := TFluentDictionary<Integer, String>.Create;
+  LDictionary1 := TLQColligoDictionary<Integer, String>.Create;
+  LDictionary2 := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary1.Add(1, 'One');
     LDictionary1.Add(2, 'Two');
@@ -1864,9 +1864,9 @@ begin
       begin
         Result := Pair2.Key;
       end,
-      function(Pair1: TPair<Integer, String>; Inner: IFluentEnumerableAdapter<TPair<Integer, String>>): String
+      function(Pair1: TPair<Integer, String>; Inner: ILQColligoEnumerableAdapter<TPair<Integer, String>>): String
       var
-        LInnerArray: IFluentArray<TPair<Integer, String>>;
+        LInnerArray: ILQColligoArray<TPair<Integer, String>>;
       begin
         LInnerArray := Inner.AsEnumerable.OrderBy(
           function(A, B: TPair<Integer, String>): Integer
@@ -1890,10 +1890,10 @@ end;
 
 procedure TDictionaryHelperTest.TestReduceNoInitial;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LResult: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1918,10 +1918,10 @@ end;
 
 procedure TDictionaryHelperTest.TestSumInteger;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LSum: Integer;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1941,10 +1941,10 @@ end;
 
 procedure TDictionaryHelperTest.TestSumDouble;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LSum: Double;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1964,10 +1964,10 @@ end;
 
 procedure TDictionaryHelperTest.TestAverage;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LAverage: Double;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -1987,11 +1987,11 @@ end;
 
 procedure TDictionaryHelperTest.TestBasicFunctionality;
 var
-  LDict: IFluentDictionary<Integer, TStringList>;
+  LDict: ILQColligoDictionary<Integer, TStringList>;
   LPair: TPair<Integer, TStringList>;
   LStringList: TStringList;
 begin
-  LDict := TFluentDictionary<Integer, TStringList>.Create([doOwnsValues]); // OwnsValues = True
+  LDict := TLQColligoDictionary<Integer, TStringList>.Create([doOwnsValues]); // OwnsValues = True
 
   // Adiciona um item
   LStringList := TStringList.Create;
@@ -2015,10 +2015,10 @@ end;
 
 procedure TDictionaryHelperTest.TestCountWithPredicate;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LCount: Integer;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -2038,10 +2038,10 @@ end;
 
 procedure TDictionaryHelperTest.TestLongCount;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LCount: Int64;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -2061,9 +2061,9 @@ end;
 
 procedure TDictionaryHelperTest.TestAll;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -2088,11 +2088,11 @@ end;
 
 procedure TDictionaryHelperTest.TestContainsFluent;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
   LContainsOne: Boolean;
   LContainsThree: Boolean;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
@@ -2113,12 +2113,12 @@ end;
 
 procedure TDictionaryHelperTest.TestToList;
 var
-  LDictionary: TFluentDictionary<Integer, String>;
-  LList: IFluentList<TPair<Integer, String>>;
+  LDictionary: TLQColligoDictionary<Integer, String>;
+  LList: ILQColligoList<TPair<Integer, String>>;
   FoundOne, FoundTwo: Boolean;
   Pair: TPair<Integer, String>;
 begin
-  LDictionary := TFluentDictionary<Integer, String>.Create;
+  LDictionary := TLQColligoDictionary<Integer, String>.Create;
   try
     LDictionary.Add(1, 'One');
     LDictionary.Add(2, 'Two');
