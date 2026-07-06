@@ -110,7 +110,6 @@
         <DCCReference Include="..\Source\FluentQuery.Json.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Json.Provider.pas"/>
         <DCCReference Include="..\Source\FluentQuery.OfType.pas"/>
-        <DCCReference Include="..\Source\FluentQuery.Order.pas"/>
         <DCCReference Include="..\Source\FluentQuery.OrderBy.pas"/>
         <DCCReference Include="..\Source\FluentQuery.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Select.pas"/>
@@ -125,7 +124,6 @@
         <DCCReference Include="..\Source\FluentQuery.Take.pas"/>
         <DCCReference Include="..\Source\FluentQuery.TakeWhile.pas"/>
         <DCCReference Include="..\Source\FluentQuery.TakeWhileIndexed.pas"/>
-        <DCCReference Include="..\Source\FluentQuery.ThenBy.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Union.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Where.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Xml.pas"/>

@@ -496,7 +496,6 @@ uses
   FluentQuery.SkipLast,
   FluentQuery.TakeLast,
   FluentQuery.Generators,
-  FluentQuery.Order,
   FluentQuery.Chunk,
   FluentQuery.Cast,
   FluentQuery.SkipWhileIndexed,
@@ -504,7 +503,6 @@ uses
   FluentQuery.TakeWhileIndexed,
   FluentQuery.SelectManyCollection,
   FluentQuery.SelectManyIndexed,
-  FluentQuery.ThenBy,
   FluentQuery.SelectManyCollectionIndexed;
 
 { IFluentEnumerable<T> }
