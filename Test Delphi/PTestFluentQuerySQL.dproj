@@ -125,7 +125,6 @@
         <DCCReference Include="..\Source\FluentQuery.Intersect.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Union.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Concat.pas"/>
-        <DCCReference Include="..\Source\FluentQuery.Order.pas"/>
         <DCCReference Include="..\Source\FluentQuery.SelectIndexed.pas"/>
         <DCCReference Include="..\Source\FluentQuery.SelectManyIndexed.pas"/>
         <DCCReference Include="..\Source\FluentQuery.SelectManyCollection.pas"/>
@@ -133,7 +132,6 @@
         <DCCReference Include="..\Source\FluentQuery.SkipWhileIndexed.pas"/>
         <DCCReference Include="..\Source\FluentQuery.TakeWhileIndexed.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Chunk.pas"/>
-        <DCCReference Include="..\Source\FluentQuery.ThenBy.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Cast.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Queryable.pas"/>
         <DCCReference Include="..\Source\FluentQuery.Xml.pas"/>
