@@ -122,7 +122,7 @@ end;
 
 function TFluentSelectQueryable<T, TResult>.BuildQuery: string;
 begin
-  // Placeholder: Converter FSelector pra SELECT via ICQL
+  // Placeholder: Converter FSelector pra SELECT via FluentSQL
   Result := FSource.BuildQuery; // + ' SELECT ColumnName'
   // Exemplo real: Result := FSource.Select('ColumnName').AsString;
 end;

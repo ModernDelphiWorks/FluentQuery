@@ -218,13 +218,13 @@ type
     function _GetEnumerable: IFluentEnumerable<T>;
     function _ExecuteScalar<TResult>(const ASql: string): TResult;
     function _ExecuteList(const ASql: string): IFluentList<T>;
-    function _InitializeICQL: IFluentQueryProvider<T>;
+    function _InitializeFluentSQL: IFluentQueryProvider<T>;
     function _GetDriverDatabase(const ADatabase: TDriverName): TFluentSQLDriver;
   public
     constructor Create(const AQueryable: IFluentQueryableBase<T>); overload;
     constructor CreateForDatabase(const AInitializer: TConnectionInitializer); overload;
     constructor CreateForDatabase(const ADatabase: TDriverName; const AConnection: IDBConnection;
-      const ACQL: IFluentSQLAST = nil); overload;
+      const AFluentSQL: IFluentSQLAST = nil); overload;
     function IsNotAssigned: Boolean;
     function QE: IFluentQueryExpression;
     function From(const ATableName: string): IFluentQueryable<T>; overload;
@@ -357,7 +357,7 @@ constructor IFluentQueryable<T>.Create(const AQueryable: IFluentQueryableBase<T>
 begin
   FQueryable := AQueryable;
   FEnumerable := _GetEnumerable;
-  _InitializeICQL;
+  _InitializeFluentSQL;
 end;
 
 constructor IFluentQueryable<T>.CreateForDatabase(const AInitializer: TConnectionInitializer);
@@ -368,21 +368,21 @@ begin
   FQueryable := TFluentQueryable<T>.Create(FProvider);
   FEnumerable := _GetEnumerable;
   FExpression := TFluentQueryExpression<T>.Create(_GetDriverDatabase(FProvider.Database));
-  _InitializeICQL;
+  _InitializeFluentSQL;
 end;
 
 constructor IFluentQueryable<T>.CreateForDatabase(const ADatabase: TDriverName;
-  const AConnection: IDBConnection; const ACQL: IFluentSQLAST);
+  const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST);
 begin
   if AConnection = nil then
     raise EArgumentNilException.Create('Connection cannot be nil');
   if TStrDriverName[ADatabase] = '' then
     raise EArgumentNilException.Create('Database type must be specified');
-  FProvider := TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(ADatabase, AConnection, ACQL);
+  FProvider := TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(ADatabase, AConnection, AFluentSQL);
   FQueryable := TFluentQueryable<T>.Create(FProvider);
   FEnumerable := _GetEnumerable;
   FExpression := TFluentQueryExpression<T>.Create(_GetDriverDatabase(ADatabase));
-  _InitializeICQL;
+  _InitializeFluentSQL;
 end;
 
 function IFluentQueryable<T>._GetEnumerable: IFluentEnumerable<T>;
@@ -394,7 +394,7 @@ begin
   );
 end;
 
-function IFluentQueryable<T>._InitializeICQL: IFluentQueryProvider<T>;
+function IFluentQueryable<T>._InitializeFluentSQL: IFluentQueryProvider<T>;
 begin
   Result := FProvider;
   if FProvider.FluentSQL.Select.IsEmpty then
