@@ -154,6 +154,12 @@ type
     [Test]
     procedure TestListAverageEmptyRaises;
     [Test]
+    procedure TestListSumNullableEmptyIsZero;
+    [Test]
+    procedure TestListAverageNullableCurrencyAllNull;
+    [Test]
+    procedure TestListAverageNullableCurrencyValues;
+    [Test]
     procedure TestListExclude;
     [Test]
     procedure TestListIntersect;
@@ -1157,6 +1163,49 @@ begin
       LRaised := True;
   end;
   Assert.IsTrue(LRaised, 'non-nullable Average of empty must raise EInvalidOperation');
+end;
+
+procedure TListTest.TestListSumNullableEmptyIsZero;
+var
+  LResult: NullableInt64;
+begin
+  // True EMPTY sequence (not just all-null), Int64 overload: Sum must be 0.
+  LResult := FList.AsEnumerable.Sum(
+    function(Value: Integer): NullableInt64
+    begin
+      Result := NullableInt64.Create(Value);
+    end);
+  Assert.IsTrue(LResult.HasValue, 'nullable Sum of empty must be 0, not null');
+  Assert.AreEqual(Int64(0), LResult.Value, 'nullable Sum of empty must be 0');
+end;
+
+procedure TListTest.TestListAverageNullableCurrencyAllNull;
+var
+  LResult: NullableCurrency;
+begin
+  // Currency overload, all-null: Average must be null.
+  FList.AddRange([1, 2, 3]);
+  LResult := FList.AsEnumerable.Average(
+    function(Value: Integer): NullableCurrency
+    begin
+      Result := NullableCurrency.CreateEmpty;
+    end);
+  Assert.IsFalse(LResult.HasValue, 'all-null nullable Currency Average must be null');
+end;
+
+procedure TListTest.TestListAverageNullableCurrencyValues;
+var
+  LResult: NullableCurrency;
+begin
+  // Currency overload with values: (10+20+30)/3 = 20.
+  FList.AddRange([10, 20, 30]);
+  LResult := FList.AsEnumerable.Average(
+    function(Value: Integer): NullableCurrency
+    begin
+      Result := NullableCurrency.Create(Value);
+    end);
+  Assert.IsTrue(LResult.HasValue, 'nullable Currency Average should have a value');
+  Assert.AreEqual(Double(20.0), Double(LResult.Value), 'Currency average of 10,20,30');
 end;
 
 procedure TListTest.TestListExclude;
