@@ -5,7 +5,7 @@ slug: /
 sidebar_position: 0
 ---
 
-Welcome to the **FluentQuery** technical documentation portal. Content is derived from source code, tests, and pipeline artifacts.
+Welcome to the **LQ-Colligo** technical documentation portal. Content is derived from source code, tests, and pipeline artifacts.
 
 ## Projects
 
@@ -13,13 +13,13 @@ Welcome to the **FluentQuery** technical documentation portal. Content is derive
   <div className="col col--6 margin-bottom--lg">
     <div className="card">
       <div className="card__header">
-        <h3>FluentQuery</h3>
+        <h3>LQ-Colligo</h3>
       </div>
       <div className="card__body">
-        <p>High-performance LINQ-style fluent collections and DB query library for Delphi and Lazarus. Provides <code>IFluentEnumerable&lt;T&gt;</code> for in-memory pipelines and <code>IFluentQueryable&lt;T&gt;</code> for database queries, with lazy evaluation and zero intermediate allocations.</p>
+        <p>High-performance LINQ-style fluent collections and DB query library for Delphi and Lazarus. Provides <code>ILQColligoEnumerable&lt;T&gt;</code> for in-memory pipelines and <code>ILQColligoQueryable&lt;T&gt;</code> for database queries, with lazy evaluation and zero intermediate allocations.</p>
       </div>
       <div className="card__footer">
-        <a className="button button--primary" href="./fluentquery/">Open documentation →</a>
+        <a className="button button--primary" href="./lqcolligo/">Open documentation →</a>
       </div>
     </div>
   </div>
@@ -27,8 +27,8 @@ Welcome to the **FluentQuery** technical documentation portal. Content is derive
 
 ## Documented release
 
-This portal matches the published source on the `main` branch of [ModernDelphiWorks/FluentQuery](https://github.com/ModernDelphiWorks/FluentQuery).
+This portal matches the published source on the `main` branch of [ModernDelphiWorks/LQ-Colligo](https://github.com/ModernDelphiWorks/LQ-Colligo).
 
 - Cross-platform verified: **Win32, Win64, Linux64** (`dcclinux64`).
 - Compatible with **Delphi XE or superior** and **Lazarus / FreePascal**.
-- MIT licensed — source at [github.com/ModernDelphiWorks/FluentQuery](https://github.com/ModernDelphiWorks/FluentQuery).
+- MIT licensed — source at [github.com/ModernDelphiWorks/LQ-Colligo](https://github.com/ModernDelphiWorks/LQ-Colligo).

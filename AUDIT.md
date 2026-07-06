@@ -1,5 +1,7 @@
 # FluentQuery — Relatório de Auditoria Técnica
 
+> ⚠️ **Documento histórico (pré-rebrand).** Esta auditoria é uma fotografia do projeto em **2026-07-04**, quando ainda se chamava **FluentQuery**. O projeto foi posteriormente renomeado para **LQ-Colligo** (unit/namespace `LQColligo`, tipos `ILQColligoEnumerable`/`ILQColligoQueryable`/`TLQColligoString`/…). Os nomes de tipo, os nomes de unit (`FluentQuery.pas` → `LQColligo.pas`) e as referências `arquivo:linha` abaixo refletem o código **daquela data** e são mantidos intactos como registro; não correspondem mais 1:1 ao código atual.
+
 **Data:** 2026-07-04
 **Escopo:** `Source/` (~15.177 LOC, 40 units de operadores), `Test Delphi/` (~311 métodos DUnitX), manifestos, CI e dependências irmãs (`FluentSQL`/`cquery4d`, `DataEngine`, `ModernSyntax`/`evolution4d`).
 **Método:** auditoria orquestrada com 5 subagentes especializados (arquitetura/memória, cobertura/semântica LINQ, testes, qualidade/bugs/performance, dependências/provider DB). Todos os achados citam `arquivo:linha` verificável.
