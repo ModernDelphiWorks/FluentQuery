@@ -230,6 +230,8 @@ type
     [Test]
     procedure TestListChunkEdges;
     [Test]
+    procedure TestListGetListNonDestructive;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1916,6 +1918,22 @@ begin
     begin
       TFluentQuery.&Repeat<Integer>(7, -1);
     end, EArgumentOutOfRangeException, 'Repeat with negative count raises');
+end;
+
+procedure TListTest.TestListGetListNonDestructive;
+var
+  LArr: IFluentArray<Integer>;
+begin
+  // The List property (GetList) must be a non-destructive snapshot of exactly
+  // Count elements. Previously reading it returned the raw internal array and
+  // then Clear'd the list.
+  FList.AddRange([1, 2, 3]);
+  LArr := FList.List;
+  Assert.AreEqual(3, LArr.Length, 'snapshot has exactly Count elements (no spare capacity)');
+  Assert.AreEqual(1, LArr[0], 'first');
+  Assert.AreEqual(3, LArr[2], 'last');
+  Assert.AreEqual(3, FList.Count, 'reading List must not clear the source list');
+  Assert.AreEqual(3, FList.List.Length, 'a second read still returns all elements');
 end;
 
 procedure TListTest.TestListChunk;
