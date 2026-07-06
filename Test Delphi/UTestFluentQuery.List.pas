@@ -184,6 +184,12 @@ type
     [Test]
     procedure TestListDefaultIfEmptyEmptyYieldsDefault;
     [Test]
+    procedure TestListAppendPrependEmptySource;
+    [Test]
+    procedure TestListDefaultIfEmptyNoArgEmpty;
+    [Test]
+    procedure TestListAppendReEnumerable;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1454,6 +1460,46 @@ begin
   LArray := FList.AsEnumerable.DefaultIfEmpty(42).ToArray;
   Assert.AreEqual(1, LArray.Length, 'empty source yields one default');
   Assert.AreEqual(42, LArray[0], 'the supplied default value');
+end;
+
+procedure TListTest.TestListAppendPrependEmptySource;
+var
+  LAppended, LPrepended: IFluentArray<Integer>;
+begin
+  // Over an empty source, Append/Prepend yield just the single element.
+  LAppended := FList.AsEnumerable.Append(7).ToArray;
+  Assert.AreEqual(1, LAppended.Length, 'Append over empty -> [element]');
+  Assert.AreEqual(7, LAppended[0], 'appended element');
+
+  LPrepended := FList.AsEnumerable.Prepend(7).ToArray;
+  Assert.AreEqual(1, LPrepended.Length, 'Prepend over empty -> [element]');
+  Assert.AreEqual(7, LPrepended[0], 'prepended element');
+end;
+
+procedure TListTest.TestListDefaultIfEmptyNoArgEmpty;
+var
+  LArray: IFluentArray<Integer>;
+begin
+  // No-arg DefaultIfEmpty over an empty source yields Default(T) (0 for Integer).
+  LArray := FList.AsEnumerable.DefaultIfEmpty.ToArray;
+  Assert.AreEqual(1, LArray.Length, 'empty source yields one default');
+  Assert.AreEqual(0, LArray[0], 'Default(Integer) is 0');
+end;
+
+procedure TListTest.TestListAppendReEnumerable;
+var
+  LDeferred: IFluentEnumerable<Integer>;
+  LFirst, LSecond: IFluentArray<Integer>;
+begin
+  // Each GetEnumerator reprocesses the source: two ToArray calls on the same
+  // deferred result reproduce the identical output.
+  FList.AddRange([1, 2]);
+  LDeferred := FList.AsEnumerable.Append(9);
+  LFirst := LDeferred.ToArray;
+  LSecond := LDeferred.ToArray;
+  Assert.AreEqual(3, LFirst.Length, 'first enumeration');
+  Assert.AreEqual(3, LSecond.Length, 'second enumeration reproduces the result');
+  Assert.AreEqual(9, LSecond[2], 'appended element present on re-enumeration');
 end;
 
 procedure TListTest.TestListIntersect;
