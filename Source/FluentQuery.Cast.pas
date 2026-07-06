@@ -76,7 +76,9 @@ var
   LValue: TValue;
 begin
   LValue := TValue.From<T>(AItem);
-  // Unwrap a variant to its underlying runtime type before the cast.
+  // Unwrap a variant to its underlying runtime type before the cast. Conversion
+  // follows the same TValue rules as OfType (is-a for reference types; numeric-
+  // compatible for value types), but a failure RAISES instead of skipping.
   if LValue.Kind = tkVariant then
     LValue := TValue.FromVariant(LValue.AsVariant);
   try

@@ -119,6 +119,8 @@ type
     [Test]
     procedure TestListCastDeferredRaises;
     [Test]
+    procedure TestListCastStreamsBeforeRaise;
+    [Test]
     procedure TestListMinBy;
     [Test]
     procedure TestListMaxBy;
@@ -902,6 +904,29 @@ begin
       LRaised := True;
   end;
   Assert.IsTrue(LRaised, 'Cast must raise EInvalidCast per element during enumeration');
+end;
+
+procedure TListTest.TestListCastStreamsBeforeRaise;
+var
+  LList: IFluentList<Variant>;
+  LEnum: IFluentEnumerator<Integer>;
+  LRaised: Boolean;
+begin
+  // Streaming, not all-or-nothing: the first valid element is yielded before
+  // the incompatible one is reached and raises.
+  LList := TFluentList<Variant>.Create;
+  LList.AddRange([1, 'two', 3]);
+  LEnum := LList.AsEnumerable.Cast<Integer>.GetEnumerator;
+  Assert.IsTrue(LEnum.MoveNext, 'first element should be available');
+  Assert.AreEqual(1, LEnum.Current, 'valid element yielded before the bad one');
+  LRaised := False;
+  try
+    LEnum.MoveNext; // reaches 'two'
+  except
+    on E: EInvalidCast do
+      LRaised := True;
+  end;
+  Assert.IsTrue(LRaised, 'the incompatible element raises when reached');
 end;
 
 procedure TListTest.TestListMinBy;

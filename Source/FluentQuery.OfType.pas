@@ -109,15 +109,19 @@ var
   LValue: TValue;
 begin
   LValue := TValue.From<T>(AItem);
-  // Unwrap a variant to its underlying runtime type so a heterogeneous
-  // Variant collection is filtered by the actual element type.
+  // Unwrap a variant to its underlying runtime type so a heterogeneous Variant
+  // collection is filtered by the actual element type. Conversion uses TValue's
+  // rules: for classes/interfaces this is an is-a test; for value types it
+  // accepts numeric-compatible values (a Variant integer is treated as Integer).
+  // That coercion is the pragmatic Delphi/Variant reading of "of type", which
+  // is looser than C# boxing for cross-numeric cases (documented deviation).
   if LValue.Kind = tkVariant then
     LValue := TValue.FromVariant(LValue.AsVariant);
   try
     Result := LValue.TryAsType<TResult>(AResult);
   except
     // A conversion that raises (e.g. an incompatible variant coercion) counts
-    // as "not of this type" — OfType filters it out silently.
+    // as "not of this type" — OfType filters it out silently, never raising.
     Result := False;
   end;
 end;
