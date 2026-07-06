@@ -162,6 +162,10 @@ type
     [Test]
     procedure TestListExclude;
     [Test]
+    procedure TestListExcludeDistinct;
+    [Test]
+    procedure TestListExcludeReEnumerable;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1222,6 +1226,46 @@ begin
   Assert.AreEqual(2, LArray.Length, 'Exclude list should have 2 elements');
   Assert.AreEqual(1, LArray[0], 'First element should be 1');
   Assert.AreEqual(3, LArray[1], 'Second element should be 3');
+end;
+
+procedure TListTest.TestListExcludeDistinct;
+var
+  LSecond: IFluentList<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // LINQ Except returns DISTINCT elements: duplicates in the source that are not
+  // excluded must appear at most once, in first-appearance order.
+  FList.AddRange([1, 1, 2, 3, 3, 4]);
+  LSecond := TFluentList<Integer>.Create;
+  LSecond.AddRange([4]);
+  LArray := FList.AsEnumerable.Exclude(LSecond.AsEnumerable).ToArray;
+  Assert.AreEqual(3, LArray.Length, 'Except must dedupe the output');
+  Assert.AreEqual(1, LArray[0], 'First distinct element');
+  Assert.AreEqual(2, LArray[1], 'Second distinct element');
+  Assert.AreEqual(3, LArray[2], 'Third distinct element');
+end;
+
+procedure TListTest.TestListExcludeReEnumerable;
+var
+  LSecond: IFluentList<Integer>;
+  LExcluded: IFluentEnumerable<Integer>;
+  LFirst, LSecondPass: IFluentArray<Integer>;
+begin
+  // Each enumeration builds a fresh emitted-set, so re-enumerating the same
+  // query (a new GetEnumerator per ToArray) reproduces the identical distinct
+  // result rather than leaking dedupe state across enumerations.
+  FList.AddRange([1, 1, 2, 3]);
+  LSecond := TFluentList<Integer>.Create;
+  LSecond.AddRange([2]);
+  LExcluded := FList.AsEnumerable.Exclude(LSecond.AsEnumerable);
+
+  LFirst := LExcluded.ToArray;
+  LSecondPass := LExcluded.ToArray;
+
+  Assert.AreEqual(2, LFirst.Length, 'First enumeration should yield distinct [1,3]');
+  Assert.AreEqual(2, LSecondPass.Length, 'Second enumeration should reproduce [1,3]');
+  Assert.AreEqual(1, LSecondPass[0], 'First element on re-enumeration');
+  Assert.AreEqual(3, LSecondPass[1], 'Second element on re-enumeration');
 end;
 
 procedure TListTest.TestListIntersect;
