@@ -298,10 +298,14 @@ begin
   if Result then
   begin
     LKey := FKeys[FIndex];
+    // The grouping owns an independent COPY of its elements, so it stays
+    // valid if retained past this enumerator (e.g. GroupBy(...).ToList).
+    // The master list in FGroups is kept for the enumerator's lifetime,
+    // which keeps Reset re-enumerable and avoids any double-free.
     FCurrent := TFluentGrouping<TKey, T>.Create(
       LKey,
       IFluentEnumerable<T>.Create(
-        TListAdapter<T>.Create(FGroups[LKey], False),
+        TListAdapter<T>.Create(TList<T>.Create(FGroups[LKey]), True),
         ftNone,
         TEqualityComparer<T>.Default
       )
@@ -373,10 +377,11 @@ begin
   if Result then
   begin
     LKey := FKeys[FIndex];
+    // Grouping owns an independent copy (see single-key MoveNext note).
     FCurrent := TFluentGrouping<TKey, TElement>.Create(
       LKey,
       IFluentEnumerable<TElement>.Create(
-        TListAdapter<TElement>.Create(FGroups[LKey], False),
+        TListAdapter<TElement>.Create(TList<TElement>.Create(FGroups[LKey]), True),
         ftNone,
         TEqualityComparer<TElement>.Default));
   end;
@@ -446,11 +451,12 @@ begin
   if Result then
   begin
     LKey := FKeys[FIndex];
+    // Grouping adapter owns an independent copy (see single-key MoveNext note).
     FCurrent := FResultSelector(
       LKey,
       TEnumerableAdapter<TSource>.Create(
         IFluentEnumerable<TSource>.Create(
-          TListAdapter<TSource>.Create(FGroups[LKey], False),
+          TListAdapter<TSource>.Create(TList<TSource>.Create(FGroups[LKey]), True),
           ftNone,
           TEqualityComparer<TSource>.Default), nil));
   end;

@@ -91,6 +91,8 @@ type
     [Test]
     procedure TestListGroupByReEnumerable;
     [Test]
+    procedure TestListGroupByMaterializedSurvives;
+    [Test]
     procedure TestListZip;
     [Test]
     procedure TestListJoin;
@@ -547,6 +549,29 @@ begin
   while LEnum.MoveNext do
     Inc(LSecond);
   Assert.AreEqual(2, LSecond, 'Second pass after Reset should yield 2 groups');
+end;
+
+procedure TListTest.TestListGroupByMaterializedSurvives;
+var
+  LGroups: IFluentList<IGrouping<Integer, Integer>>;
+  LGroup: IGrouping<Integer, Integer>;
+  LTotal: Integer;
+begin
+  // Materialize the groups first, then read Items AFTER the underlying
+  // GroupBy enumerator has been released. Each grouping owns its own copy,
+  // so this must not be a use-after-free.
+  FList.AddRange([1, 2, 3, 4, 5, 6]);
+  LGroups := FList.AsEnumerable.GroupBy<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Result := Value mod 2;
+    end).AsEnumerable.ToList;
+
+  Assert.AreEqual(2, LGroups.Count, 'Should have 2 materialized groups');
+  LTotal := 0;
+  for LGroup in LGroups do
+    LTotal := LTotal + LGroup.Items.ToArray.Length;
+  Assert.AreEqual(6, LTotal, 'Materialized groups should still expose all 6 elements');
 end;
 
 procedure TListTest.TestListGroupJoin;
