@@ -225,7 +225,8 @@ type
     // may be shorter). Deferred/streaming. Returns the base interface (not the
     // IFluentEnumerable<TArray<T>> record) to avoid E2604 "recursive use of
     // generic type" — a record cannot return an instantiation of itself over a
-    // type derived from its own T. Call .AsEnumerable on the result to chain.
+    // type derived from its own T. Iterate the result via GetEnumerator, or wrap
+    // it in IFluentEnumerable<TArray<T>>.Create(...) to chain further.
     function Chunk(const ASize: Integer): IFluentEnumerableBase<TArray<T>>;
     function CountBy<TKey>(const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey> = nil): TDictionary<TKey, Integer>;

@@ -1970,6 +1970,22 @@ begin
   end;
   Assert.AreEqual(1, LCount, 'one chunk when size >= count');
 
+  // Empty source -> zero chunks.
+  FList.Clear;
+  LEnum := FList.AsEnumerable.Chunk(2).GetEnumerator;
+  Assert.IsFalse(LEnum.MoveNext, 'empty source yields no chunks');
+
+  // Exact multiple -> no spurious trailing empty chunk (classic off-by-one).
+  FList.AddRange([1, 2, 3, 4]);
+  LEnum := FList.AsEnumerable.Chunk(2).GetEnumerator;
+  LCount := 0;
+  while LEnum.MoveNext do
+  begin
+    Inc(LCount);
+    Assert.AreEqual(2, Length(LEnum.Current), 'each chunk full on exact multiple');
+  end;
+  Assert.AreEqual(2, LCount, 'exact multiple -> exactly 2 chunks, no trailing empty');
+
   // Size < 1 raises (eager validation).
   Assert.WillRaise(
     procedure
