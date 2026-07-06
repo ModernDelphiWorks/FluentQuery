@@ -190,6 +190,16 @@ type
     [Test]
     procedure TestListAppendReEnumerable;
     [Test]
+    procedure TestListDistinctByDeferred;
+    [Test]
+    procedure TestListUnionByDeferred;
+    [Test]
+    procedure TestListExcludeByDistinctDeferred;
+    [Test]
+    procedure TestListIntersectByDistinctDeferred;
+    [Test]
+    procedure TestListExcludeByReEnumerable;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1500,6 +1510,150 @@ begin
   Assert.AreEqual(3, LFirst.Length, 'first enumeration');
   Assert.AreEqual(3, LSecond.Length, 'second enumeration reproduces the result');
   Assert.AreEqual(9, LSecond[2], 'appended element present on re-enumeration');
+end;
+
+procedure TListTest.TestListDistinctByDeferred;
+var
+  LCount: Integer;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // Deferred + distinct-by-key (first occurrence, source order).
+  FList.AddRange([1, 1, 2, 3, 3]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).DistinctBy<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Result := Value;
+    end);
+  Assert.AreEqual(0, LCount, 'DistinctBy must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'distinct keys 1,2,3');
+  Assert.AreEqual(1, LArray[0], 'first');
+  Assert.AreEqual(2, LArray[1], 'second');
+  Assert.AreEqual(3, LArray[2], 'third');
+end;
+
+procedure TListTest.TestListUnionByDeferred;
+var
+  LCount: Integer;
+  LSecond: IFluentList<Integer>;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // Deferred + union-by-key across both sequences (first occurrence).
+  FList.AddRange([1, 2]);
+  LSecond := TFluentList<Integer>.Create;
+  LSecond.AddRange([2, 3]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).UnionBy<Integer>(LSecond.AsEnumerable,
+    function(Value: Integer): Integer
+    begin
+      Result := Value;
+    end);
+  Assert.AreEqual(0, LCount, 'UnionBy must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'union by key -> 1,2,3');
+  Assert.AreEqual(1, LArray[0], 'first');
+  Assert.AreEqual(3, LArray[2], 'new key from second sequence');
+end;
+
+procedure TListTest.TestListExcludeByDistinctDeferred;
+var
+  LCount: Integer;
+  LSecondKeys: IFluentList<Integer>;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // ExcludeBy: deferred over the source, and the output is DISTINCT (a source
+  // with duplicate keys must not repeat).
+  FList.AddRange([1, 1, 2, 3, 3, 4]);
+  LSecondKeys := TFluentList<Integer>.Create;
+  LSecondKeys.AddRange([4]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).ExcludeBy<Integer>(LSecondKeys.AsEnumerable,
+    function(Value: Integer): Integer
+    begin
+      Result := Value;
+    end);
+  Assert.AreEqual(0, LCount, 'ExcludeBy must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'distinct, key 4 excluded -> [1,2,3]');
+  Assert.AreEqual(1, LArray[0], 'first');
+  Assert.AreEqual(2, LArray[1], 'second');
+  Assert.AreEqual(3, LArray[2], 'third');
+end;
+
+procedure TListTest.TestListIntersectByDistinctDeferred;
+var
+  LCount: Integer;
+  LSecondKeys: IFluentList<Integer>;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // IntersectBy: deferred over the source, output DISTINCT.
+  FList.AddRange([1, 1, 2, 3]);
+  LSecondKeys := TFluentList<Integer>.Create;
+  LSecondKeys.AddRange([1, 3]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).IntersectBy<Integer>(LSecondKeys.AsEnumerable,
+    function(Value: Integer): Integer
+    begin
+      Result := Value;
+    end);
+  Assert.AreEqual(0, LCount, 'IntersectBy must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(2, LArray.Length, 'distinct intersection on keys 1,3 -> [1,3]');
+  Assert.AreEqual(1, LArray[0], 'first');
+  Assert.AreEqual(3, LArray[1], 'second');
+end;
+
+procedure TListTest.TestListExcludeByReEnumerable;
+var
+  LSecondKeys: IFluentList<Integer>;
+  LDeferred: IFluentEnumerable<Integer>;
+  LFirst, LSecond: IFluentArray<Integer>;
+begin
+  // Each GetEnumerator rebuilds the excluded/emitted sets, so re-enumerating the
+  // same query reproduces the identical distinct result.
+  FList.AddRange([1, 1, 2, 3, 4]);
+  LSecondKeys := TFluentList<Integer>.Create;
+  LSecondKeys.AddRange([4]);
+  LDeferred := FList.AsEnumerable.ExcludeBy<Integer>(LSecondKeys.AsEnumerable,
+    function(Value: Integer): Integer
+    begin
+      Result := Value;
+    end);
+  LFirst := LDeferred.ToArray;
+  LSecond := LDeferred.ToArray;
+  Assert.AreEqual(3, LFirst.Length, 'first enumeration -> [1,2,3]');
+  Assert.AreEqual(3, LSecond.Length, 'second enumeration reproduces [1,2,3]');
+  Assert.AreEqual(1, LSecond[0], 'first element on re-enumeration');
+  Assert.AreEqual(3, LSecond[2], 'last element on re-enumeration');
 end;
 
 procedure TListTest.TestListIntersect;

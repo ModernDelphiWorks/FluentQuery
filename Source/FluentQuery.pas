@@ -456,6 +456,10 @@ uses
   FluentQuery.Append,
   FluentQuery.Prepend,
   FluentQuery.DefaultIfEmpty,
+  FluentQuery.DistinctBy,
+  FluentQuery.UnionBy,
+  FluentQuery.ExcludeBy,
+  FluentQuery.IntersectBy,
   FluentQuery.Order,
 //  Fluent.Chunk,
   FluentQuery.Cast,
@@ -1795,39 +1799,15 @@ begin
 end;
 
 function IFluentEnumerable<T>.DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
-var
-  LSeenKeys: TDictionary<TKey, T>;
-  LEnum: IFluentEnumerator<T>;
-  LItems: TArray<T>;
-  LItem: T;
-  LIndex: Integer;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  LSeenKeys := TDictionary<TKey, T>.Create;
-  try
-    LEnum := GetEnumerator;
-    SetLength(LItems, 0);
-    LIndex := 0;
-    while LEnum.MoveNext do
-    begin
-      LItem := LEnum.Current;
-      if not LSeenKeys.ContainsKey(AKeySelector(LItem)) then
-      begin
-        LSeenKeys.Add(AKeySelector(LItem), LItem);
-        SetLength(LItems, LIndex + 1);
-        LItems[LIndex] := LItem;
-        Inc(LIndex);
-      end;
-    end;
-    Result := IFluentEnumerable<T>.Create(
-      TArrayAdapter<T>.Create(LItems),
-      FFluentType,
-      FComparer
-    );
-  finally
-    LSeenKeys.Free;
-  end;
+  // Deferred/streaming: nothing is enumerated until the result is iterated.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentDistinctByEnumerable<T, TKey>.Create(FEnumerator, AKeySelector),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.Min(const AComparer: TFunc<T, T, Integer>): T;
@@ -2342,46 +2322,15 @@ end;
 
 function IFluentEnumerable<T>.UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
   const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
-var
-  LEnum: IFluentEnumerator<T>;
-  LKeys: TDictionary<TKey, T>;
-  LList: TList<T>;
-  LKey: TKey;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  Result := Default(IFluentEnumerable<T>);
-  LKeys := TDictionary<TKey, T>.Create;
-  LList := TList<T>.Create;
-  try
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-    begin
-      LKey := AKeySelector(LEnum.Current);
-      if not LKeys.ContainsKey(LKey) then
-      begin
-        LKeys.Add(LKey, LEnum.Current);
-        LList.Add(LEnum.Current);
-      end;
-    end;
-
-    LEnum := ASecond.GetEnumerator;
-    while LEnum.MoveNext do
-    begin
-      LKey := AKeySelector(LEnum.Current);
-      if not LKeys.ContainsKey(LKey) then
-      begin
-        LKeys.Add(LKey, LEnum.Current);
-        LList.Add(LEnum.Current);
-      end;
-    end;
-
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    LKeys.Free;
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred/streaming: nothing is enumerated until the result is iterated.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentUnionByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.Append(const AElement: T): IFluentEnumerable<T>;
@@ -2429,70 +2378,30 @@ end;
 
 function IFluentEnumerable<T>.ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
   const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
-var
-  LEnum: IFluentEnumerator<T>;
-  LKeys: TDictionary<TKey, Boolean>;
-  LList: TList<T>;
-  LKey: TKey;
-  LEnumSecond: IFluentEnumerator<TKey>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  Result := Default(IFluentEnumerable<T>);
-  LKeys := TDictionary<TKey, Boolean>.Create;
-  LList := TList<T>.Create;
-  try
-    LEnumSecond := ASecond.GetEnumerator;
-    while LEnumSecond.MoveNext do
-      LKeys.TryAdd(LEnumSecond.Current, True);
-
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-    begin
-      LKey := AKeySelector(LEnum.Current);
-      if not LKeys.ContainsKey(LKey) then
-        LList.Add(LEnum.Current);
-    end;
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    LKeys.Free;
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred: the second (keys) is buffered when enumeration starts; the source
+  // is streamed and yields DISTINCT non-excluded elements.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentExcludeByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
   const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
-var
-  LEnum: IFluentEnumerator<T>;
-  LKeys: TDictionary<TKey, Boolean>;
-  LList: TList<T>;
-  LKey: TKey;
-  LEnumSecond: IFluentEnumerator<TKey>;
 begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
-  Result := Default(IFluentEnumerable<T>);
-  LKeys := TDictionary<TKey, Boolean>.Create;
-  LList := TList<T>.Create;
-  try
-    LEnumSecond := ASecond.GetEnumerator;
-    while LEnumSecond.MoveNext do
-      LKeys.TryAdd(LEnumSecond.Current, True);
-
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-    begin
-      LKey := AKeySelector(LEnum.Current);
-      if LKeys.ContainsKey(LKey) then
-        LList.Add(LEnum.Current);
-    end;
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    LKeys.Free;
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred: the second (keys) is buffered when enumeration starts; the source
+  // is streamed and yields DISTINCT matching elements.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentIntersectByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.IsNotAssigned: Boolean;
