@@ -92,7 +92,9 @@ type
     function Skip(const ACount: Integer): IFluentEnumerable<T>;
     function Distinct: IFluentEnumerable<T>; overload;
     function Distinct(const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
-    function DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+    function DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
+    function DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
     function Aggregate(const AReducer: TFunc<T, T, T>): T; overload;
     function Aggregate<TAcc>(const AInitialValue: TAcc; const AAccumulator: TFunc<TAcc, T, TAcc>): TAcc; overload;
     function Aggregate<TAccumulate, TResult>(const AInitialValue: TAccumulate;
@@ -187,15 +189,24 @@ type
     function ToLookup<TKey, TElement>(const AKeySelector: TFunc<T, TKey>;
       const AElementSelector: TFunc<T, TElement>): TDictionary<TKey, TList<TElement>>;
     function UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
-      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
+    function UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
+      const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
     function Append(const AElement: T): IFluentEnumerable<T>;
     function Cast<TResult>: IFluentEnumerable<TResult>;
     function DefaultIfEmpty: IFluentEnumerable<T>; overload;
     function DefaultIfEmpty(const ADefaultValue: T): IFluentEnumerable<T>; overload;
     function ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
-      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
+    function ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+      const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
     function IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
-      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
+      const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>; overload;
+    function IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+      const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>; overload;
     function Prepend(const AElement: T): IFluentEnumerable<T>;
     function Reverse: IFluentEnumerable<T>;
     function SkipLast(const ACount: Integer): IFluentEnumerable<T>;
@@ -1803,11 +1814,17 @@ end;
 
 function IFluentEnumerable<T>.DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
 begin
+  Result := DistinctBy<TKey>(AKeySelector, nil);
+end;
+
+function IFluentEnumerable<T>.DistinctBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred/streaming: nothing is enumerated until the result is iterated.
   Result := IFluentEnumerable<T>.Create(
-    TFluentDistinctByEnumerable<T, TKey>.Create(FEnumerator, AKeySelector),
+    TFluentDistinctByEnumerable<T, TKey>.Create(FEnumerator, AKeySelector, AComparer),
     FFluentType,
     FComparer
   );
@@ -2326,11 +2343,18 @@ end;
 function IFluentEnumerable<T>.UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
   const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
 begin
+  Result := UnionBy<TKey>(ASecond, AKeySelector, nil);
+end;
+
+function IFluentEnumerable<T>.UnionBy<TKey>(const ASecond: IFluentEnumerable<T>;
+  const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred/streaming: nothing is enumerated until the result is iterated.
   Result := IFluentEnumerable<T>.Create(
-    TFluentUnionByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector),
+    TFluentUnionByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
     FFluentType,
     FComparer
   );
@@ -2382,12 +2406,19 @@ end;
 function IFluentEnumerable<T>.ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
   const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
 begin
+  Result := ExcludeBy<TKey>(ASecond, AKeySelector, nil);
+end;
+
+function IFluentEnumerable<T>.ExcludeBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+  const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred: the second (keys) is buffered when enumeration starts; the source
   // is streamed and yields DISTINCT non-excluded elements.
   Result := IFluentEnumerable<T>.Create(
-    TFluentExcludeByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector),
+    TFluentExcludeByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
     FFluentType,
     FComparer
   );
@@ -2396,12 +2427,19 @@ end;
 function IFluentEnumerable<T>.IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
   const AKeySelector: TFunc<T, TKey>): IFluentEnumerable<T>;
 begin
+  Result := IntersectBy<TKey>(ASecond, AKeySelector, nil);
+end;
+
+function IFluentEnumerable<T>.IntersectBy<TKey>(const ASecond: IFluentEnumerable<TKey>;
+  const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<T>;
+begin
   if not Assigned(AKeySelector) then
     raise EArgumentNilException.Create('Key selector cannot be nil');
   // Deferred: the second (keys) is buffered when enumeration starts; the source
   // is streamed and yields DISTINCT matching elements.
   Result := IFluentEnumerable<T>.Create(
-    TFluentIntersectByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector),
+    TFluentIntersectByEnumerable<T, TKey>.Create(FEnumerator, ASecond.FEnumerator, AKeySelector, AComparer),
     FFluentType,
     FComparer
   );

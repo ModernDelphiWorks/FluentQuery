@@ -23,18 +23,21 @@ uses
   {$ENDIF}
   SysUtils,
   Generics.Collections,
+  Generics.Defaults,
   FluentQuery;
 
 type
   // LINQ DistinctBy: deferred/streaming — yields the first element for each
   // distinct key, in source order. The seen-keys set grows as items are pulled;
-  // nothing runs until enumeration.
+  // nothing runs until enumeration. Key equality uses AComparer (nil => default).
   TFluentDistinctByEnumerable<T, TKey> = class(TFluentEnumerableBase<T>)
   private
     FSource: IFluentEnumerableBase<T>;
     FKeySelector: TFunc<T, TKey>;
+    FComparer: IEqualityComparer<TKey>;
   public
-    constructor Create(const ASource: IFluentEnumerableBase<T>; const AKeySelector: TFunc<T, TKey>);
+    constructor Create(const ASource: IFluentEnumerableBase<T>; const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey> = nil);
     function GetEnumerator: IFluentEnumerator<T>; override;
   end;
 
@@ -45,7 +48,8 @@ type
     FSeen: TDictionary<TKey, Byte>;
     FCurrent: T;
   public
-    constructor Create(const ASource: IFluentEnumerator<T>; const AKeySelector: TFunc<T, TKey>);
+    constructor Create(const ASource: IFluentEnumerator<T>; const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: T;
     function MoveNext: Boolean;
@@ -58,25 +62,26 @@ implementation
 { TFluentDistinctByEnumerable<T, TKey> }
 
 constructor TFluentDistinctByEnumerable<T, TKey>.Create(const ASource: IFluentEnumerableBase<T>;
-  const AKeySelector: TFunc<T, TKey>);
+  const AKeySelector: TFunc<T, TKey>; const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FKeySelector := AKeySelector;
+  FComparer := AComparer;
 end;
 
 function TFluentDistinctByEnumerable<T, TKey>.GetEnumerator: IFluentEnumerator<T>;
 begin
-  Result := TFluentDistinctByEnumerator<T, TKey>.Create(FSource.GetEnumerator, FKeySelector);
+  Result := TFluentDistinctByEnumerator<T, TKey>.Create(FSource.GetEnumerator, FKeySelector, FComparer);
 end;
 
 { TFluentDistinctByEnumerator<T, TKey> }
 
 constructor TFluentDistinctByEnumerator<T, TKey>.Create(const ASource: IFluentEnumerator<T>;
-  const AKeySelector: TFunc<T, TKey>);
+  const AKeySelector: TFunc<T, TKey>; const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FKeySelector := AKeySelector;
-  FSeen := TDictionary<TKey, Byte>.Create;
+  FSeen := TDictionary<TKey, Byte>.Create(AComparer);
 end;
 
 destructor TFluentDistinctByEnumerator<T, TKey>.Destroy;
