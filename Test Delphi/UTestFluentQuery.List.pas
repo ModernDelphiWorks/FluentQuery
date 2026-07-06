@@ -8,6 +8,7 @@ uses
   Variants,
   DUnitX.TestFramework,
   Generics.Collections,
+  Generics.Defaults,
   FluentQuery,
   FluentQuery.Collections;
 
@@ -83,6 +84,12 @@ type
     procedure TestListMap;
     [Test]
     procedure TestListGroupBy;
+    [Test]
+    procedure TestListGroupByFirstAppearanceOrder;
+    [Test]
+    procedure TestListGroupByComparer;
+    [Test]
+    procedure TestListGroupByReEnumerable;
     [Test]
     procedure TestListZip;
     [Test]
@@ -459,6 +466,89 @@ begin
   Assert.AreEqual(2, LCount, 'Should have 2 groups');
 end;
 
+procedure TListTest.TestListGroupByFirstAppearanceOrder;
+var
+  LGroups: IGroupByEnumerable<Integer, Integer>;
+  LEnum: IFluentEnumerator<IGrouping<Integer, Integer>>;
+  LKeys: TList<Integer>;
+begin
+  // Odd key (1) appears before even key (0); group order must follow
+  // first appearance of the key, not TDictionary hash order.
+  FList.AddRange([3, 1, 2, 4]);
+  LGroups := FList.AsEnumerable.GroupBy<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Result := Value mod 2;
+    end);
+  LKeys := TList<Integer>.Create;
+  try
+    LEnum := LGroups.GetEnumerator;
+    while LEnum.MoveNext do
+      LKeys.Add(LEnum.Current.Key);
+    Assert.AreEqual(2, LKeys.Count, 'Should have 2 groups');
+    Assert.AreEqual(1, LKeys[0], 'First group must be the odd key (first appearance)');
+    Assert.AreEqual(0, LKeys[1], 'Second group must be the even key');
+  finally
+    LKeys.Free;
+  end;
+end;
+
+procedure TListTest.TestListGroupByComparer;
+var
+  LWords: IFluentList<string>;
+  LGroups: IGroupByEnumerable<string, string>;
+  LEnum: IFluentEnumerator<IGrouping<string, string>>;
+  LCount: Integer;
+begin
+  // Case-insensitive comparer: 'a'/'A'/'a' collapse into one group.
+  LWords := TFluentList<string>.Create;
+  LWords.AddRange(['a', 'A', 'b', 'a']);
+  LGroups := LWords.AsEnumerable.GroupBy<string>(
+    function(Value: string): string
+    begin
+      Result := Value;
+    end,
+    TIStringComparer.Ordinal);
+  LEnum := LGroups.GetEnumerator;
+  LCount := 0;
+  while LEnum.MoveNext do
+  begin
+    Inc(LCount);
+    if SameText(LEnum.Current.Key, 'a') then
+      Assert.AreEqual(3, LEnum.Current.Items.ToArray.Length,
+        'Case-insensitive group "a" should have 3 elements');
+  end;
+  Assert.AreEqual(2, LCount, 'Case-insensitive grouping should yield 2 groups');
+end;
+
+procedure TListTest.TestListGroupByReEnumerable;
+var
+  LGroups: IGroupByEnumerable<Integer, Integer>;
+  LEnum: IFluentEnumerator<IGrouping<Integer, Integer>>;
+  LFirst, LSecond: Integer;
+begin
+  // Re-enumerating (via Reset) must reproduce the same groups; the old
+  // implementation mutated the dictionary during MoveNext, breaking this.
+  FList.AddRange([1, 2, 3, 4, 5, 6]);
+  LGroups := FList.AsEnumerable.GroupBy<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Result := Value mod 2;
+    end);
+  LEnum := LGroups.GetEnumerator;
+
+  LFirst := 0;
+  while LEnum.MoveNext do
+    Inc(LFirst);
+  Assert.AreEqual(2, LFirst, 'First pass should yield 2 groups');
+
+  LEnum.Reset;
+  LSecond := 0;
+  while LEnum.MoveNext do
+    Inc(LSecond);
+  Assert.AreEqual(2, LSecond, 'Second pass after Reset should yield 2 groups');
+end;
+
 procedure TListTest.TestListGroupJoin;
 var
   LInner: IFluentList<string>;
@@ -553,7 +643,7 @@ begin
       Writeln('Mapping: ' + IntToStr(Value));
       Result := Value.ToString + 'x';
     end);
-  Writeln('Map chamado, mas ainda não iterado');
+  Writeln('Map chamado, mas ainda nï¿½o iterado');
   LArray := LMapped.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Mapped list should have 3 elements');
   Assert.AreEqual('1x', LArray[0], 'First element should be "1x"');
@@ -578,7 +668,7 @@ begin
       Writeln('Ordering: ' + IntToStr(A) + ' vs ' + IntToStr(B));
       Result := A - B;
     end);
-  Writeln('OrderBy chamado, mas ainda não iterado');
+  Writeln('OrderBy chamado, mas ainda nï¿½o iterado');
   LArray := LOrdered.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Ordered list should have 3 elements');
   Assert.AreEqual(3, LArray[0], 'First element should be 3');
@@ -598,7 +688,7 @@ begin
       Writeln('Filtering: ' + IntToStr(Value));
       Result := Value > 2;
     end).Distinct;
-  Writeln('Distinct chamado, mas ainda não iterado');
+  Writeln('Distinct chamado, mas ainda nï¿½o iterado');
   LArray := LDistinct.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Distinct list should have 3 elements');
   Assert.AreEqual(3, LArray[0], 'First element should be 3');
@@ -622,7 +712,7 @@ begin
       Writeln('Zipping: ' + IntToStr(Num) + ' with ' + Letter);
       Result := Num.ToString + Letter;
     end);
-  Writeln('Zip chamado, mas ainda não iterado');
+  Writeln('Zip chamado, mas ainda nï¿½o iterado');
   LArray := LZipped.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Zipped list should have 3 elements');
   Assert.AreEqual('1A', LArray[0], 'First element should be "1A"');
@@ -654,7 +744,7 @@ begin
       Writeln('Joining: ' + IntToStr(Num) + ' with ' + Str);
       Result := Str + '-' + Num.ToString;
     end);
-  Writeln('Join chamado, mas ainda não iterado');
+  Writeln('Join chamado, mas ainda nï¿½o iterado');
   LArray := LJoined.ToArray;
   Assert.AreEqual(3, LArray.Length, 'Joined list should have 3 elements');
   Assert.AreEqual('A1-1', LArray[0], 'First element should be "A1-1"');
