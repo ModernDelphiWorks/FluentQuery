@@ -1871,6 +1871,10 @@ begin
   Assert.AreEqual(3, LArray.Length, 'Range(-2,3) has 3 elements');
   Assert.AreEqual(-2, LArray[0], 'first is start');
   Assert.AreEqual(0, LArray[2], 'last is start+count-1');
+  // Exact upper boundary succeeds: start+count-1 = High(Integer).
+  LArray := TFluentQuery.Range(High(Integer), 1).ToArray;
+  Assert.AreEqual(1, LArray.Length, 'Range(MaxInt,1) yields one element');
+  Assert.AreEqual(High(Integer), LArray[0], 'the single element is MaxInt');
 end;
 
 procedure TListTest.TestFluentQueryRepeat;

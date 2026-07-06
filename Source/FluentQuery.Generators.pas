@@ -18,9 +18,6 @@ unit FluentQuery.Generators;
 interface
 
 uses
-  {$IFDEF QUERYABLE}
-  FluentQuery.Queryable,
-  {$ENDIF}
   SysUtils,
   FluentQuery;
 
