@@ -441,6 +441,22 @@ type
     property OnValueNotify: TCollectionNotifyEvent<V> read GetOnValueNotify write SetOnValueNotify;
   end;
 
+  // Static entry points for the LINQ generators (Enumerable.Range/Repeat/Empty).
+  // These start a pipeline from nothing (no source collection). All deferred.
+  TFluentQuery = class
+  public
+    // ACount consecutive integers from AStart (AStart..AStart+ACount-1).
+    // ACount=0 -> empty. Raises EArgumentOutOfRangeException if ACount < 0 or
+    // AStart+ACount-1 overflows Integer. Note: the 2nd argument is a COUNT, not
+    // an end value (Range(1,5) = 1,2,3,4,5).
+    class function Range(const AStart, ACount: Integer): IFluentEnumerable<Integer>; static;
+    // The same element ACount times. ACount=0 -> empty. Raises if ACount < 0.
+    // (Repeat is a reserved word, hence the & escape.)
+    class function &Repeat<T>(const AElement: T; const ACount: Integer): IFluentEnumerable<T>; static;
+    // An empty sequence of T.
+    class function Empty<T>: IFluentEnumerable<T>; static;
+  end;
+
 implementation
 
 uses
@@ -474,6 +490,7 @@ uses
   FluentQuery.Reverse,
   FluentQuery.SkipLast,
   FluentQuery.TakeLast,
+  FluentQuery.Generators,
   FluentQuery.Order,
 //  Fluent.Chunk,
   FluentQuery.Cast,
@@ -2995,6 +3012,30 @@ end;
 function TFluentGrouping<TKey, T>.GetItems: IFluentEnumerable<T>;
 begin
   Result := FItems;
+end;
+
+{ TFluentQuery }
+
+class function TFluentQuery.Range(const AStart, ACount: Integer): IFluentEnumerable<Integer>;
+begin
+  if ACount < 0 then
+    raise EArgumentOutOfRangeException.Create('Count must be non-negative');
+  // Int64 math so the overflow check itself cannot overflow.
+  if Int64(AStart) + Int64(ACount) - 1 > High(Integer) then
+    raise EArgumentOutOfRangeException.Create('Range end exceeds Integer range');
+  Result := IFluentEnumerable<Integer>.Create(TFluentRangeEnumerable.Create(AStart, ACount));
+end;
+
+class function TFluentQuery.&Repeat<T>(const AElement: T; const ACount: Integer): IFluentEnumerable<T>;
+begin
+  if ACount < 0 then
+    raise EArgumentOutOfRangeException.Create('Count must be non-negative');
+  Result := IFluentEnumerable<T>.Create(TFluentRepeatEnumerable<T>.Create(AElement, ACount));
+end;
+
+class function TFluentQuery.Empty<T>: IFluentEnumerable<T>;
+begin
+  Result := IFluentEnumerable<T>.Create(TFluentEmptyEnumerable<T>.Create);
 end;
 
 end.
