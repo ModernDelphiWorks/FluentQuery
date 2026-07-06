@@ -460,6 +460,9 @@ uses
   FluentQuery.UnionBy,
   FluentQuery.ExcludeBy,
   FluentQuery.IntersectBy,
+  FluentQuery.Reverse,
+  FluentQuery.SkipLast,
+  FluentQuery.TakeLast,
   FluentQuery.Order,
 //  Fluent.Chunk,
   FluentQuery.Cast,
@@ -2420,54 +2423,24 @@ begin
 end;
 
 function IFluentEnumerable<T>.Reverse: IFluentEnumerable<T>;
-var
-  LList: TList<T>;
-  LEnum: IFluentEnumerator<T>;
 begin
-  Result := Default(IFluentEnumerable<T>);
-  LList := TList<T>.Create;
-  try
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-      LList.Insert(0, LEnum.Current);
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred, non-streaming: buffers only on the first MoveNext, not here.
+  Result := IFluentEnumerable<T>.Create(
+    TFluentReverseEnumerable<T>.Create(FEnumerator),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.SkipLast(const ACount: Integer): IFluentEnumerable<T>;
-var
-  LList: TList<T>;
-  LEnum: IFluentEnumerator<T>;
-  LTempList: TList<T>;
-  LIndex: Integer;
 begin
-  Result := Default(IFluentEnumerable<T>);
-  if ACount <= 0 then
-    Exit(Self);
-
-  LTempList := TList<T>.Create;
-  LList := TList<T>.Create;
-  try
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-      LTempList.Add(LEnum.Current);
-
-    LIndex := 0;
-    while LIndex < LTempList.Count - ACount do
-    begin
-      LList.Add(LTempList[LIndex]);
-      Inc(LIndex);
-    end;
-
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    LTempList.Free;
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred, non-streaming: buffers only on the first MoveNext. ACount <= 0
+  // yields the whole source (handled inside the enumerator).
+  Result := IFluentEnumerable<T>.Create(
+    TFluentSkipLastEnumerable<T>.Create(FEnumerator, ACount),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.SkipWhile(
@@ -2483,36 +2456,14 @@ begin
 end;
 
 function IFluentEnumerable<T>.TakeLast(const ACount: Integer): IFluentEnumerable<T>;
-var
-  LList: TList<T>;
-  LEnum: IFluentEnumerator<T>;
-  LTempList: TList<T>;
-  LIndex: Integer;
 begin
-  Result := Default(IFluentEnumerable<T>);
-  if ACount <= 0 then
-    Exit(Default(IFluentEnumerable<T>));
-
-  LTempList := TList<T>.Create;
-  LList := TList<T>.Create;
-  try
-    LEnum := GetEnumerator;
-    while LEnum.MoveNext do
-      LTempList.Add(LEnum.Current);
-
-    LIndex := Math.Max(0, LTempList.Count - ACount);
-    while LIndex < LTempList.Count do
-    begin
-      LList.Add(LTempList[LIndex]);
-      Inc(LIndex);
-    end;
-
-    Result := IFluentEnumerable<T>.Create(TListAdapter<T>.Create(LList, True));
-  finally
-    LTempList.Free;
-    if Result._IsEmpty then
-      LList.Free;
-  end;
+  // Deferred, non-streaming: buffers only on the first MoveNext. ACount <= 0
+  // yields nothing (handled inside the enumerator).
+  Result := IFluentEnumerable<T>.Create(
+    TFluentTakeLastEnumerable<T>.Create(FEnumerator, ACount),
+    FFluentType,
+    FComparer
+  );
 end;
 
 function IFluentEnumerable<T>.TakeWhile(
