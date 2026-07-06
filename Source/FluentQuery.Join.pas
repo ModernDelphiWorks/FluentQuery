@@ -38,10 +38,12 @@ type
     FOuterKeySelector: TFunc<T, TKey>;
     FInnerKeySelector: TFunc<TInner, TKey>;
     FResultSelector: TFunc<T, TInner, TResult>;
+    FComparer: IEqualityComparer<TKey>;
   public
     constructor Create(const ASource: IFluentEnumerableBase<T>; const AInner: IFluentEnumerableBase<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-      const AResultSelector: TFunc<T, TInner, TResult>);
+      const AResultSelector: TFunc<T, TInner, TResult>;
+      const AComparer: IEqualityComparer<TKey> = nil);
     function GetEnumerator: IFluentEnumerator<TResult>; override;
   end;
 
@@ -58,7 +60,8 @@ type
   public
     constructor Create(const ASource: IFluentEnumerator<T>; const AInner: IFluentEnumerator<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-      const AResultSelector: TFunc<T, TInner, TResult>);
+      const AResultSelector: TFunc<T, TInner, TResult>;
+      const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: TResult;
     function MoveNext: Boolean;
@@ -86,26 +89,29 @@ implementation
 
 constructor TFluentJoinEnumerable<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerableBase<T>;
   const AInner: IFluentEnumerableBase<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
-  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, TInner, TResult>);
+  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, TInner, TResult>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FInner := AInner;
   FOuterKeySelector := AOuterKeySelector;
   FInnerKeySelector := AInnerKeySelector;
   FResultSelector := AResultSelector;
+  FComparer := AComparer;
 end;
 
 function TFluentJoinEnumerable<T, TInner, TKey, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
 begin
   Result := TFluentJoinEnumerator<T, TInner, TKey, TResult>.Create(FSource.GetEnumerator, FInner.GetEnumerator,
-    FOuterKeySelector, FInnerKeySelector, FResultSelector);
+    FOuterKeySelector, FInnerKeySelector, FResultSelector, FComparer);
 end;
 
 { TFluentJoinEnumerator<T, TInner, TKey, TResult> }
 
 constructor TFluentJoinEnumerator<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerator<T>;
   const AInner: IFluentEnumerator<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
-  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, TInner, TResult>);
+  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, TInner, TResult>;
+  const AComparer: IEqualityComparer<TKey>);
 var
   LItem: TInner;
   LKey: TKey;
@@ -120,7 +126,8 @@ begin
   // one pass over inner (O(m)); each outer element then finds its matches in
   // O(1) average instead of re-scanning all of inner (was O(n*m)). Items are
   // appended per key in inner-enumeration order, so match order is preserved.
-  FLookup := TDictionary<TKey, TList<TInner>>.Create;
+  // Key equality uses AComparer (nil => TEqualityComparer<TKey>.Default).
+  FLookup := TDictionary<TKey, TList<TInner>>.Create(AComparer);
   while AInner.MoveNext do
   begin
     LItem := AInner.Current;
