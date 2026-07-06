@@ -42,7 +42,7 @@ def remove_second_header(file_path):
         pass
 
 def main():
-    directory = r'd:\Ecossistema-Delphi\FluentQuery\Source'
+    directory = r'.\Source'
     pas_files = glob.glob(os.path.join(directory, '*.pas'))
     
     print(f"Scanning {len(pas_files)} files...")

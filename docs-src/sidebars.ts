@@ -10,61 +10,61 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: 'Projects',
-      items: [{ type: 'link', label: 'FluentQuery', href: '/fluentquery/' }],
+      items: [{ type: 'link', label: 'LQ-Colligo', href: '/lqcolligo/' }],
     },
   ],
-  fluentquerySidebar: [
+  lqcolligoSidebar: [
     {
       type: 'category',
-      label: 'FluentQuery',
-      link: { type: 'doc', id: 'fluentquery/index' },
+      label: 'LQ-Colligo',
+      link: { type: 'doc', id: 'lqcolligo/index' },
       items: [
-        'fluentquery/introduction',
+        'lqcolligo/introduction',
         {
           type: 'category',
           label: 'Getting started',
           items: [
-            'fluentquery/getting-started/installation',
-            'fluentquery/getting-started/quickstart',
+            'lqcolligo/getting-started/installation',
+            'lqcolligo/getting-started/quickstart',
           ],
         },
         {
           type: 'category',
           label: 'Guides',
           items: [
-            'fluentquery/guides/filtering-collections',
-            'fluentquery/guides/projections-select',
-            'fluentquery/guides/ordering-collections',
-            'fluentquery/guides/partitioning-take-skip',
-            'fluentquery/guides/set-operations',
-            'fluentquery/guides/joins-zip',
-            'fluentquery/guides/aggregations',
-            'fluentquery/guides/grouping',
-            'fluentquery/guides/querying-database',
-            'fluentquery/guides/nullable-types',
+            'lqcolligo/guides/filtering-collections',
+            'lqcolligo/guides/projections-select',
+            'lqcolligo/guides/ordering-collections',
+            'lqcolligo/guides/partitioning-take-skip',
+            'lqcolligo/guides/set-operations',
+            'lqcolligo/guides/joins-zip',
+            'lqcolligo/guides/aggregations',
+            'lqcolligo/guides/grouping',
+            'lqcolligo/guides/querying-database',
+            'lqcolligo/guides/nullable-types',
           ],
         },
         {
           type: 'category',
           label: 'Architecture',
           items: [
-            'fluentquery/architecture/overview',
+            'lqcolligo/architecture/overview',
           ],
         },
         {
           type: 'category',
           label: 'Reference',
           items: [
-            'fluentquery/reference/api-enumerable',
-            'fluentquery/reference/api-queryable',
-            'fluentquery/reference/api-collections',
+            'lqcolligo/reference/api-enumerable',
+            'lqcolligo/reference/api-queryable',
+            'lqcolligo/reference/api-collections',
           ],
         },
         {
           type: 'category',
           label: 'Support',
           items: [
-            'fluentquery/troubleshooting/common-errors',
+            'lqcolligo/troubleshooting/common-errors',
           ],
         },
       ],
