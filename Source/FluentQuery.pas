@@ -155,10 +155,18 @@ type
       const AComparer: IComparer<TKey>): IFluentEnumerable<T>; overload;
     function OrderByDesc(const AComparer: TFunc<T, T, Integer>): IFluentEnumerable<T>;
     function GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>): IGroupByEnumerable<TKey, T>; overload;
+    function GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, T>; overload;
     function GroupBy<TKey, TElement>(const AKeySelector: TFunc<T, TKey>;
       const AElementSelector: TFunc<T, TElement>): IGroupByEnumerable<TKey, TElement>; overload;
+    function GroupBy<TKey, TElement>(const AKeySelector: TFunc<T, TKey>;
+      const AElementSelector: TFunc<T, TElement>;
+      const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, TElement>; overload;
     function GroupBy<TKey, TResult>(const AKeySelector: TFunc<T, TKey>;
       const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<T>, TResult>): IFluentEnumerable<TResult>; overload;
+    function GroupBy<TKey, TResult>(const AKeySelector: TFunc<T, TKey>;
+      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<T>, TResult>;
+      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>; overload;
     function Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
       const AResultSelector: TFunc<T, TInner, TResult>): IFluentEnumerable<TResult>;
@@ -1517,6 +1525,47 @@ begin
   Result := IFluentEnumerable<TResult>.Create(
     TFluentGroupByResultEnumerable<TKey, T, TResult>.Create(
       FEnumerator, AKeySelector, AResultSelector),
+    FFluentType,
+    TEqualityComparer<TResult>.Default
+  );
+end;
+
+function IFluentEnumerable<T>.GroupBy<TKey>(const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, T>;
+begin
+  if not Assigned(AKeySelector) then
+    raise EArgumentNilException.Create('Key selector cannot be nil');
+  Result := TFluentGroupByEnumerable<TKey, T>.Create(FEnumerator, AKeySelector, AComparer);
+end;
+
+function IFluentEnumerable<T>.GroupBy<TKey, TElement>(
+  const AKeySelector: TFunc<T, TKey>;
+  const AElementSelector: TFunc<T, TElement>;
+  const AComparer: IEqualityComparer<TKey>): IGroupByEnumerable<TKey, TElement>;
+begin
+  if not Assigned(AKeySelector) then
+    raise EArgumentNilException.Create('Key selector cannot be nil');
+  if not Assigned(AElementSelector) then
+    raise EArgumentNilException.Create('Element selector cannot be nil');
+  Result := TFluentGroupByEnumerable<TKey, TElement, T>.Create(
+    FEnumerator,
+    AKeySelector,
+    AElementSelector,
+    AComparer);
+end;
+
+function IFluentEnumerable<T>.GroupBy<TKey, TResult>(
+  const AKeySelector: TFunc<T, TKey>;
+  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<T>, TResult>;
+  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>;
+begin
+  if not Assigned(AKeySelector) then
+    raise EArgumentNilException.Create('Key selector cannot be nil');
+  if not Assigned(AResultSelector) then
+    raise EArgumentNilException.Create('Result selector cannot be nil');
+  Result := IFluentEnumerable<TResult>.Create(
+    TFluentGroupByResultEnumerable<TKey, T, TResult>.Create(
+      FEnumerator, AKeySelector, AResultSelector, AComparer),
     FFluentType,
     TEqualityComparer<TResult>.Default
   );

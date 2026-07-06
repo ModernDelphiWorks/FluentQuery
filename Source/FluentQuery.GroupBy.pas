@@ -36,9 +36,11 @@ type
   private
     FSource: IFluentEnumerableBase<T>;
     FKeySelector: TFunc<T, TKey>;
+    FComparer: IEqualityComparer<TKey>;
   public
     constructor Create(const ASource: IFluentEnumerableBase<T>;
-      const AKeySelector: TFunc<T, TKey>);
+      const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey> = nil);
     function GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>; override;
     function AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
   end;
@@ -48,10 +50,12 @@ type
     FSource: IFluentEnumerableBase<TSource>;
     FKeySelector: TFunc<TSource, TKey>;
     FElementSelector: TFunc<TSource, TElement>;
+    FComparer: IEqualityComparer<TKey>;
   public
     constructor Create(const ASource: IFluentEnumerableBase<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
-      const AElementSelector: TFunc<TSource, TElement>);
+      const AElementSelector: TFunc<TSource, TElement>;
+      const AComparer: IEqualityComparer<TKey> = nil);
     function GetEnumerator: IFluentEnumerator<IGrouping<TKey, TElement>>; override;
     function AsEnumerable: IFluentEnumerable<IGrouping<TKey, TElement>>;
   end;
@@ -61,10 +65,12 @@ type
     FSource: IFluentEnumerableBase<TSource>;
     FKeySelector: TFunc<TSource, TKey>;
     FResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+    FComparer: IEqualityComparer<TKey>;
   public
     constructor Create(const ASource: IFluentEnumerableBase<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
-      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>);
+      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+      const AComparer: IEqualityComparer<TKey> = nil);
     function GetEnumerator: IFluentEnumerator<TResult>; override;
   end;
 
@@ -73,11 +79,13 @@ type
     FSourceEnum: IFluentEnumerator<T>;
     FKeySelector: TFunc<T, TKey>;
     FGroups: TDictionary<TKey, TList<T>>;
-    FEnumerator: TEnumerator<TPair<TKey, TList<T>>>;
+    FKeys: TList<TKey>;
+    FIndex: Integer;
     FCurrent: IGrouping<TKey, T>;
   public
     constructor Create(const ASource: IFluentEnumerator<T>;
-      const AKeySelector: TFunc<T, TKey>);
+      const AKeySelector: TFunc<T, TKey>;
+      const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: IGrouping<TKey, T>;
     function MoveNext: Boolean;
@@ -91,12 +99,14 @@ type
     FKeySelector: TFunc<TSource, TKey>;
     FElementSelector: TFunc<TSource, TElement>;
     FGroups: TDictionary<TKey, TList<TElement>>;
-    FEnumerator: TEnumerator<TPair<TKey, TList<TElement>>>;
+    FKeys: TList<TKey>;
+    FIndex: Integer;
     FCurrent: IGrouping<TKey, TElement>;
   public
     constructor Create(const ASource: IFluentEnumerator<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
-      const AElementSelector: TFunc<TSource, TElement>);
+      const AElementSelector: TFunc<TSource, TElement>;
+      const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: IGrouping<TKey, TElement>;
     function MoveNext: Boolean;
@@ -110,12 +120,14 @@ type
     FKeySelector: TFunc<TSource, TKey>;
     FResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
     FGroups: TDictionary<TKey, TList<TSource>>;
-    FEnumerator: TEnumerator<TPair<TKey, TList<TSource>>>;
+    FKeys: TList<TKey>;
+    FIndex: Integer;
     FCurrent: TResult;
   public
     constructor Create(const ASource: IFluentEnumerator<TSource>;
       const AKeySelector: TFunc<TSource, TKey>;
-      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>);
+      const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+      const AComparer: IEqualityComparer<TKey>);
     destructor Destroy; override;
     function GetCurrent: TResult;
     function MoveNext: Boolean;
@@ -167,15 +179,17 @@ uses
 
 constructor TFluentGroupByEnumerable<TKey, T>.Create(
   const ASource: IFluentEnumerableBase<T>;
-  const AKeySelector: TFunc<T, TKey>);
+  const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FKeySelector := AKeySelector;
+  FComparer := AComparer;
 end;
 
 function TFluentGroupByEnumerable<TKey, T>.GetEnumerator: IFluentEnumerator<IGrouping<TKey, T>>;
 begin
-  Result := TFluentGroupByEnumerator<TKey, T>.Create(FSource.GetEnumerator, FKeySelector);
+  Result := TFluentGroupByEnumerator<TKey, T>.Create(FSource.GetEnumerator, FKeySelector, FComparer);
 end;
 
 function TFluentGroupByEnumerable<TKey, T>.AsEnumerable: IFluentEnumerable<IGrouping<TKey, T>>;
@@ -188,17 +202,19 @@ end;
 constructor TFluentGroupByEnumerable<TKey, TElement, TSource>.Create(
   const ASource: IFluentEnumerableBase<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
-  const AElementSelector: TFunc<TSource, TElement>);
+  const AElementSelector: TFunc<TSource, TElement>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FKeySelector := AKeySelector;
   FElementSelector := AElementSelector;
+  FComparer := AComparer;
 end;
 
 function TFluentGroupByEnumerable<TKey, TElement, TSource>.GetEnumerator: IFluentEnumerator<IGrouping<TKey, TElement>>;
 begin
   Result := TFluentGroupByEnumerator<TKey, TElement, TSource>.Create(
-    FSource.GetEnumerator, FKeySelector, FElementSelector);
+    FSource.GetEnumerator, FKeySelector, FElementSelector, FComparer);
 end;
 
 function TFluentGroupByEnumerable<TKey, TElement, TSource>.AsEnumerable: IFluentEnumerable<IGrouping<TKey, TElement>>;
@@ -211,52 +227,60 @@ end;
 constructor TFluentGroupByResultEnumerable<TKey, TSource, TResult>.Create(
   const ASource: IFluentEnumerableBase<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
-  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>);
+  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+  const AComparer: IEqualityComparer<TKey>);
 begin
   FSource := ASource;
   FKeySelector := AKeySelector;
   FResultSelector := AResultSelector;
+  FComparer := AComparer;
 end;
 
 function TFluentGroupByResultEnumerable<TKey, TSource, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
 begin
   Result := TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Create(
-    FSource.GetEnumerator, FKeySelector, FResultSelector);
+    FSource.GetEnumerator, FKeySelector, FResultSelector, FComparer);
 end;
 
 { TFluentGroupByEnumerator<TKey, T> }
 
 constructor TFluentGroupByEnumerator<TKey, T>.Create(
   const ASource: IFluentEnumerator<T>;
-  const AKeySelector: TFunc<T, TKey>);
+  const AKeySelector: TFunc<T, TKey>;
+  const AComparer: IEqualityComparer<TKey>);
 var
   LItem: T;
+  LKey: TKey;
+  LList: TList<T>;
 begin
   FSourceEnum := ASource;
   FKeySelector := AKeySelector;
-  FGroups := TDictionary<TKey, TList<T>>.Create;
+  FGroups := TDictionary<TKey, TList<T>>.Create(AComparer);
+  FKeys := TList<TKey>.Create;
+  FIndex := -1;
   while FSourceEnum.MoveNext do
   begin
     LItem := FSourceEnum.Current;
-    if FGroups.ContainsKey(FKeySelector(LItem)) then
-      FGroups[FKeySelector(LItem)].Add(LItem)
-    else
+    LKey := FKeySelector(LItem);
+    if not FGroups.TryGetValue(LKey, LList) then
     begin
-      FGroups.Add(FKeySelector(LItem), TList<T>.Create);
-      FGroups[FKeySelector(LItem)].Add(LItem);
+      LList := TList<T>.Create;
+      FGroups.Add(LKey, LList);
+      FKeys.Add(LKey);
     end;
+    LList.Add(LItem);
   end;
-  FEnumerator := FGroups.GetEnumerator;
 end;
 
 destructor TFluentGroupByEnumerator<TKey, T>.Destroy;
 var
-  LPair: TPair<TKey, TList<T>>;
+  LList: TList<T>;
 begin
-  for LPair in FGroups do
-    LPair.Value.Free;
+  if Assigned(FGroups) then
+    for LList in FGroups.Values do
+      LList.Free;
   FGroups.Free;
-  FEnumerator.Free;
+  FKeys.Free;
   inherited;
 end;
 
@@ -267,30 +291,32 @@ end;
 
 function TFluentGroupByEnumerator<TKey, T>.MoveNext: Boolean;
 var
-  LPair: TPair<TKey, TList<T>>;
+  LKey: TKey;
 begin
-  if FEnumerator.MoveNext then
+  Inc(FIndex);
+  Result := FIndex < FKeys.Count;
+  if Result then
   begin
-    LPair := FEnumerator.Current;
+    LKey := FKeys[FIndex];
+    // The grouping owns an independent COPY of its elements, so it stays
+    // valid if retained past this enumerator (e.g. GroupBy(...).ToList).
+    // The master list in FGroups is kept for the enumerator's lifetime,
+    // which keeps Reset re-enumerable and avoids any double-free.
     FCurrent := TFluentGrouping<TKey, T>.Create(
-      LPair.Key,
+      LKey,
       IFluentEnumerable<T>.Create(
-        TListAdapter<T>.Create(LPair.Value, True),
+        TListAdapter<T>.Create(TList<T>.Create(FGroups[LKey]), True),
         ftNone,
         TEqualityComparer<T>.Default
       )
     );
-    FGroups.Remove(LPair.Key);
-    Result := True;
-  end
-  else
-    Result := False;
+  end;
 end;
 
 procedure TFluentGroupByEnumerator<TKey, T>.Reset;
 begin
-  FEnumerator.Free;
-  FEnumerator := FGroups.GetEnumerator;
+  FIndex := -1;
+  FCurrent := nil;
 end;
 
 { TFluentGroupByEnumerator<TKey, TElement, TSource> }
@@ -298,32 +324,42 @@ end;
 constructor TFluentGroupByEnumerator<TKey, TElement, TSource>.Create(
   const ASource: IFluentEnumerator<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
-  const AElementSelector: TFunc<TSource, TElement>);
+  const AElementSelector: TFunc<TSource, TElement>;
+  const AComparer: IEqualityComparer<TKey>);
 var
   LItem: TSource;
+  LKey: TKey;
+  LList: TList<TElement>;
 begin
   FSourceEnum := ASource;
   FKeySelector := AKeySelector;
   FElementSelector := AElementSelector;
-  FGroups := TDictionary<TKey, TList<TElement>>.Create;
+  FGroups := TDictionary<TKey, TList<TElement>>.Create(AComparer);
+  FKeys := TList<TKey>.Create;
+  FIndex := -1;
   while FSourceEnum.MoveNext do
   begin
     LItem := FSourceEnum.Current;
-    if not FGroups.ContainsKey(FKeySelector(LItem)) then
-      FGroups.Add(FKeySelector(LItem), TList<TElement>.Create);
-    FGroups[FKeySelector(LItem)].Add(FElementSelector(LItem));
+    LKey := FKeySelector(LItem);
+    if not FGroups.TryGetValue(LKey, LList) then
+    begin
+      LList := TList<TElement>.Create;
+      FGroups.Add(LKey, LList);
+      FKeys.Add(LKey);
+    end;
+    LList.Add(FElementSelector(LItem));
   end;
-  FEnumerator := FGroups.GetEnumerator;
 end;
 
 destructor TFluentGroupByEnumerator<TKey, TElement, TSource>.Destroy;
 var
-  LPair: TPair<TKey, TList<TElement>>;
+  LList: TList<TElement>;
 begin
-  for LPair in FGroups do
-    LPair.Value.Free;
+  if Assigned(FGroups) then
+    for LList in FGroups.Values do
+      LList.Free;
   FGroups.Free;
-  FEnumerator.Free;
+  FKeys.Free;
   inherited;
 end;
 
@@ -334,27 +370,27 @@ end;
 
 function TFluentGroupByEnumerator<TKey, TElement, TSource>.MoveNext: Boolean;
 var
-  LPair: TPair<TKey, TList<TElement>>;
+  LKey: TKey;
 begin
-  if FEnumerator.MoveNext then
+  Inc(FIndex);
+  Result := FIndex < FKeys.Count;
+  if Result then
   begin
-    LPair := FEnumerator.Current;
+    LKey := FKeys[FIndex];
+    // Grouping owns an independent copy (see single-key MoveNext note).
     FCurrent := TFluentGrouping<TKey, TElement>.Create(
-      LPair.Key,
+      LKey,
       IFluentEnumerable<TElement>.Create(
-        TListAdapter<TElement>.Create(LPair.Value, False),
+        TListAdapter<TElement>.Create(TList<TElement>.Create(FGroups[LKey]), True),
         ftNone,
         TEqualityComparer<TElement>.Default));
-    Result := True;
-  end
-  else
-    Result := False;
+  end;
 end;
 
 procedure TFluentGroupByEnumerator<TKey, TElement, TSource>.Reset;
 begin
-  FEnumerator.Free;
-  FEnumerator := FGroups.GetEnumerator;
+  FIndex := -1;
+  FCurrent := nil;
 end;
 
 { TFluentGroupByResultEnumerator<TKey, TSource, TResult> }
@@ -362,32 +398,42 @@ end;
 constructor TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Create(
   const ASource: IFluentEnumerator<TSource>;
   const AKeySelector: TFunc<TSource, TKey>;
-  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>);
+  const AResultSelector: TFunc<TKey, IFluentEnumerableAdapter<TSource>, TResult>;
+  const AComparer: IEqualityComparer<TKey>);
 var
   LItem: TSource;
+  LKey: TKey;
+  LList: TList<TSource>;
 begin
   FSourceEnum := ASource;
   FKeySelector := AKeySelector;
   FResultSelector := AResultSelector;
-  FGroups := TDictionary<TKey, TList<TSource>>.Create;
+  FGroups := TDictionary<TKey, TList<TSource>>.Create(AComparer);
+  FKeys := TList<TKey>.Create;
+  FIndex := -1;
   while FSourceEnum.MoveNext do
   begin
     LItem := FSourceEnum.Current;
-    if not FGroups.ContainsKey(FKeySelector(LItem)) then
-      FGroups.Add(FKeySelector(LItem), TList<TSource>.Create);
-    FGroups[FKeySelector(LItem)].Add(LItem);
+    LKey := FKeySelector(LItem);
+    if not FGroups.TryGetValue(LKey, LList) then
+    begin
+      LList := TList<TSource>.Create;
+      FGroups.Add(LKey, LList);
+      FKeys.Add(LKey);
+    end;
+    LList.Add(LItem);
   end;
-  FEnumerator := FGroups.GetEnumerator;
 end;
 
 destructor TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Destroy;
 var
-  LPair: TPair<TKey, TList<TSource>>;
+  LList: TList<TSource>;
 begin
-  for LPair in FGroups do
-    LPair.Value.Free;
+  if Assigned(FGroups) then
+    for LList in FGroups.Values do
+      LList.Free;
   FGroups.Free;
-  FEnumerator.Free;
+  FKeys.Free;
   inherited;
 end;
 
@@ -398,28 +444,28 @@ end;
 
 function TFluentGroupByResultEnumerator<TKey, TSource, TResult>.MoveNext: Boolean;
 var
-  LPair: TPair<TKey, TList<TSource>>;
+  LKey: TKey;
 begin
-  if FEnumerator.MoveNext then
+  Inc(FIndex);
+  Result := FIndex < FKeys.Count;
+  if Result then
   begin
-    LPair := FEnumerator.Current;
+    LKey := FKeys[FIndex];
+    // Grouping adapter owns an independent copy (see single-key MoveNext note).
     FCurrent := FResultSelector(
-      LPair.Key,
+      LKey,
       TEnumerableAdapter<TSource>.Create(
         IFluentEnumerable<TSource>.Create(
-          TListAdapter<TSource>.Create(LPair.Value, False),
+          TListAdapter<TSource>.Create(TList<TSource>.Create(FGroups[LKey]), True),
           ftNone,
           TEqualityComparer<TSource>.Default), nil));
-    Result := True;
-  end
-  else
-    Result := False;
+  end;
 end;
 
 procedure TFluentGroupByResultEnumerator<TKey, TSource, TResult>.Reset;
 begin
-  FEnumerator.Free;
-  FEnumerator := FGroups.GetEnumerator;
+  FIndex := -1;
+  FCurrent := Default(TResult);
 end;
 
 {$IFDEF QUERYABLE}
