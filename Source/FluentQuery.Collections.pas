@@ -797,9 +797,15 @@ begin
 end;
 
 function TFluentList<T>.GetList: IFluentArray<T>;
+var
+  LArray: TArray<T>;
 begin
-  Result := TFluentArray<T>.Create(FList.List);
-  FList.Clear;
+  // Non-destructive snapshot of exactly Count elements. Previously this returned
+  // the raw internal array (FList.List — including spare capacity) and then
+  // Clear'd the list, so reading GetList emptied the list and could expose
+  // uninitialised capacity slots.
+  LArray := Copy(FList.List, 0, FList.Count);
+  Result := TFluentArray<T>.Create(LArray, True);
 end;
 
 function TFluentList<T>.GetOnNotify: TCollectionNotifyEvent<T>;
