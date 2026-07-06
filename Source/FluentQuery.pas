@@ -195,11 +195,11 @@ type
     function Average(const ASelector: TFunc<T, Int32>): Double; overload;
     function Average(const ASelector: TFunc<T, Int64>): Double; overload;
     function Average(const ASelector: TFunc<T, Single>): Double; overload;
-    function Average(const ASelector: TFunc<T, NullableInt32>): Double; overload;
-    function Average(const ASelector: TFunc<T, NullableInt64>): Double; overload;
-    function Average(const ASelector: TFunc<T, NullableSingle>): Double; overload;
-    function Average(const ASelector: TFunc<T, NullableDouble>): Double; overload;
-    function Average(const ASelector: TFunc<T, NullableCurrency>): Currency; overload;
+    function Average(const ASelector: TFunc<T, NullableInt32>): NullableDouble; overload;
+    function Average(const ASelector: TFunc<T, NullableInt64>): NullableDouble; overload;
+    function Average(const ASelector: TFunc<T, NullableSingle>): NullableSingle; overload;
+    function Average(const ASelector: TFunc<T, NullableDouble>): NullableDouble; overload;
+    function Average(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency; overload;
 // Esse cara por motivo não descoberto ainda, só suposição, trava o compilador.
 //    function Chunk(const ASize: Integer): IFluentChunkResult<T>;
     function CountBy<TKey>(const AKeySelector: TFunc<T, TKey>;
@@ -834,8 +834,7 @@ begin
       Inc(LCount);
     end;
   end;
-  if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
+  // LINQ: nullable Sum of an empty / all-null sequence is 0 (never null, never raises).
   Result := NullableInt32.Create(Int32(LSum));
 end;
 
@@ -863,8 +862,7 @@ begin
       Inc(LCount);
     end;
   end;
-  if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
+  // LINQ: nullable Sum of an empty / all-null sequence is 0 (never null, never raises).
   Result := NullableInt64.Create(LSum);
 end;
 
@@ -893,8 +891,8 @@ begin
         Result := NullableSingle.Create(Result.Value + LValue.Value);
     end;
   end;
-  if not LHasValue then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
+  // LINQ: nullable Sum of an empty / all-null sequence is 0 (Result stays 0 here),
+  // never null and never raises.
 end;
 
 function IFluentEnumerable<T>.Sum(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
@@ -918,8 +916,7 @@ begin
       Inc(LCount);
     end;
   end;
-  if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
+  // LINQ: nullable Sum of an empty / all-null sequence is 0 (never null, never raises).
   Result := NullableDouble.Create(LSum);
 end;
 
@@ -1007,7 +1004,7 @@ begin
   Result := LSum / LCount;
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt32>): Double;
+function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt32>): NullableDouble;
 var
   LEnum: IFluentEnumerator<T>;
   LSum: Int64;
@@ -1028,12 +1025,14 @@ begin
       Inc(LCount);
     end;
   end;
+  // LINQ: nullable Average of an empty / all-null sequence is null (never raises).
   if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
-  Result := LSum / LCount;
+    Result := NullableDouble.CreateEmpty
+  else
+    Result := NullableDouble.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt64>): Double;
+function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableInt64>): NullableDouble;
 var
   LEnum: IFluentEnumerator<T>;
   LSum: Int64;
@@ -1054,12 +1053,14 @@ begin
       Inc(LCount);
     end;
   end;
+  // LINQ: nullable Average of an empty / all-null sequence is null (never raises).
   if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
-  Result := LSum / LCount;
+    Result := NullableDouble.CreateEmpty
+  else
+    Result := NullableDouble.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableSingle>): Double;
+function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableSingle>): NullableSingle;
 var
   LEnum: IFluentEnumerator<T>;
   LSum: Double;
@@ -1080,12 +1081,14 @@ begin
       Inc(LCount);
     end;
   end;
+  // LINQ: nullable Average of an empty / all-null sequence is null (never raises).
   if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
-  Result := LSum / LCount;
+    Result := NullableSingle.CreateEmpty
+  else
+    Result := NullableSingle.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableDouble>): Double;
+function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableDouble>): NullableDouble;
 var
   LEnum: IFluentEnumerator<T>;
   LSum: Double;
@@ -1106,12 +1109,14 @@ begin
       Inc(LCount);
     end;
   end;
+  // LINQ: nullable Average of an empty / all-null sequence is null (never raises).
   if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
-  Result := LSum / LCount;
+    Result := NullableDouble.CreateEmpty
+  else
+    Result := NullableDouble.Create(LSum / LCount);
 end;
 
-function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableCurrency>): Currency;
+function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency;
 var
   LEnum: IFluentEnumerator<T>;
   LSum: Currency;
@@ -1132,9 +1137,11 @@ begin
       Inc(LCount);
     end;
   end;
+  // LINQ: nullable Average of an empty / all-null sequence is null (never raises).
   if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
-  Result := LSum / LCount;
+    Result := NullableCurrency.CreateEmpty
+  else
+    Result := NullableCurrency.Create(LSum / LCount);
 end;
 
 function IFluentEnumerable<T>.Average(const ASelector: TFunc<T, Double>): Double;
@@ -3065,8 +3072,7 @@ begin
       Inc(LCount);
     end;
   end;
-  if LCount = 0 then
-    raise EInvalidOperation.Create('Empty sequence or no valid values.');
+  // LINQ: nullable Sum of an empty / all-null sequence is 0 (never null, never raises).
   Result := NullableCurrency.Create(LSum);
 end;
 

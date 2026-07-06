@@ -10,6 +10,7 @@ uses
   Generics.Collections,
   Generics.Defaults,
   FluentQuery,
+  FluentQuery.Core,
   FluentQuery.Collections;
 
 type
@@ -142,6 +143,16 @@ type
     procedure TestListSkipWhile;
     [Test]
     procedure TestListAverage;
+    [Test]
+    procedure TestListSumNullableAllNullIsZero;
+    [Test]
+    procedure TestListSumNullableIgnoresNulls;
+    [Test]
+    procedure TestListAverageNullableAllNullIsNull;
+    [Test]
+    procedure TestListAverageNullableIgnoresNulls;
+    [Test]
+    procedure TestListAverageEmptyRaises;
     [Test]
     procedure TestListExclude;
     [Test]
@@ -1062,6 +1073,90 @@ begin
       Result := Value;
     end);
   Assert.AreEqual(Double(3.0), LAverage, 'Average should be 3.0');
+end;
+
+procedure TListTest.TestListSumNullableAllNullIsZero;
+var
+  LResult: NullableInt32;
+begin
+  // LINQ: nullable Sum of an all-null sequence is 0, never null, never raises.
+  FList.AddRange([1, 2, 3]);
+  LResult := FList.AsEnumerable.Sum(
+    function(Value: Integer): NullableInt32
+    begin
+      Result := NullableInt32.CreateEmpty;
+    end);
+  Assert.IsTrue(LResult.HasValue, 'nullable Sum must return a value (0), not null');
+  Assert.AreEqual(0, LResult.Value, 'all-null nullable Sum must be 0');
+end;
+
+procedure TListTest.TestListSumNullableIgnoresNulls;
+var
+  LResult: NullableInt32;
+begin
+  // Nulls are skipped; the rest are summed.
+  FList.AddRange([1, 2, 3, 4]);
+  LResult := FList.AsEnumerable.Sum(
+    function(Value: Integer): NullableInt32
+    begin
+      if Odd(Value) then
+        Result := NullableInt32.Create(Value)
+      else
+        Result := NullableInt32.CreateEmpty;
+    end);
+  Assert.IsTrue(LResult.HasValue, 'nullable Sum should have a value');
+  Assert.AreEqual(4, LResult.Value, 'sum of 1+3 with even values null');
+end;
+
+procedure TListTest.TestListAverageNullableAllNullIsNull;
+var
+  LResult: NullableDouble;
+begin
+  // LINQ: nullable Average of an all-null sequence is null (not 0, no raise).
+  FList.AddRange([1, 2, 3]);
+  LResult := FList.AsEnumerable.Average(
+    function(Value: Integer): NullableInt32
+    begin
+      Result := NullableInt32.CreateEmpty;
+    end);
+  Assert.IsFalse(LResult.HasValue, 'all-null nullable Average must be null');
+end;
+
+procedure TListTest.TestListAverageNullableIgnoresNulls;
+var
+  LResult: NullableDouble;
+begin
+  // Average over the non-null values only: (2+4+6)/3 = 4.
+  FList.AddRange([2, 4, 6, 7]);
+  LResult := FList.AsEnumerable.Average(
+    function(Value: Integer): NullableInt32
+    begin
+      if Value mod 2 = 0 then
+        Result := NullableInt32.Create(Value)
+      else
+        Result := NullableInt32.CreateEmpty;
+    end);
+  Assert.IsTrue(LResult.HasValue, 'nullable Average should have a value');
+  Assert.AreEqual(Double(4.0), LResult.Value, 'average of the non-null values');
+end;
+
+procedure TListTest.TestListAverageEmptyRaises;
+var
+  LRaised: Boolean;
+begin
+  // Non-nullable Average of an empty sequence must raise (contrast: nullable = null).
+  LRaised := False;
+  try
+    FList.AsEnumerable.Average(
+      function(Value: Integer): Double
+      begin
+        Result := Value;
+      end);
+  except
+    on E: EInvalidOperation do
+      LRaised := True;
+  end;
+  Assert.IsTrue(LRaised, 'non-nullable Average of empty must raise EInvalidOperation');
 end;
 
 procedure TListTest.TestListExclude;

@@ -67,7 +67,10 @@ end;
 
 class function FluentNullable<T>.CreateEmpty: FluentNullable<T>;
 begin
-  Result := FluentNullable<T>.Create(Default(T));
+  // A real null: no value. (Previously delegated to Create(Default(T)), which
+  // set HasValue := True and thus was NOT empty.)
+  Result.FValue := Default(T);
+  Result.FHasValue := False;
 end;
 
 function FluentNullable<T>.GetValue: T;
