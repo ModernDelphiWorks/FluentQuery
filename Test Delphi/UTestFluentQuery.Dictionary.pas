@@ -8,9 +8,9 @@ uses
   SysUtils,
   Generics.Collections,
   Generics.Defaults,
-  FluentQuery,
-  FluentQuery.Adapters,
-  FluentQuery.Collections;
+  LQColligo,
+  LQColligo.Adapters,
+  LQColligo.Collections;
 
 type
   TDictionaryHelperTest = class

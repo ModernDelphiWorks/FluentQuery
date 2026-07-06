@@ -9,9 +9,9 @@ uses
   DUnitX.TestFramework,
   Generics.Collections,
   Generics.Defaults,
-  FluentQuery,
-  FluentQuery.Core,
-  FluentQuery.Collections;
+  LQColligo,
+  LQColligo.Core,
+  LQColligo.Collections;
 
 type
   TProduct = class

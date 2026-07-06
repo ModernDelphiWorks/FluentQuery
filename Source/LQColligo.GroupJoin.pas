@@ -1,0 +1,141 @@
+﻿{
+  ------------------------------------------------------------------------------
+  LQColligo
+  Lazy Data Manipulation and LINQ-like collection querying library for Delphi and Lazarus.
+
+  SPDX-License-Identifier: MIT
+  Copyright (c) 2025-2026 Isaque Pinheiro
+
+  Licensed under the MIT License.
+  See the LICENSE file in the project root for full license information.
+  ------------------------------------------------------------------------------
+}
+
+{$include ./LQColligo.inc}
+
+unit LQColligo.GroupJoin;
+
+interface
+
+uses
+  {$IFDEF QUERYABLE}
+  LQColligo.Queryable,
+  {$ENDIF}
+  SysUtils,
+  Generics.Collections,
+  Generics.Defaults,
+  LQColligo,
+  LQColligo.Adapters;
+
+type
+  TFluentGroupJoinEnumerable<T, TInner, TKey, TResult> = class(TFluentEnumerableBase<TResult>)
+  private
+    FSource: IFluentEnumerableBase<T>;
+    FInner: IFluentEnumerableBase<TInner>;
+    FOuterKeySelector: TFunc<T, TKey>;
+    FInnerKeySelector: TFunc<TInner, TKey>;
+    FResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>;
+  public
+    constructor Create(const ASource: IFluentEnumerableBase<T>; const AInner: IFluentEnumerableBase<TInner>;
+      const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
+      const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
+    function GetEnumerator: IFluentEnumerator<TResult>; override;
+  end;
+
+  TFluentGroupJoinEnumerator<T, TInner, TKey, TResult> = class(TInterfacedObject, IFluentEnumerator<TResult>)
+  private
+    FSource: IFluentEnumerator<T>;
+    FInner: TList<TInner>;
+    FOuterKeySelector: TFunc<T, TKey>;
+    FInnerKeySelector: TFunc<TInner, TKey>;
+    FResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>;
+    FCurrent: TResult;
+  public
+    constructor Create(const ASource: IFluentEnumerator<T>; const AInner: IFluentEnumerator<TInner>;
+      const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
+      const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
+    destructor Destroy; override;
+    function GetCurrent: TResult;
+    function MoveNext: Boolean;
+    procedure Reset;
+    property Current: TResult read GetCurrent;
+  end;
+
+implementation
+
+{ TFluentGroupJoinEnumerable<T, TInner, TKey, TResult> }
+
+constructor TFluentGroupJoinEnumerable<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerableBase<T>;
+  const AInner: IFluentEnumerableBase<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
+  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
+begin
+  FSource := ASource;
+  FInner := AInner;
+  FOuterKeySelector := AOuterKeySelector;
+  FInnerKeySelector := AInnerKeySelector;
+  FResultSelector := AResultSelector;
+end;
+
+function TFluentGroupJoinEnumerable<T, TInner, TKey, TResult>.GetEnumerator: IFluentEnumerator<TResult>;
+begin
+  Result := TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Create(FSource.GetEnumerator, FInner.GetEnumerator,
+    FOuterKeySelector, FInnerKeySelector, FResultSelector);
+end;
+
+{ TFluentGroupJoinEnumerator<T, TInner, TKey, TResult> }
+
+constructor TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Create(const ASource: IFluentEnumerator<T>;
+  const AInner: IFluentEnumerator<TInner>; const AOuterKeySelector: TFunc<T, TKey>;
+  const AInnerKeySelector: TFunc<TInner, TKey>; const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>);
+begin
+  FSource := ASource;
+  FInner := TList<TInner>.Create;
+  FOuterKeySelector := AOuterKeySelector;
+  FInnerKeySelector := AInnerKeySelector;
+  FResultSelector := AResultSelector;
+  while AInner.MoveNext do
+    FInner.Add(AInner.Current);
+end;
+
+destructor TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Destroy;
+begin
+  FInner.Free;
+  inherited;
+end;
+
+function TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.GetCurrent: TResult;
+begin
+  Result := FCurrent;
+end;
+
+function TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.MoveNext: Boolean;
+var
+  LOuterKey: TKey;
+  LMatches: IFluentEnumerable<TInner>;
+  LWrapper: IFluentEnumerableAdapter<TInner>;
+begin
+  if FSource.MoveNext then
+  begin
+    LOuterKey := FOuterKeySelector(FSource.Current);
+    LMatches := IFluentEnumerable<TInner>.Create(TListAdapter<TInner>.Create(FInner)).Where(
+      function(Item: TInner): Boolean
+      begin
+        Result := TComparer<TKey>.Default.Compare(LOuterKey, FInnerKeySelector(Item)) = 0;
+      end);
+    LWrapper := TEnumerableAdapter<TInner>.Create(LMatches, nil);
+    FCurrent := FResultSelector(FSource.Current, LWrapper);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+procedure TFluentGroupJoinEnumerator<T, TInner, TKey, TResult>.Reset;
+begin
+  FSource.Reset;
+end;
+
+end.
+
+
+
