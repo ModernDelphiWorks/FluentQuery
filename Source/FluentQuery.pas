@@ -221,8 +221,12 @@ type
     function Average(const ASelector: TFunc<T, NullableSingle>): NullableSingle; overload;
     function Average(const ASelector: TFunc<T, NullableDouble>): NullableDouble; overload;
     function Average(const ASelector: TFunc<T, NullableCurrency>): NullableCurrency; overload;
-// Esse cara por motivo não descoberto ainda, só suposição, trava o compilador.
-//    function Chunk(const ASize: Integer): IFluentChunkResult<T>;
+    // Chunk splits the sequence into arrays of at most ASize elements (the last
+    // may be shorter). Deferred/streaming. Returns the base interface (not the
+    // IFluentEnumerable<TArray<T>> record) to avoid E2604 "recursive use of
+    // generic type" — a record cannot return an instantiation of itself over a
+    // type derived from its own T. Call .AsEnumerable on the result to chain.
+    function Chunk(const ASize: Integer): IFluentEnumerableBase<TArray<T>>;
     function CountBy<TKey>(const AKeySelector: TFunc<T, TKey>;
       const AComparer: IEqualityComparer<TKey> = nil): TDictionary<TKey, Integer>;
     function Max: T; overload;
@@ -492,7 +496,7 @@ uses
   FluentQuery.TakeLast,
   FluentQuery.Generators,
   FluentQuery.Order,
-//  Fluent.Chunk,
+  FluentQuery.Chunk,
   FluentQuery.Cast,
   FluentQuery.SkipWhileIndexed,
   FluentQuery.SelectIndexed,
@@ -2398,12 +2402,13 @@ begin
   );
 end;
 
-//function IFluentEnumerable<T>.Chunk(const ASize: Integer): IFluentChunkResult<T>;
-//begin
-//  if ASize <= 0 then
-//    raise EArgumentOutOfRangeException.Create('Size must be positive');
-//  Result := TFluentChunkResult<T>.Create(FEnumerator, ASize);
-//end;
+function IFluentEnumerable<T>.Chunk(const ASize: Integer): IFluentEnumerableBase<TArray<T>>;
+begin
+  if ASize < 1 then
+    raise EArgumentOutOfRangeException.Create('Chunk size must be at least 1');
+  // Deferred/streaming over the already-working chunk enumerable.
+  Result := TFluentChunkEnumerable<T>.Create(FEnumerator, ASize);
+end;
 
 function IFluentEnumerable<T>.DefaultIfEmpty: IFluentEnumerable<T>;
 begin
