@@ -168,6 +168,14 @@ type
     [Test]
     procedure TestListExcludeAllExcludedIsEmpty;
     [Test]
+    procedure TestListExcludeWithComparer;
+    [Test]
+    procedure TestListIntersectWithComparer;
+    [Test]
+    procedure TestListUnionWithComparer;
+    [Test]
+    procedure TestListJoinWithComparer;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1281,6 +1289,85 @@ begin
   LSecond.AddRange([1, 2]);
   LArray := FList.AsEnumerable.Exclude(LSecond.AsEnumerable).ToArray;
   Assert.AreEqual(0, LArray.Length, 'All values excluded -> empty sequence');
+end;
+
+procedure TListTest.TestListExcludeWithComparer;
+var
+  LFirst, LSecond: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive comparer: 'A' and 'C' are excluded by 'a'/'c'.
+  // With the default (case-sensitive) comparer nothing would match -> 3 elements.
+  LFirst := TFluentList<string>.Create;
+  LFirst.AddRange(['A', 'b', 'C']);
+  LSecond := TFluentList<string>.Create;
+  LSecond.AddRange(['a', 'c']);
+  LArray := LFirst.AsEnumerable.Exclude(LSecond.AsEnumerable, TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(1, LArray.Length, 'case-insensitive Exclude keeps only "b"');
+  Assert.AreEqual('b', LArray[0], 'remaining element is b');
+end;
+
+procedure TListTest.TestListIntersectWithComparer;
+var
+  LFirst, LSecond: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive: 'A' intersects 'a'. Default comparer -> empty.
+  LFirst := TFluentList<string>.Create;
+  LFirst.AddRange(['A', 'b', 'C']);
+  LSecond := TFluentList<string>.Create;
+  LSecond.AddRange(['a', 'x']);
+  LArray := LFirst.AsEnumerable.Intersect(LSecond.AsEnumerable, TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(1, LArray.Length, 'case-insensitive Intersect finds "A"~"a"');
+  Assert.AreEqual('A', LArray[0], 'intersected element keeps first-sequence casing');
+end;
+
+procedure TListTest.TestListUnionWithComparer;
+var
+  LFirst, LSecond: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive: 'a' in the second sequence is a duplicate of 'A' -> deduped.
+  // Default comparer would keep both -> 4 elements.
+  LFirst := TFluentList<string>.Create;
+  LFirst.AddRange(['A', 'b']);
+  LSecond := TFluentList<string>.Create;
+  LSecond.AddRange(['a', 'C']);
+  LArray := LFirst.AsEnumerable.Union(LSecond.AsEnumerable, TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(3, LArray.Length, 'case-insensitive Union dedupes "a" against "A"');
+  Assert.AreEqual('A', LArray[0], 'first element');
+  Assert.AreEqual('b', LArray[1], 'second element');
+  Assert.AreEqual('C', LArray[2], 'third element (new from second sequence)');
+end;
+
+procedure TListTest.TestListJoinWithComparer;
+var
+  LOuter, LInner: IFluentList<string>;
+  LArray: IFluentArray<string>;
+begin
+  // Case-insensitive key comparer: outer 'A' matches inner 'a'.
+  // With the default comparer there would be no match -> 0 results.
+  LOuter := TFluentList<string>.Create;
+  LOuter.AddRange(['A']);
+  LInner := TFluentList<string>.Create;
+  LInner.AddRange(['a']);
+  LArray := LOuter.AsEnumerable.Join<string, string, string>(
+    LInner.AsEnumerable,
+    function(O: string): string
+    begin
+      Result := O;
+    end,
+    function(I: string): string
+    begin
+      Result := I;
+    end,
+    function(O, I: string): string
+    begin
+      Result := O + '-' + I;
+    end,
+    TIStringComparer.Ordinal).ToArray;
+  Assert.AreEqual(1, LArray.Length, 'case-insensitive Join matches "A" with "a"');
+  Assert.AreEqual('A-a', LArray[0], 'joined pair preserves original casing');
 end;
 
 procedure TListTest.TestListIntersect;

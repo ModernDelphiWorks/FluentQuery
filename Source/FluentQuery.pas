@@ -139,9 +139,15 @@ type
     function Zip<TSecond, TResult>(const ASecond: IFluentEnumerable<TSecond>;
       const AResultSelector: TFunc<T, TSecond, TResult>): IFluentEnumerable<TResult>;
     function OfType<TResult>: IFluentEnumerable<TResult>;
-    function Exclude(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
-    function Intersect(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
-    function Union(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
+    function Exclude(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>; overload;
+    function Exclude(const ASecond: IFluentEnumerable<T>;
+      const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
+    function Intersect(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>; overload;
+    function Intersect(const ASecond: IFluentEnumerable<T>;
+      const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
+    function Union(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>; overload;
+    function Union(const ASecond: IFluentEnumerable<T>;
+      const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>; overload;
     function Concat(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
     function SequenceEqual(const ASecond: IFluentEnumerable<T>): Boolean;
     function Single: T; overload;
@@ -169,7 +175,11 @@ type
       const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>; overload;
     function Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
-      const AResultSelector: TFunc<T, TInner, TResult>): IFluentEnumerable<TResult>;
+      const AResultSelector: TFunc<T, TInner, TResult>): IFluentEnumerable<TResult>; overload;
+    function Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+      const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
+      const AResultSelector: TFunc<T, TInner, TResult>;
+      const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>; overload;
     function GroupJoin<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
       const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
       const AResultSelector: TFunc<T, IFluentEnumerableAdapter<TInner>, TResult>): IFluentEnumerable<TResult>;
@@ -1625,28 +1635,46 @@ end;
 
 function IFluentEnumerable<T>.Exclude(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
 begin
+  Result := Exclude(ASecond, FComparer);
+end;
+
+function IFluentEnumerable<T>.Exclude(const ASecond: IFluentEnumerable<T>;
+  const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>;
+begin
   Result := IFluentEnumerable<T>.Create(
-    TFluentExcludeEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, FComparer),
+    TFluentExcludeEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
     FFluentType,
-    FComparer
+    AComparer
   );
 end;
 
 function IFluentEnumerable<T>.Intersect(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
 begin
+  Result := Intersect(ASecond, FComparer);
+end;
+
+function IFluentEnumerable<T>.Intersect(const ASecond: IFluentEnumerable<T>;
+  const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>;
+begin
   Result := IFluentEnumerable<T>.Create(
-    TFluentIntersectEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, FComparer),
+    TFluentIntersectEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
     FFluentType,
-    FComparer
+    AComparer
   );
 end;
 
 function IFluentEnumerable<T>.Union(const ASecond: IFluentEnumerable<T>): IFluentEnumerable<T>;
 begin
+  Result := Union(ASecond, FComparer);
+end;
+
+function IFluentEnumerable<T>.Union(const ASecond: IFluentEnumerable<T>;
+  const AComparer: IEqualityComparer<T>): IFluentEnumerable<T>;
+begin
   Result := IFluentEnumerable<T>.Create(
-    TFluentUnionEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, FComparer),
+    TFluentUnionEnumerable<T>.Create(FEnumerator, ASecond.FEnumerator, AComparer),
     FFluentType,
-    FComparer
+    AComparer
   );
 end;
 
@@ -1872,6 +1900,15 @@ function IFluentEnumerable<T>.Join<TInner, TKey, TResult>(const AInner: IFluentE
   const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
   const AResultSelector: TFunc<T, TInner, TResult>): IFluentEnumerable<TResult>;
 begin
+  Result := Join<TInner, TKey, TResult>(AInner, AOuterKeySelector, AInnerKeySelector,
+    AResultSelector, nil);
+end;
+
+function IFluentEnumerable<T>.Join<TInner, TKey, TResult>(const AInner: IFluentEnumerable<TInner>;
+  const AOuterKeySelector: TFunc<T, TKey>; const AInnerKeySelector: TFunc<TInner, TKey>;
+  const AResultSelector: TFunc<T, TInner, TResult>;
+  const AComparer: IEqualityComparer<TKey>): IFluentEnumerable<TResult>;
+begin
   if not Assigned(AOuterKeySelector) then
     raise EArgumentNilException.Create('Outer key selector cannot be nil');
   if not Assigned(AInnerKeySelector) then
@@ -1879,7 +1916,8 @@ begin
   if not Assigned(AResultSelector) then
     raise EArgumentNilException.Create('Result selector cannot be nil');
   Result := IFluentEnumerable<TResult>.Create(
-    TFluentJoinEnumerable<T, TInner, TKey, TResult>.Create(FEnumerator, AInner.FEnumerator, AOuterKeySelector, AInnerKeySelector, AResultSelector),
+    TFluentJoinEnumerable<T, TInner, TKey, TResult>.Create(FEnumerator, AInner.FEnumerator,
+      AOuterKeySelector, AInnerKeySelector, AResultSelector, AComparer),
     FFluentType,
     TEqualityComparer<TResult>.Default
   );
