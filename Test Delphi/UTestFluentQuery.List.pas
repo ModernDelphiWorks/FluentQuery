@@ -176,6 +176,14 @@ type
     [Test]
     procedure TestListJoinWithComparer;
     [Test]
+    procedure TestListAppendDeferred;
+    [Test]
+    procedure TestListPrependDeferred;
+    [Test]
+    procedure TestListDefaultIfEmptyDeferred;
+    [Test]
+    procedure TestListDefaultIfEmptyEmptyYieldsDefault;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1368,6 +1376,84 @@ begin
     TIStringComparer.Ordinal).ToArray;
   Assert.AreEqual(1, LArray.Length, 'case-insensitive Join matches "A" with "a"');
   Assert.AreEqual('A-a', LArray[0], 'joined pair preserves original casing');
+end;
+
+procedure TListTest.TestListAppendDeferred;
+var
+  LCount: Integer;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // Append must be deferred: building the pipeline must NOT enumerate the
+  // source (an eager Append would run the Select side-effect immediately).
+  FList.AddRange([1, 2, 3]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).Append(99);
+  Assert.AreEqual(0, LCount, 'Append must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.IsTrue(LCount > 0, 'source is enumerated only when the result is iterated');
+  Assert.AreEqual(4, LArray.Length, 'source + appended element');
+  Assert.AreEqual(1, LArray[0], 'first is the source head');
+  Assert.AreEqual(99, LArray[3], 'appended element comes last');
+end;
+
+procedure TListTest.TestListPrependDeferred;
+var
+  LCount: Integer;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  FList.AddRange([1, 2, 3]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).Prepend(99);
+  Assert.AreEqual(0, LCount, 'Prepend must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(4, LArray.Length, 'prepended element + source');
+  Assert.AreEqual(99, LArray[0], 'prepended element comes first');
+  Assert.AreEqual(3, LArray[3], 'source tail last');
+end;
+
+procedure TListTest.TestListDefaultIfEmptyDeferred;
+var
+  LCount: Integer;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  FList.AddRange([1, 2, 3]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).DefaultIfEmpty(0);
+  Assert.AreEqual(0, LCount, 'DefaultIfEmpty must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'non-empty source passes through unchanged');
+  Assert.AreEqual(1, LArray[0], 'first source element');
+end;
+
+procedure TListTest.TestListDefaultIfEmptyEmptyYieldsDefault;
+var
+  LArray: IFluentArray<Integer>;
+begin
+  // Empty source -> a single default value.
+  LArray := FList.AsEnumerable.DefaultIfEmpty(42).ToArray;
+  Assert.AreEqual(1, LArray.Length, 'empty source yields one default');
+  Assert.AreEqual(42, LArray[0], 'the supplied default value');
 end;
 
 procedure TListTest.TestListIntersect;
