@@ -200,6 +200,14 @@ type
     [Test]
     procedure TestListExcludeByReEnumerable;
     [Test]
+    procedure TestListReverseDeferred;
+    [Test]
+    procedure TestListTakeLastDeferred;
+    [Test]
+    procedure TestListSkipLastDeferred;
+    [Test]
+    procedure TestListTakeLastSkipLastEdges;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1654,6 +1662,84 @@ begin
   Assert.AreEqual(3, LSecond.Length, 'second enumeration reproduces [1,2,3]');
   Assert.AreEqual(1, LSecond[0], 'first element on re-enumeration');
   Assert.AreEqual(3, LSecond[2], 'last element on re-enumeration');
+end;
+
+procedure TListTest.TestListReverseDeferred;
+var
+  LCount: Integer;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  // Reverse buffers only on the first MoveNext, not at construction.
+  FList.AddRange([1, 2, 3]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).Reverse;
+  Assert.AreEqual(0, LCount, 'Reverse must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'all elements');
+  Assert.AreEqual(3, LArray[0], 'reversed head');
+  Assert.AreEqual(1, LArray[2], 'reversed tail');
+end;
+
+procedure TListTest.TestListTakeLastDeferred;
+var
+  LCount: Integer;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  FList.AddRange([1, 2, 3, 4, 5]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).TakeLast(2);
+  Assert.AreEqual(0, LCount, 'TakeLast must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(2, LArray.Length, 'last 2 elements');
+  Assert.AreEqual(4, LArray[0], 'first of the last 2');
+  Assert.AreEqual(5, LArray[1], 'last element');
+end;
+
+procedure TListTest.TestListSkipLastDeferred;
+var
+  LCount: Integer;
+  LDeferred: IFluentEnumerable<Integer>;
+  LArray: IFluentArray<Integer>;
+begin
+  FList.AddRange([1, 2, 3, 4, 5]);
+  LCount := 0;
+  LDeferred := FList.AsEnumerable.Select<Integer>(
+    function(Value: Integer): Integer
+    begin
+      Inc(LCount);
+      Result := Value;
+    end).SkipLast(2);
+  Assert.AreEqual(0, LCount, 'SkipLast must not enumerate the source at construction');
+
+  LArray := LDeferred.ToArray;
+  Assert.AreEqual(3, LArray.Length, 'all but the last 2');
+  Assert.AreEqual(1, LArray[0], 'first element');
+  Assert.AreEqual(3, LArray[2], 'last kept element');
+end;
+
+procedure TListTest.TestListTakeLastSkipLastEdges;
+begin
+  FList.AddRange([1, 2, 3]);
+  // TakeLast(0) -> empty; SkipLast(0) -> all.
+  Assert.AreEqual(0, FList.AsEnumerable.TakeLast(0).ToArray.Length, 'TakeLast(0) is empty');
+  Assert.AreEqual(3, FList.AsEnumerable.SkipLast(0).ToArray.Length, 'SkipLast(0) keeps all');
+  // Count larger than the sequence.
+  Assert.AreEqual(3, FList.AsEnumerable.TakeLast(10).ToArray.Length, 'TakeLast(>count) keeps all');
+  Assert.AreEqual(0, FList.AsEnumerable.SkipLast(10).ToArray.Length, 'SkipLast(>count) is empty');
 end;
 
 procedure TListTest.TestListIntersect;
