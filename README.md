@@ -16,7 +16,7 @@
 
 ## 🇬🇧 English
 
-**LQ-Colligo** is a high-performance functional-programming and collection-manipulation library for Delphi and Lazarus, heavily inspired by **C# LINQ** and the stream-processing APIs found in Java, Kotlin, and Rust. It introduces powerful record-based structures (`IFluentEnumerable<T>` and `ILQ-Colligoable<T>`) designed to query, filter, map, order, and aggregate in-memory collections and datasets. By employing **Lazy Evaluation** (deferred execution), LQ-Colligo avoids intermediate object allocations, ensuring exceptional CPU speed and a minimal memory footprint.
+**LQ-Colligo** is a high-performance functional-programming and collection-manipulation library for Delphi and Lazarus, heavily inspired by **C# LINQ** and the stream-processing APIs found in Java, Kotlin, and Rust. It introduces powerful record-based structures (`IFluentEnumerable<T>` and `IFluentQueryable<T>`) designed to query, filter, map, order, and aggregate in-memory collections and datasets. By employing **Lazy Evaluation** (deferred execution), LQ-Colligo avoids intermediate object allocations, ensuring exceptional CPU speed and a minimal memory footprint.
 
 ### 🚀 Key Features
 
@@ -121,7 +121,7 @@ end;
 
 ## 🇧🇷 Português
 
-**LQ-Colligo** é uma biblioteca de alta performance para programação funcional e manipulação de coleções em Delphi e Lazarus, fortemente inspirada no **LINQ do C#** e nas APIs de processamento de streams do Java, Kotlin e Rust. Ela introduz estruturas otimizadas baseadas em records (`IFluentEnumerable<T>` e `ILQ-Colligoable<T>`) projetadas para consultar, filtrar, mapear, ordenar e agregar coleções na memória e datasets. Ao adotar **Avaliação Preguiçosa** (lazy evaluation), o LQ-Colligo posterga o processamento até o último instante, eliminando alocações desnecessárias e maximizando a performance de CPU e memória.
+**LQ-Colligo** é uma biblioteca de alta performance para programação funcional e manipulação de coleções em Delphi e Lazarus, fortemente inspirada no **LINQ do C#** e nas APIs de processamento de streams do Java, Kotlin e Rust. Ela introduz estruturas otimizadas baseadas em records (`IFluentEnumerable<T>` e `IFluentQueryable<T>`) projetadas para consultar, filtrar, mapear, ordenar e agregar coleções na memória e datasets. Ao adotar **Avaliação Preguiçosa** (lazy evaluation), o LQ-Colligo posterga o processamento até o último instante, eliminando alocações desnecessárias e maximizando a performance de CPU e memória.
 
 ### 🚀 Recursos Principais
 
