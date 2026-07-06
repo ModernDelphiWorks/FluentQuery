@@ -218,6 +218,14 @@ type
     [Test]
     procedure TestListIntersectByWithComparer;
     [Test]
+    procedure TestFluentQueryRange;
+    [Test]
+    procedure TestFluentQueryRepeat;
+    [Test]
+    procedure TestFluentQueryEmpty;
+    [Test]
+    procedure TestFluentQueryGeneratorValidation;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1845,6 +1853,61 @@ begin
     end, TIStringComparer.Ordinal).ToArray;
   Assert.AreEqual(1, LArray.Length, 'case-insensitive IntersectBy matches a via A');
   Assert.AreEqual('a', LArray[0], 'matched element keeps source casing');
+end;
+
+procedure TListTest.TestFluentQueryRange;
+var
+  LArray: IFluentArray<Integer>;
+begin
+  // Range(1,5) = 1,2,3,4,5 (the 2nd arg is a COUNT, not an end value).
+  LArray := TFluentQuery.Range(1, 5).ToArray;
+  Assert.AreEqual(5, LArray.Length, 'Range(1,5) has 5 elements');
+  Assert.AreEqual(1, LArray[0], 'first');
+  Assert.AreEqual(5, LArray[4], 'last');
+  // Zero count -> empty.
+  Assert.AreEqual(0, TFluentQuery.Range(10, 0).ToArray.Length, 'Range(_,0) is empty');
+  // Negative start supported.
+  LArray := TFluentQuery.Range(-2, 3).ToArray;
+  Assert.AreEqual(3, LArray.Length, 'Range(-2,3) has 3 elements');
+  Assert.AreEqual(-2, LArray[0], 'first is start');
+  Assert.AreEqual(0, LArray[2], 'last is start+count-1');
+end;
+
+procedure TListTest.TestFluentQueryRepeat;
+var
+  LArray: IFluentArray<string>;
+begin
+  LArray := TFluentQuery.&Repeat<string>('x', 3).ToArray;
+  Assert.AreEqual(3, LArray.Length, 'Repeat yields the element count times');
+  Assert.AreEqual('x', LArray[0], 'first');
+  Assert.AreEqual('x', LArray[2], 'last');
+  Assert.AreEqual(0, TFluentQuery.&Repeat<string>('x', 0).ToArray.Length, 'Repeat(_,0) is empty');
+end;
+
+procedure TListTest.TestFluentQueryEmpty;
+begin
+  Assert.AreEqual(0, TFluentQuery.Empty<Integer>.ToArray.Length, 'Empty<Integer> is empty');
+  Assert.IsFalse(TFluentQuery.Empty<string>.Any, 'Empty has no elements');
+end;
+
+procedure TListTest.TestFluentQueryGeneratorValidation;
+begin
+  // Arguments are validated eagerly (at the call), even though generation is lazy.
+  Assert.WillRaise(
+    procedure
+    begin
+      TFluentQuery.Range(1, -1);
+    end, EArgumentOutOfRangeException, 'Range with negative count raises');
+  Assert.WillRaise(
+    procedure
+    begin
+      TFluentQuery.Range(High(Integer), 2);
+    end, EArgumentOutOfRangeException, 'Range that overflows Integer raises');
+  Assert.WillRaise(
+    procedure
+    begin
+      TFluentQuery.&Repeat<Integer>(7, -1);
+    end, EArgumentOutOfRangeException, 'Repeat with negative count raises');
 end;
 
 procedure TListTest.TestListIntersect;
