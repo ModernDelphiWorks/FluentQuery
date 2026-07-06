@@ -83,7 +83,7 @@ type
 
   TFluentQueryExpression<T> = class(TInterfacedObject, IFluentQueryExpression)
   private
-    FCQL: IFluentSQLAST;
+    FFluentSQL: IFluentSQLAST;
     FRegister: TFluentSQLRegister;
     FExpression: IFluentSQLCriteriaExpression;
     FOperator: IFluentSQLOperators;
@@ -163,15 +163,15 @@ begin
   FIsSubExpression := False;
   FDatabase := ADatabase;
   FRegister := TFluentSQLRegister.Create;
-  FCQL := TFluentSQLAST.Create(FDatabase, FRegister);
-  FCQL.Clear;
-  FExpression := TFluentSQLCriteriaExpression.Create(FCQL.Where.Expression);
+  FFluentSQL := TFluentSQLAST.Create(FDatabase, FRegister);
+  FFluentSQL.Clear;
+  FExpression := TFluentSQLCriteriaExpression.Create(FFluentSQL.Where.Expression);
   FOperator := TFluentSQLOperators.Create(FDatabase);
 end;
 
 destructor TFluentQueryExpression<T>.Destroy;
 begin
-  FCQL := nil;
+  FFluentSQL := nil;
   FExpression := nil;
   FOperator := nil;
   FRegister.Free;
@@ -453,7 +453,7 @@ end;
 function TFluentQueryExpression<T>.Field(const AFieldName: string): IFluentQueryExpression;
 begin
   FCurrentField := AFieldName;
-  FCQL.Where.Expression.Term := FCurrentField;
+  FFluentSQL.Where.Expression.Term := FCurrentField;
   Result := Self;
 end;
 
@@ -482,7 +482,7 @@ end;
 //  Result := '';
 //  LSerialize := FRegister.Serialize(FDatabase);
 //  if Assigned(LSerialize) then
-//    Result := LSerialize.AsString(FCQL);
+//    Result := LSerialize.AsString(FFluentSQL);
 //end;
 
 function TFluentQueryExpression<T>.Serialize: string;

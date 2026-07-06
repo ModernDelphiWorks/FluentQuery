@@ -46,7 +46,7 @@ uses
 type
   TFluentQueryProvider<T> = class(TInterfacedObject, IFluentQueryProvider<T>)
   private
-    FCQL: IFluentSQLAST;
+    FFluentSQL: IFluentSQLAST;
     FConnection: IDBConnection;
     FDatabase: TDriverName;
     FOperator: IFluentSQLOperators;
@@ -65,14 +65,14 @@ type
   strict private
     constructor Create; overload;
     constructor Create(const AInitializer: TConnectionInitializer); overload;
-    constructor Create(const ADriver: TDriverName; const AConnection: IDBConnection; const ACQL: IFluentSQLAST = nil); overload;
+    constructor Create(const ADriver: TDriverName; const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST = nil); overload;
     destructor Destroy; override;
   public
     type
       TStrictPrivateCreate<T> = class
       public
         class function CreateProvider(const AInitializer: TConnectionInitializer): TFluentQueryProvider<T>; overload; static;
-        class function CreateProvider(const ADriver: TDriverName; const AConnection: IDBConnection; const ACQL: IFluentSQLAST = nil): TFluentQueryProvider<T>; overload; static;
+        class function CreateProvider(const ADriver: TDriverName; const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST = nil): TFluentQueryProvider<T>; overload; static;
       end;
   public
     function AndOpe(const AExpression: array of const): IFluentQueryProvider<T>; overload;
@@ -203,25 +203,25 @@ begin
   FRegister := TFluentSQLRegister.Create;
   FOperator := TFluentSQLOperators.Create(_GetDriverDatabase);
   FFunction := TFluentSQLFunctions.Create(_GetDriverDatabase, FRegister);
-  FCQL := TFluentSQLAST.Create(_GetDriverDatabase, FRegister);
-  FCQL.Clear;
+  FFluentSQL := TFluentSQLAST.Create(_GetDriverDatabase, FRegister);
+  FFluentSQL.Clear;
   FIsObject := PTypeInfo(TypeInfo(T))^.Kind = tkClass;
   FSavedColumns := TFluentSQLNames.Create;
 end;
 
 constructor TFluentQueryProvider<T>.Create(const ADriver: TDriverName;
-  const AConnection: IDBConnection; const ACQL: IFluentSQLAST);
+  const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST);
 begin
   inherited Create;
   _InitializeConnection(ADriver, AConnection);
   FRegister := TFluentSQLRegister.Create;
   FOperator := TFluentSQLOperators.Create(_GetDriverDatabase);
   FFunction := TFluentSQLFunctions.Create(_GetDriverDatabase, FRegister);
-  FCQL := ACQL;
-  if FCQL = nil then
+  FFluentSQL := AFluentSQL;
+  if FFluentSQL = nil then
   begin
-    FCQL := TFluentSQLAST.Create(_GetDriverDatabase, FRegister);
-    FCQL.Clear;
+    FFluentSQL := TFluentSQLAST.Create(_GetDriverDatabase, FRegister);
+    FFluentSQL.Clear;
   end;
   FIsObject := PTypeInfo(TypeInfo(T))^.Kind = tkClass;
   FSavedColumns := TFluentSQLNames.Create;
@@ -237,7 +237,7 @@ end;
 
 destructor TFluentQueryProvider<T>.Destroy;
 begin
-  FCQL := nil;
+  FFluentSQL := nil;
   FActiveExpr := nil;
   FActiveValues := nil;
   FOperator := nil;
@@ -263,31 +263,31 @@ end;
 
 function TFluentQueryProvider<T>.Alias(const AAlias: string): IFluentQueryProvider<T>;
 begin
-  if FCQL.Select.TableNames.Count > 0 then
-    FCQL.Select.TableNames[FCQL.Select.TableNames.Count - 1].Alias := AAlias
-  else if FCQL.Joins.Count > 0 then
-    FCQL.Joins[FCQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
+  if FFluentSQL.Select.TableNames.Count > 0 then
+    FFluentSQL.Select.TableNames[FFluentSQL.Select.TableNames.Count - 1].Alias := AAlias
+  else if FFluentSQL.Joins.Count > 0 then
+    FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Clear: IFluentQueryProvider<T>;
 begin
-  FCQL.Clear;
+  FFluentSQL.Clear;
   FSavedColumns.Clear;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.ClearAll: IFluentQueryProvider<T>;
 begin
-  FCQL.Clear;
+  FFluentSQL.Clear;
   FSavedColumns.Clear;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.All: IFluentQueryProvider<T>;
 begin
-  FCQL.Select.Columns.Clear;
-  FCQL.Select.Columns.Add.Name := '*';
+  FFluentSQL.Select.Columns.Clear;
+  FFluentSQL.Select.Columns.Add.Name := '*';
   FSavedColumns.Clear;
   FSavedColumns.Add.Name := '*';
   Result := Self;
@@ -295,7 +295,7 @@ end;
 
 function TFluentQueryProvider<T>.Column(const AColumnName: string = ''): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.Columns.Add.Name := AColumnName;
+  FFluentSQL.Select.Columns.Add.Name := AColumnName;
   FSavedColumns.Add.Name := AColumnName;
   Result := Self;
 end;
@@ -312,14 +312,14 @@ end;
 
 function TFluentQueryProvider<T>.Delete: IFluentQueryProvider<T>;
 begin
-  FCQL.Delete.TableNames.Clear;
+  FFluentSQL.Delete.TableNames.Clear;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Desc: IFluentQueryProvider<T>;
 begin
-  if FCQL.OrderBy.Columns.Count > 0 then
-    (FCQL.OrderBy.Columns[FCQL.OrderBy.Columns.Count - 1] as IFluentSQLOrderByColumn).Direction := dirDescending;
+  if FFluentSQL.OrderBy.Columns.Count > 0 then
+    (FFluentSQL.OrderBy.Columns[FFluentSQL.OrderBy.Columns.Count - 1] as IFluentSQLOrderByColumn).Direction := dirDescending;
   Result := Self;
 end;
 
@@ -327,14 +327,14 @@ function TFluentQueryProvider<T>.DistinctSQL: IFluentQueryProvider<T>;
 var
   LQualifier: IFluentSQLSelectQualifier;
 begin
-  LQualifier := FCQL.Select.Qualifiers.Add;
+  LQualifier := FFluentSQL.Select.Qualifiers.Add;
   LQualifier.Qualifier := sqDistinct;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.IsEmpty: Boolean;
 begin
-  Result := FCQL.IsEmpty;
+  Result := FFluentSQL.IsEmpty;
 end;
 
 function TFluentQueryProvider<T>.Select(const AColumns: string = ''): IFluentQueryProvider<T>;
@@ -342,11 +342,11 @@ var
   LColumns: TArray<string>;
   I: Integer;
 begin
-  FCQL.Select.Columns.Clear;
+  FFluentSQL.Select.Columns.Clear;
   FSavedColumns.Clear;
   if AColumns = '' then
   begin
-    FCQL.Select.Columns.Add.Name := '*';
+    FFluentSQL.Select.Columns.Add.Name := '*';
     FSavedColumns.Add.Name := '*';
   end
   else
@@ -354,7 +354,7 @@ begin
     LColumns := AColumns.Split([', ']);
     for I := 0 to High(LColumns) do
     begin
-      FCQL.Select.Columns.Add.Name := LColumns[I];
+      FFluentSQL.Select.Columns.Add.Name := LColumns[I];
       FSavedColumns.Add.Name := LColumns[I];
     end;
   end;
@@ -363,32 +363,32 @@ end;
 
 function TFluentQueryProvider<T>.From(const ATableName: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.TableNames.Clear;
-  FCQL.Select.TableNames.Add.Name := ATableName;
+  FFluentSQL.Select.TableNames.Clear;
+  FFluentSQL.Select.TableNames.Add.Name := ATableName;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.From(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.TableNames.Clear;
-  FCQL.Select.TableNames.Add.Name := ATableName;
-  FCQL.Select.TableNames[0].Alias := AAlias;
+  FFluentSQL.Select.TableNames.Clear;
+  FFluentSQL.Select.TableNames.Add.Name := ATableName;
+  FFluentSQL.Select.TableNames[0].Alias := AAlias;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.GroupBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
 begin
-  FCQL.GroupBy.Columns.Clear;
+  FFluentSQL.GroupBy.Columns.Clear;
   if AColumnName <> '' then
-    FCQL.GroupBy.Columns.Add.Name := AColumnName;
+    FFluentSQL.GroupBy.Columns.Add.Name := AColumnName;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Having(const AExpression: string = ''): IFluentQueryProvider<T>;
 begin
-  FCQL.Having.Expression.Clear;
+  FFluentSQL.Having.Expression.Clear;
   if AExpression <> '' then
-    FCQL.Having.Expression.Term := AExpression;
+    FFluentSQL.Having.Expression.Term := AExpression;
   Result := Self;
 end;
 
@@ -399,14 +399,14 @@ end;
 
 function TFluentQueryProvider<T>.Insert: IFluentQueryProvider<T>;
 begin
-  FCQL.Insert.Columns.Clear;
-  FActiveValues := FCQL.Insert.Values;
+  FFluentSQL.Insert.Columns.Clear;
+  FActiveValues := FFluentSQL.Insert.Values;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Into(const ATableName: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Insert.TableName := ATableName;
+  FFluentSQL.Insert.TableName := ATableName;
   Result := Self;
 end;
 
@@ -433,28 +433,28 @@ end;
 function TFluentQueryProvider<T>.FullJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
 begin
   FullJoin(ATableName);
-  FCQL.Joins[FCQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
+  FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.InnerJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
 begin
   InnerJoin(ATableName);
-  FCQL.Joins[FCQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
+  FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.LeftJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
 begin
   LeftJoin(ATableName);
-  FCQL.Joins[FCQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
+  FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.RightJoin(const ATableName: string; const AAlias: string): IFluentQueryProvider<T>;
 begin
   RightJoin(ATableName);
-  FCQL.Joins[FCQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
+  FFluentSQL.Joins[FFluentSQL.Joins.Count - 1].JoinedTable.Alias := AAlias;
   Result := Self;
 end;
 
@@ -462,7 +462,7 @@ function TFluentQueryProvider<T>._CreateJoin(AJoinType: TJoinType; const ATableN
 var
   LJoin: IFluentSQLJoin;
 begin
-  LJoin := FCQL.Joins.Add;
+  LJoin := FFluentSQL.Joins.Add;
   LJoin.JoinType := AJoinType;
   LJoin.JoinedTable.Name := ATableName;
   FActiveExpr := TFluentSQLCriteriaExpression.Create(LJoin.Condition);
@@ -471,7 +471,7 @@ end;
 
 function TFluentQueryProvider<T>._GetFluentSQL: IFluentSQLAST;
 begin
-  Result := FCQL;
+  Result := FFluentSQL;
 end;
 
 function TFluentQueryProvider<T>._GetDriverDatabase: TFluentSQLDriver;
@@ -509,7 +509,7 @@ end;
 
 procedure TFluentQueryProvider<T>._SetFluentSQL(const Value: IFluentSQLAST);
 begin
-  FCQL := Value;
+  FFluentSQL := Value;
 end;
 
 procedure TFluentQueryProvider<T>._InitializeConnection(const AInitializer: TConnectionInitializer);
@@ -527,7 +527,7 @@ end;
 
 function TFluentQueryProvider<T>.OnCond(const AExpression: string): IFluentQueryProvider<T>;
 begin
-  if FCQL.Joins.Count > 0 then
+  if FFluentSQL.Joins.Count > 0 then
     FActiveExpr.AndOpe(AExpression);
   Result := Self;
 end;
@@ -553,9 +553,9 @@ end;
 
 function TFluentQueryProvider<T>.OrderBy(const AColumnName: string = ''): IFluentQueryProvider<T>;
 begin
-  FCQL.OrderBy.Columns.Clear;
+  FFluentSQL.OrderBy.Columns.Clear;
   if AColumnName <> '' then
-    FCQL.OrderBy.Columns.Add.Name := AColumnName;
+    FFluentSQL.OrderBy.Columns.Add.Name := AColumnName;
   Result := Self;
 end;
 
@@ -635,10 +635,10 @@ function TFluentQueryProvider<T>.First(const AValue: Integer): IFluentQueryProvi
 var
   LQualifier: IFluentSQLSelectQualifier;
 begin
-  LQualifier := FCQL.Select.Qualifiers.Add;
+  LQualifier := FFluentSQL.Select.Qualifiers.Add;
   LQualifier.Qualifier := sqFirst;
   LQualifier.Value := AValue;
-  FCQL.Select.Qualifiers.Add(LQualifier);
+  FFluentSQL.Select.Qualifiers.Add(LQualifier);
   Result := Self;
 end;
 
@@ -646,26 +646,26 @@ function TFluentQueryProvider<T>.Skip(const AValue: Integer): IFluentQueryProvid
 var
   LQualifier: IFluentSQLSelectQualifier;
 begin
-  LQualifier := FCQL.Select.Qualifiers.Add;
+  LQualifier := FFluentSQL.Select.Qualifiers.Add;
   LQualifier.Qualifier := sqSkip;
   LQualifier.Value := AValue;
-  FCQL.Select.Qualifiers.Add(LQualifier);
+  FFluentSQL.Select.Qualifiers.Add(LQualifier);
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Update(const ATableName: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Update.TableName := ATableName;
-  FActiveValues := FCQL.Update.Values;
+  FFluentSQL.Update.TableName := ATableName;
+  FActiveValues := FFluentSQL.Update.Values;
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Where(const AExpression: string = ''): IFluentQueryProvider<T>;
 begin
-  FCQL.Where.Expression.Clear;
+  FFluentSQL.Where.Expression.Clear;
   if AExpression <> '' then
-    FCQL.Where.Expression.Term := AExpression;
-  FActiveExpr := TFluentSQLCriteriaExpression.Create(FCQL.Where.Expression);
+    FFluentSQL.Where.Expression.Term := AExpression;
+  FActiveExpr := TFluentSQLCriteriaExpression.Create(FFluentSQL.Where.Expression);
   Result := Self;
 end;
 
@@ -1003,19 +1003,19 @@ var
   LFor: Integer;
 begin
   FSavedColumns.Clear;
-  for LFor := 0 to FCQL.Select.Columns.Count - 1 do
+  for LFor := 0 to FFluentSQL.Select.Columns.Count - 1 do
   begin
     LNewColumn := FSavedColumns.Add;
-    LNewColumn.Name := FCQL.Select.Columns[LFor].Name;
-    LNewColumn.Alias := FCQL.Select.Columns[LFor].Alias;
+    LNewColumn.Name := FFluentSQL.Select.Columns[LFor].Name;
+    LNewColumn.Alias := FFluentSQL.Select.Columns[LFor].Alias;
   end;
-  FCQL.Select.Columns.Clear;
-  LColumn := FCQL.Select.Columns.Add;
+  FFluentSQL.Select.Columns.Clear;
+  LColumn := FFluentSQL.Select.Columns.Add;
   if FSavedColumns.Count > 1 then
     LColumn.Name := FFunction.Count('*')
   else
     LColumn.Name := FFunction.Count(FSavedColumns.Columns[0].Name);
-  FCQL.ASTName := LColumn;
+  FFluentSQL.ASTName := LColumn;
   Result := Self;
 end;
 
@@ -1023,10 +1023,10 @@ function TFluentQueryProvider<T>.Lower: IFluentQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
-  if FCQL.Select.Columns.Count > 0 then
+  if FFluentSQL.Select.Columns.Count > 0 then
   begin
-    LColumn := FCQL.Select.Columns[0];
-    FCQL.ASTName := LColumn;
+    LColumn := FFluentSQL.Select.Columns[0];
+    FFluentSQL.ASTName := LColumn;
     LColumn.Name := FFunction.Lower(LColumn.Name);
   end;
   Result := Self;
@@ -1036,10 +1036,10 @@ function TFluentQueryProvider<T>.Min: IFluentQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
-  if FCQL.Select.Columns.Count > 0 then
+  if FFluentSQL.Select.Columns.Count > 0 then
   begin
-    LColumn := FCQL.Select.Columns[0];
-    FCQL.ASTName := LColumn;
+    LColumn := FFluentSQL.Select.Columns[0];
+    FFluentSQL.ASTName := LColumn;
     LColumn.Name := FFunction.Min(LColumn.Name);
   end;
   Result := Self;
@@ -1049,10 +1049,10 @@ function TFluentQueryProvider<T>.Max: IFluentQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
-  if FCQL.Select.Columns.Count > 0 then
+  if FFluentSQL.Select.Columns.Count > 0 then
   begin
-    LColumn := FCQL.Select.Columns[0];
-    FCQL.ASTName := LColumn;
+    LColumn := FFluentSQL.Select.Columns[0];
+    FFluentSQL.ASTName := LColumn;
     LColumn.Name := FFunction.Max(LColumn.Name);
   end;
   Result := Self;
@@ -1062,10 +1062,10 @@ function TFluentQueryProvider<T>.Upper: IFluentQueryProvider<T>;
 var
   LColumn: IFluentSQLName;
 begin
-  if FCQL.Select.Columns.Count > 0 then
+  if FFluentSQL.Select.Columns.Count > 0 then
   begin
-    LColumn := FCQL.Select.Columns[0];
-    FCQL.ASTName := LColumn;
+    LColumn := FFluentSQL.Select.Columns[0];
+    FFluentSQL.ASTName := LColumn;
     LColumn.Name := FFunction.Upper(LColumn.Name);
   end;
   Result := Self;
@@ -1075,10 +1075,10 @@ function TFluentQueryProvider<T>.SubString(const AStart: Integer; const ALength:
 var
   LColumn: IFluentSQLName;
 begin
-  if FCQL.Select.Columns.Count > 0 then
+  if FFluentSQL.Select.Columns.Count > 0 then
   begin
-    LColumn := FCQL.Select.Columns[0];
-    FCQL.ASTName := LColumn;
+    LColumn := FFluentSQL.Select.Columns[0];
+    FFluentSQL.ASTName := LColumn;
     LColumn.Name := FFunction.SubString(LColumn.Name, AStart, ALength);
   end;
   Result := Self;
@@ -1091,35 +1091,35 @@ end;
 
 function TFluentQueryProvider<T>.Date(const AValue: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.Columns.Add.Name := FFunction.Date(AValue);
+  FFluentSQL.Select.Columns.Add.Name := FFunction.Date(AValue);
   FSavedColumns.Add.Name := FFunction.Date(AValue);
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Day(const AValue: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.Columns.Add.Name := FFunction.Day(AValue);
+  FFluentSQL.Select.Columns.Add.Name := FFunction.Day(AValue);
   FSavedColumns.Add.Name := FFunction.Day(AValue);
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Month(const AValue: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.Columns.Add.Name := FFunction.Month(AValue);
+  FFluentSQL.Select.Columns.Add.Name := FFunction.Month(AValue);
   FSavedColumns.Add.Name := FFunction.Month(AValue);
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Year(const AValue: string): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.Columns.Add.Name := FFunction.Year(AValue);
+  FFluentSQL.Select.Columns.Add.Name := FFunction.Year(AValue);
   FSavedColumns.Add.Name := FFunction.Year(AValue);
   Result := Self;
 end;
 
 function TFluentQueryProvider<T>.Concat(const AValue: array of string): IFluentQueryProvider<T>;
 begin
-  FCQL.Select.Columns.Add.Name := FFunction.Concat(AValue);
+  FFluentSQL.Select.Columns.Add.Name := FFunction.Concat(AValue);
   FSavedColumns.Add.Name := FFunction.Concat(AValue);
   Result := Self;
 end;
@@ -1133,8 +1133,8 @@ function TFluentQueryProvider<T>.Sum(const AColumn: string; const AAlias: string
 var
   LColumn: IFluentSQLName;
 begin
-  FCQL.Select.Columns.Clear;
-  LColumn := FCQL.Select.Columns.Add;
+  FFluentSQL.Select.Columns.Clear;
+  LColumn := FFluentSQL.Select.Columns.Add;
   LColumn.Name := FFunction.Sum(AColumn);
   LColumn.Alias := AAlias;
   FSavedColumns.Clear;
@@ -1146,8 +1146,8 @@ function TFluentQueryProvider<T>.Average(const AColumn: string; const AAlias: st
 var
   LColumn: IFluentSQLName;
 begin
-  FCQL.Select.Columns.Clear;
-  LColumn := FCQL.Select.Columns.Add;
+  FFluentSQL.Select.Columns.Clear;
+  LColumn := FFluentSQL.Select.Columns.Add;
   LColumn.Name := FFunction.Average(AColumn);
   LColumn.Alias := AAlias;
   FSavedColumns.Clear;
@@ -1228,7 +1228,7 @@ begin
   Result := '';
   LSerialize := FRegister.Serialize(_GetDriverDatabase);
   if Assigned(LSerialize) then
-    Result := LSerialize.AsString(FCQL);
+    Result := LSerialize.AsString(FFluentSQL);
 end;
 
 { TFluentQueryProvider<T>.TStrictPrivateCreate<T> }
@@ -1240,9 +1240,9 @@ begin
 end;
 
 class function TFluentQueryProvider<T>.TStrictPrivateCreate<T>.CreateProvider(
-  const ADriver: TDriverName; const AConnection: IDBConnection; const ACQL: IFluentSQLAST): TFluentQueryProvider<T>;
+  const ADriver: TDriverName; const AConnection: IDBConnection; const AFluentSQL: IFluentSQLAST): TFluentQueryProvider<T>;
 begin
-  Result := TFluentQueryProvider<T>.Create(ADriver, AConnection, ACQL);
+  Result := TFluentQueryProvider<T>.Create(ADriver, AConnection, AFluentSQL);
 end;
 
 end.
