@@ -208,6 +208,8 @@ type
     [Test]
     procedure TestListTakeLastSkipLastEdges;
     [Test]
+    procedure TestListReverseEmptyAndReEnumerable;
+    [Test]
     procedure TestListIntersect;
     [Test]
     procedure TestListIntersectDistinct;
@@ -1740,6 +1742,25 @@ begin
   // Count larger than the sequence.
   Assert.AreEqual(3, FList.AsEnumerable.TakeLast(10).ToArray.Length, 'TakeLast(>count) keeps all');
   Assert.AreEqual(0, FList.AsEnumerable.SkipLast(10).ToArray.Length, 'SkipLast(>count) is empty');
+end;
+
+procedure TListTest.TestListReverseEmptyAndReEnumerable;
+var
+  LReversed: IFluentEnumerable<Integer>;
+  LFirst, LSecond: IFluentArray<Integer>;
+begin
+  // Empty source -> empty result (buffer step-down must not under/overflow).
+  Assert.AreEqual(0, FList.AsEnumerable.Reverse.ToArray.Length, 'Reverse of empty is empty');
+
+  // Re-enumeration: each GetEnumerator re-buffers, reproducing the reversed order.
+  FList.AddRange([1, 2, 3]);
+  LReversed := FList.AsEnumerable.Reverse;
+  LFirst := LReversed.ToArray;
+  LSecond := LReversed.ToArray;
+  Assert.AreEqual(3, LFirst.Length, 'first enumeration');
+  Assert.AreEqual(3, LSecond.Length, 'second enumeration reproduces the result');
+  Assert.AreEqual(3, LSecond[0], 'reversed head on re-enumeration');
+  Assert.AreEqual(1, LSecond[2], 'reversed tail on re-enumeration');
 end;
 
 procedure TListTest.TestListIntersect;
