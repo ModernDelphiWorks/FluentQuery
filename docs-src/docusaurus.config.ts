@@ -2,7 +2,7 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'LQ-Colligo',
+  title: 'Colligo',
   tagline: 'LINQ-style fluent collections and DB query library for Delphi and Lazarus',
   favicon: 'img/favicon.svg',
 
@@ -10,9 +10,9 @@ const config: Config = {
   // so it stays compatible with Docusaurus 3 schema validation (top-level `outDir` is not allowed).
 
   url: 'https://moderndelphiworks.github.io',
-  baseUrl: '/LQ-Colligo/',
+  baseUrl: '/Colligo/',
   organizationName: 'ModernDelphiWorks',
-  projectName: 'LQ-Colligo',
+  projectName: 'Colligo',
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -41,7 +41,7 @@ const config: Config = {
 
   themeConfig: {
     navbar: {
-      title: 'LQ-Colligo',
+      title: 'Colligo',
       items: [
         {
           type: 'docSidebar',
@@ -53,13 +53,13 @@ const config: Config = {
           type: 'dropdown',
           label: 'Projects',
           position: 'left',
-          items: [{ to: '/lqcolligo/', label: 'LQ-Colligo' }],
+          items: [{ to: '/colligo/', label: 'Colligo' }],
         },
       ],
     },
     footer: {
       style: 'dark',
-      copyright: `© ${new Date().getFullYear()} LQ-Colligo — ModernDelphiWorks.`,
+      copyright: `© ${new Date().getFullYear()} Colligo — ModernDelphiWorks.`,
     },
     prism: {
       additionalLanguages: ['bash', 'json', 'powershell', 'pascal'],

@@ -1,0 +1,96 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{393FCA44-6265-485B-AA1E-6A4AB51AA3E2}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="PTestColligoDictionary.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestColligoList.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestColligoArrayT.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestColligoArrayStatic.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestColligoString.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="PTestColligoSQL.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="PTestColligoDictionary">
+        <MSBuild Projects="PTestColligoDictionary.dproj"/>
+    </Target>
+    <Target Name="PTestColligoDictionary:Clean">
+        <MSBuild Projects="PTestColligoDictionary.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestColligoDictionary:Make">
+        <MSBuild Projects="PTestColligoDictionary.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestColligoList">
+        <MSBuild Projects="PTestColligoList.dproj"/>
+    </Target>
+    <Target Name="PTestColligoList:Clean">
+        <MSBuild Projects="PTestColligoList.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestColligoList:Make">
+        <MSBuild Projects="PTestColligoList.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestColligoArrayT">
+        <MSBuild Projects="PTestColligoArrayT.dproj"/>
+    </Target>
+    <Target Name="PTestColligoArrayT:Clean">
+        <MSBuild Projects="PTestColligoArrayT.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestColligoArrayT:Make">
+        <MSBuild Projects="PTestColligoArrayT.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestColligoArrayStatic">
+        <MSBuild Projects="PTestColligoArrayStatic.dproj"/>
+    </Target>
+    <Target Name="PTestColligoArrayStatic:Clean">
+        <MSBuild Projects="PTestColligoArrayStatic.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestColligoArrayStatic:Make">
+        <MSBuild Projects="PTestColligoArrayStatic.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestColligoString">
+        <MSBuild Projects="PTestColligoString.dproj"/>
+    </Target>
+    <Target Name="PTestColligoString:Clean">
+        <MSBuild Projects="PTestColligoString.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestColligoString:Make">
+        <MSBuild Projects="PTestColligoString.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="PTestColligoSQL">
+        <MSBuild Projects="PTestColligoSQL.dproj"/>
+    </Target>
+    <Target Name="PTestColligoSQL:Clean">
+        <MSBuild Projects="PTestColligoSQL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PTestColligoSQL:Make">
+        <MSBuild Projects="PTestColligoSQL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="PTestColligoDictionary;PTestColligoList;PTestColligoArrayT;PTestColligoArrayStatic;PTestColligoString;PTestColligoSQL"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="PTestColligoDictionary:Clean;PTestColligoList:Clean;PTestColligoArrayT:Clean;PTestColligoArrayStatic:Clean;PTestColligoString:Clean;PTestColligoSQL:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="PTestColligoDictionary:Make;PTestColligoList:Make;PTestColligoArrayT:Make;PTestColligoArrayStatic:Make;PTestColligoString:Make;PTestColligoSQL:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
