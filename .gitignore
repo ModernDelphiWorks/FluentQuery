@@ -92,3 +92,7 @@ docs-src/.docusaurus/
 # Delphi IDE session state + generated test logs (local, not versioned)
 *.dsv
 *_MemoryManager_EventLog.txt
+
+# Test project build output (compiler artifacts + DUnitX result logs)
+Test Delphi/Win32/
+Test Delphi/Win64/
