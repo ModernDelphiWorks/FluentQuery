@@ -1,15 +1,15 @@
-# LQ-Colligo — LINQ-style fluent collections & DB query library for Delphi
+# Colligo — LINQ-style fluent collections & DB query library for Delphi
 
 [![Delphi XE+](https://img.shields.io/badge/Delphi-XE%20or%20superior-blue.svg)]()
 [![Lazarus Compatible](https://img.shields.io/badge/Lazarus-Compatible-orange.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![CRA-ready](https://img.shields.io/badge/CRA--ready-SBOM%20%2B%20Security%20policy-success)](https://www.pubpascal.dev/packages/lq-colligo)
+[![CRA-ready](https://img.shields.io/badge/CRA--ready-SBOM%20%2B%20Security%20policy-success)](https://www.pubpascal.dev/packages/colligo)
 
-> 🔒 **Supply-chain transparency (CRA-ready):** a machine-readable **SBOM** (CycloneDX) is published on the package portal — [pubpascal.dev/packages/lq-colligo](https://www.pubpascal.dev/packages/lq-colligo) · security disclosure policy in **[SECURITY.md](SECURITY.md)**.
+> 🔒 **Supply-chain transparency (CRA-ready):** a machine-readable **SBOM** (CycloneDX) is published on the package portal — [pubpascal.dev/packages/colligo](https://www.pubpascal.dev/packages/colligo) · security disclosure policy in **[SECURITY.md](SECURITY.md)**.
 
-> 💡 **Inspired by LINQ.** LQ-Colligo is a Delphi/Lazarus re-imagining of **C# LINQ to Objects** (`System.Linq`). Its operator set, deferred/immediate execution semantics, and edge-case behaviour deliberately mirror LINQ so that experience transfers directly.
+> 💡 **Inspired by LINQ.** Colligo is a Delphi/Lazarus re-imagining of **C# LINQ to Objects** (`System.Linq`). Its operator set, deferred/immediate execution semantics, and edge-case behaviour deliberately mirror LINQ so that experience transfers directly.
 
-📚 **[Documentation](https://moderndelphiworks.github.io/LQ-Colligo/)** · ⬇️ **[Download](../../releases)** · 🐛 **[Issues](../../issues)**
+📚 **[Documentation](https://moderndelphiworks.github.io/Colligo/)** · ⬇️ **[Download](../../releases)** · 🐛 **[Issues](../../issues)**
 
 *   [🇬🇧 English](#-english)
 *   [🇧🇷 Português](#-português)
@@ -18,7 +18,9 @@
 
 ## 🇬🇧 English
 
-**LQ-Colligo** is a high-performance functional-programming and collection-manipulation library for Delphi and Lazarus, heavily inspired by **C# LINQ** and the stream-processing APIs found in Java, Kotlin, and Rust. It introduces powerful record-based structures (`ILQColligoEnumerable<T>` and `ILQColligoQueryable<T>`) designed to query, filter, map, order, and aggregate in-memory collections and datasets. By employing **Lazy Evaluation** (deferred execution), LQ-Colligo avoids intermediate object allocations, ensuring exceptional CPU speed and a minimal memory footprint.
+> **Colligo — Framework for Delphi**
+
+**Colligo** is a high-performance functional-programming and collection-manipulation library for Delphi and Lazarus, heavily inspired by **C# LINQ** and the stream-processing APIs found in Java, Kotlin, and Rust. It introduces powerful record-based structures (`IColligoEnumerable<T>` and `IColligoQueryable<T>`) designed to query, filter, map, order, and aggregate in-memory collections and datasets. By employing **Lazy Evaluation** (deferred execution), Colligo avoids intermediate object allocations, ensuring exceptional CPU speed and a minimal memory footprint.
 
 ### 🚀 Key Features
 
@@ -44,9 +46,9 @@
 
 ### 🐧 Cross-Platform Build — Win32 / Win64 / Linux64 (verified)
 
-> **✅ Verified 2026-06-20** in a real production backend: LQ-Colligo compiles as a dependency on **Win32, Win64 and Linux64** (`dcclinux64`). macOS/iOS/Android follow from the Delphi RTL but are **not build-verified** here yet.
+> **✅ Verified 2026-06-20** in a real production backend: Colligo compiles as a dependency on **Win32, Win64 and Linux64** (`dcclinux64`). macOS/iOS/Android follow from the Delphi RTL but are **not build-verified** here yet.
 
-The `TLQColligoString` case operations (`ToLower`/`ToUpper` and their invariants) had a broken Linux fallback calling the undeclared `UCS4LowerCase`/`UCS4UpperCase`. Locale-aware lowering still uses the `USE_LIBICU` path; the fallback now uses the RTL `System.SysUtils.LowerCase`/`UpperCase`. Windows behaviour is unchanged.
+The `TColligoString` case operations (`ToLower`/`ToUpper` and their invariants) had a broken Linux fallback calling the undeclared `UCS4LowerCase`/`UCS4UpperCase`. Locale-aware lowering still uses the `USE_LIBICU` path; the fallback now uses the RTL `System.SysUtils.LowerCase`/`UpperCase`. Windows behaviour is unchanged.
 
 **Building a consumer app for Linux64:** install the Linux 64-bit platform (RAD Studio GetIt / `GetItCmd -if=delphi_linux -ae`), provide a Linux SDK (RAD Studio SDK Manager + PAServer, **or** a sysroot assembled from a WSL/Linux toolchain passed to `dcclinux64` via `--syslibroot` / `--libpath`), then compile with `dcclinux64`.
 
@@ -55,10 +57,10 @@ The `TLQColligoString` case operations (`ToLower`/`ToUpper` and their invariants
 Install using the [**Boss**](https://github.com/HashLoad/boss) package manager:
 
 ```sh
-boss install LQ-Colligo
+boss install Colligo
 ```
 
-Or register the package via [**pubpascal.dev**](https://www.pubpascal.dev/packages/lq-colligo) and follow the on-screen instructions.
+Or register the package via [**pubpascal.dev**](https://www.pubpascal.dev/packages/colligo) and follow the on-screen instructions.
 
 ---
 
@@ -69,8 +71,8 @@ Or register the package via [**pubpascal.dev**](https://www.pubpascal.dev/packag
 ```delphi
 uses
   System.SysUtils,
-  LQColligo,
-  LQColligo.Collections;
+  Colligo,
+  Colligo.Collections;
 
 var
   LNumbers: TArray<Integer>;
@@ -79,7 +81,7 @@ begin
   LNumbers := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // Fluid chain — no intermediate arrays are allocated during execution!
-  LResult := TLQColligoArray.From<Integer>(LNumbers)
+  LResult := TColligoArray.From<Integer>(LNumbers)
     .Where(
       function(const X: Integer): Boolean
       begin
@@ -104,7 +106,7 @@ end;
 var
   LResult: TArray<string>;
 begin
-  LResult := TLQColligoList<TUser>.From(MyCollection)
+  LResult := TColligoList<TUser>.From(MyCollection)
     .OrderBy(
       function(const A, B: TUser): Integer
       begin
@@ -126,9 +128,11 @@ end;
 
 ## 🇧🇷 Português
 
-**LQ-Colligo** é uma biblioteca de alta performance para programação funcional e manipulação de coleções em Delphi e Lazarus, fortemente inspirada no **LINQ do C#** e nas APIs de processamento de streams do Java, Kotlin e Rust. Ela introduz estruturas otimizadas baseadas em records (`ILQColligoEnumerable<T>` e `ILQColligoQueryable<T>`) projetadas para consultar, filtrar, mapear, ordenar e agregar coleções na memória e datasets. Ao adotar **Avaliação Preguiçosa** (lazy evaluation), o LQ-Colligo posterga o processamento até o último instante, eliminando alocações desnecessárias e maximizando a performance de CPU e memória.
+> **Colligo — Framework for Delphi**
 
-> 💡 **Inspirado no LINQ.** O LQ-Colligo é uma releitura em Delphi/Lazarus do **C# LINQ to Objects** (`System.Linq`). Seu conjunto de operadores, a semântica de execução (deferred/immediate) e o comportamento em casos de borda espelham deliberadamente o LINQ, para que a experiência seja transferida diretamente.
+**Colligo** é uma biblioteca de alta performance para programação funcional e manipulação de coleções em Delphi e Lazarus, fortemente inspirada no **LINQ do C#** e nas APIs de processamento de streams do Java, Kotlin e Rust. Ela introduz estruturas otimizadas baseadas em records (`IColligoEnumerable<T>` e `IColligoQueryable<T>`) projetadas para consultar, filtrar, mapear, ordenar e agregar coleções na memória e datasets. Ao adotar **Avaliação Preguiçosa** (lazy evaluation), o Colligo posterga o processamento até o último instante, eliminando alocações desnecessárias e maximizando a performance de CPU e memória.
+
+> 💡 **Inspirado no LINQ.** O Colligo é uma releitura em Delphi/Lazarus do **C# LINQ to Objects** (`System.Linq`). Seu conjunto de operadores, a semântica de execução (deferred/immediate) e o comportamento em casos de borda espelham deliberadamente o LINQ, para que a experiência seja transferida diretamente.
 
 ### 🚀 Recursos Principais
 
@@ -154,9 +158,9 @@ end;
 
 ### 🐧 Build Multiplataforma — Win32 / Win64 / Linux64 (verificado)
 
-> **✅ Verificado em 2026-06-20** num backend real em produção: o LQ-Colligo compila como dependência em **Win32, Win64 e Linux64** (`dcclinux64`). macOS/iOS/Android seguem da RTL Delphi, mas **ainda não foram verificados** em build aqui.
+> **✅ Verificado em 2026-06-20** num backend real em produção: o Colligo compila como dependência em **Win32, Win64 e Linux64** (`dcclinux64`). macOS/iOS/Android seguem da RTL Delphi, mas **ainda não foram verificados** em build aqui.
 
-As operações de caixa do `TLQColligoString` (`ToLower`/`ToUpper` e invariantes) tinham um fallback Linux quebrado chamando `UCS4LowerCase`/`UCS4UpperCase` (inexistente). O lowering com locale continua usando o caminho `USE_LIBICU`; o fallback agora usa o RTL `System.SysUtils.LowerCase`/`UpperCase`. O comportamento no Windows não muda.
+As operações de caixa do `TColligoString` (`ToLower`/`ToUpper` e invariantes) tinham um fallback Linux quebrado chamando `UCS4LowerCase`/`UCS4UpperCase` (inexistente). O lowering com locale continua usando o caminho `USE_LIBICU`; o fallback agora usa o RTL `System.SysUtils.LowerCase`/`UpperCase`. O comportamento no Windows não muda.
 
 **Para buildar um app consumidor no Linux64:** instale a plataforma Linux 64-bit (RAD Studio GetIt / `GetItCmd -if=delphi_linux -ae`), forneça um SDK Linux (SDK Manager do RAD Studio + PAServer, **ou** um sysroot montado de um toolchain WSL/Linux passado ao `dcclinux64` via `--syslibroot` / `--libpath`), e compile com `dcclinux64`.
 
@@ -165,10 +169,10 @@ As operações de caixa do `TLQColligoString` (`ToLower`/`ToUpper` e invariantes
 Instale usando o gerenciador de pacotes [**Boss**](https://github.com/HashLoad/boss):
 
 ```sh
-boss install LQ-Colligo
+boss install Colligo
 ```
 
-Ou registre o pacote via [**pubpascal.dev**](https://www.pubpascal.dev/packages/lq-colligo) e siga as instruções na tela.
+Ou registre o pacote via [**pubpascal.dev**](https://www.pubpascal.dev/packages/colligo) e siga as instruções na tela.
 
 ---
 
@@ -179,8 +183,8 @@ Ou registre o pacote via [**pubpascal.dev**](https://www.pubpascal.dev/packages/
 ```delphi
 uses
   System.SysUtils,
-  LQColligo,
-  LQColligo.Collections;
+  Colligo,
+  Colligo.Collections;
 
 var
   LNumbers: TArray<Integer>;
@@ -189,7 +193,7 @@ begin
   LNumbers := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   // Pipeline fluido — nenhum array intermediário é alocado durante a execução!
-  LResult := TLQColligoArray.From<Integer>(LNumbers)
+  LResult := TColligoArray.From<Integer>(LNumbers)
     .Where(
       function(const X: Integer): Boolean
       begin
@@ -214,7 +218,7 @@ end;
 var
   LResult: TArray<string>;
 begin
-  LResult := TLQColligoList<TUser>.From(MyCollection)
+  LResult := TColligoList<TUser>.From(MyCollection)
     .OrderBy(
       function(const A, B: TUser): Integer
       begin
@@ -259,8 +263,8 @@ Contribuições são bem-vindas — relatórios de bugs, correções, novos oper
 
 ## 💲 Donation / Doação
 
-If LQ-Colligo saves you time, consider supporting its development.
-Se o LQ-Colligo economiza seu tempo, considere apoiar o desenvolvimento.
+If Colligo saves you time, consider supporting its development.
+Se o Colligo economiza seu tempo, considere apoiar o desenvolvimento.
 
 [![Doação](https://img.shields.io/badge/PagSeguro-contribua-green)](https://pag.ae/bglQrWD)
 
