@@ -10,11 +10,11 @@
     ],
     "component": {
       "name": "Colligo",
-      "purl": "pkg:github/ModernDelphiWorks/Colligo@0.3.0",
+      "purl": "pkg:github/ModernDelphiWorks/Colligo@0.4.0",
       "type": "application",
-      "version": "0.3.0"
+      "version": "0.4.0"
     },
-    "timestamp": "2026-06-10T00:36:54.143Z"
+    "timestamp": "2026-07-07T16:40:04.057Z"
   },
   "bomFormat": "CycloneDX",
   "components": [
